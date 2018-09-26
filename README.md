@@ -1,4 +1,4 @@
-# JavaScript 的音樂漫遊 - 30 天探索 Web Audio！
+# JavaScript 音樂漫遊 - 30 天探索 Web Audio！
 
 如同一道好料理需要具備色、香、味，一個好網站除了好內容之外，也需要透過互動性更高的視覺、聽覺，來與內容相輔相成。
 
@@ -14,7 +14,7 @@
 
 ![iron-man](https://ithelp.ithome.com.tw/images/ironman/10th/kv-bg-content.png)
 
-參賽文章在[這裡]()。
+參賽文章在[這裡](https://ithelp.ithome.com.tw/users/20111380/ironman/1783)。
 ## 執行專案
 
 ```
