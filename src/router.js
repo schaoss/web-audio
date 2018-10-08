@@ -14,9 +14,9 @@ export default new Router({
       component: Home,
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('./views/About.vue'),
+      path: '/web-audio-api',
+      name: 'WebAudioApi',
+      component: () => import('./views/WebAudioApi.vue'),
     },
   ],
 });

@@ -1,29 +1,39 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <Nav></Nav>
+    <div id="content">
+      <router-view />
     </div>
-    <router-view/>
   </div>
 </template>
 
+<script>
+import Nav from '@/components/Nav';
+export default {
+  name: 'App',
+  components: {
+    Nav,
+  }
+}
+</script>
+
 <style lang="scss">
+body,
+html {
+  max-height: 100vh;
+}
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: Arial, Helvetica, 'Segoe UI Symbol', 'Segoe MDL2 Assets',
+    '微軟正黑', 'Microsoft JhengHei', 'Tei TC', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  display: grid;
+  grid-template-columns: 200px auto;
+  height: 100vh;
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+#content {
+  max-height: 100vh;
 }
 </style>
