@@ -6,10 +6,26 @@
 
 前陣子 Vue Cli 3 推出了，增加了 UI 介面，讓不熟悉命令列的開發者可以透過 UI 勾勾選選快速建置專案，真的非常方便！
 
+首先是安裝 Vue Cli。在安裝前，先確認你的電腦已經有安裝好 `node` & `npm/yarn`，隨後在終端機輸入：
 ```cs
 yarn global add @vue/cli
-
+```
+接著是開啟專案，只要輸入：
+```cs
 vue create web-audio
 ```
+並依著提示勾選需要的功能，這樣專案就建好囉！來確認一下專案是否能順利啟動吧：
 
-專案建立好後，先刻個簡單的頁面為明天做準備囉
+```cs
+yarn
+
+yarn run serve
+```
+
+等待服務啟動，當啟動完成時，應該會看到終端機的提示如下：
+![terminal](https://i.imgur.com/hv0M5jO.jpg)
+
+服務開在 `localhost:8080`：
+![localhost](https://i.imgur.com/EMvZ30j.jpg)
+
+確認服務正確起來，也就完成基礎建設啦～

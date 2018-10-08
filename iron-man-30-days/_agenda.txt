@@ -1,0 +1,49 @@
+前言：
+ 00. 自介、專案緣起
+ 01. 開發環境架設 - Vue.js
+
+Web Audio API (02 - 13 / 12d)
+ - 初探：
+	02. 認識Web Audio API。Hello Audio API
+	03. 節點關係 SourceNode => GainNode => Destination
+	04. 播放式吉他調音器
+	05. 參數
+	06. 濾波器
+	07. 輸入音檔
+	08. 麥克風收音
+	09. 處理器 - 頻譜
+	10. 收音解碼
+	11. 收音式調音器
+	12. arr ha (1)
+	13. arr ha (2)
+	
+Tone.js (14 - 23 / 10d)
+ - 初探：
+	14. 認識 Tone.js。Hello Tone
+	15. triggerAttackRelease / 事件監聽
+	16. Time / Scheduling
+	17. 
+	18. Visualization
+	19. 
+ - 實作：
+	20. drumpad
+	21. 取樣機 ?
+	22. Synchronizing Visuals
+	23. -
+ 
+Scribbletune.js (24- 27 / 4d)
+ - 初探：
+	24. 認識 Scribbletune.js。Hello Scribbletune
+	25. 和弦進行
+ - 實作：
+	26. 生成 Midi，放進Tone的實作
+	27. -
+ 
+Rythm.js (28 - 29 / 2d)
+ - 初探：
+	28. className
+ - 實作：
+	29. 跳舞吧頁面
+
+結語
+ 30. 完賽心得、參考資料
