@@ -1,0 +1,30 @@
+素材：
+
+2018鐵人 https://ithelp.ithome.com.tw/users/20107828/ironman/1552
+
+Web Audio API：
+ - OXXO https://www.oxxostudio.tw/articles/201509/web-audio-api.html
+ - MDN https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+ - Pixi + Audio API https://www.google.com/doodles/oskar-fischingers-117th-birthday
+ 
+Pitchdetect：
+ - Github https://github.com/cwilso/PitchDetect/blob/master/js/pitchdetect.js
+ 
+Tone.js
+ - Github https://github.com/Tonejs/Tone.js
+ - Official https://tonejs.github.io/
+ - examples https://tonejs.github.io/examples/
+ - Youtube https://www.youtube.com/watch?v=0uXDdTyYBYQ
+ - Discreetmusic https://github.com/mezoistvan/discreetmusic
+ - Blues https://codepen.io/gregh/pen/zNzvOm
+
+Scribbletune.js
+ - Github https://github.com/scribbletune/scribbletune
+ - Official https://scribbletune.com/
+ - youtube https://www.youtube.com/watch?v=dIiwFzFvsmw
+Tonal
+ - Github https://github.com/danigb/tonal
+
+Rythm
+ - Github https://github.com/Okazari/Rythm.js
+ - Official https://okazari.github.io/Rythm.js/
