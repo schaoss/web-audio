@@ -7,7 +7,7 @@
 
 ## 這是什麼？
 
-[Web Audio API](https://webaudio.github.io/web-audio-api/) 是由 W3C 規範的網站音頻 API，主要應用在 **網頁音樂的撥放、處理、編輯**，在 Github 上，也可以找到大量依賴 Web Audio API 的音樂相關套件；其實這不是一項非常新的技術，第一版至今 (2011 - 2018) 也已經發展了 7 年，也所幸如此，目前主流瀏覽器皆有支援：
+[Web Audio API](https://webaudio.github.io/web-audio-api/) 是由 W3C 規範的網站音頻 API，主要應用在 **網頁音樂的撥放、處理、編輯**，在 Github 上，也可以找到大量依賴 Web Audio API 的音樂相關套件；其實這不是一項非常新的技術，第一版至今 (2011 - 2018) 也已經發展了 7 年，所幸如此，目前主流瀏覽器皆有支援：
 
 ![can i use](https://i.imgur.com/uc2cyKj.jpg)
 
