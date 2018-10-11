@@ -62,6 +62,6 @@ changeNoteHandler(note) {
 
 ![result](https://i.imgur.com/CnCZBfq.png)
 
-[Live Demo]()
+[Live Demo](https://schaoss.github.io/web-audio/#/guitar-tuner)
 
 雖然只是簡單的吉他定音器，不過藉由這樣子的實作來熟悉新技術，多少還是富有樂趣及成就感的吧？那麼先到這邊，明天就繼續介紹其它Web Audio API的其他功能囉～
