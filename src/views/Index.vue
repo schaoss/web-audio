@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="index">
     <h1> Web Audio </h1>
   </div>
 </template>
