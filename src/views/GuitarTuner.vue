@@ -71,6 +71,7 @@ export default {
     },
     changeNoteHandler(note) {
       this.note = note
+      this.frequency = this.getFrequency(this.getSemitone(note))
       this.setNoteConfig()
     },
     changeConfigHandler() {
@@ -91,7 +92,7 @@ export default {
     },
     setNoteConfig() {
       this.oscillator.type = this.waveType
-      this.oscillator.frequency.value = this.getFrequency(this.getSemitone(this.note))
+      this.oscillator.frequency.value = this.frequency
       this.oscillator.detune.value = this.detune
       this.gainNode.gain.value = this.volume
     },
