@@ -99,7 +99,7 @@ export default {
       this.setNoteConfig()
     },
     reset(){
-      this.oscillator.type = 'sine'
+      this.waveType = 'sine'
       this.frequency = 440
       this.detune = 0
       this.volume = 1
@@ -116,7 +116,7 @@ export default {
       this.filter.disconnect(this.audioCtx.destination)
     },
     setNoteConfig() {
-      this.waveType = this.waveType
+      this.oscillator.type = this.waveType
       this.oscillator.frequency.value = this.frequency
       this.oscillator.detune.value = this.detune
       this.gainNode.gain.value = this.volume
