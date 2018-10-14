@@ -79,6 +79,7 @@ export default {
       this.setNoteConfig()
     },
     changeConfigHandler() {
+      this.frequency = this.getFrequency(this.getSemitone(this.note))
       this.setNoteConfig()
     },
     reset(){
