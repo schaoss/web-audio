@@ -23,5 +23,10 @@ export default new Router({
       name: 'GuitarTuner',
       component: () => import('./views/GuitarTuner.vue'),
     },
+    {
+      path: '/stereo-panner-node',
+      name: 'StereoPannerNode',
+      component: () => import('./views/StereoPannerNode.vue'),
+    },
   ],
 });
