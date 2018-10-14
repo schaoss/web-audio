@@ -6,8 +6,8 @@ Web Audio API (02 - 13 / 12d)
  - 初探：
 	02. 認識Web Audio API。Hello Audio API
 	03. 節點關係 SourceNode => GainNode => Destination
-	04. 播放式吉他調音器
-	05. 參數
+	04. 吉他定音器1
+	05. 吉他定音器2
 	06. 濾波器
 	07. 輸入音檔
 	08. 麥克風收音

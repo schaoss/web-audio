@@ -4,9 +4,31 @@
 
 依照昨天立定的計畫：
 
->練習做出 **可調整基準音** + **可設定調弦法** + **分別撥放單弦聲音** 的吉他定音器。
+==練習做出 **可調整基準音** + **可設定調弦法** + **分別撥放單弦聲音** 的吉他定音器。==
 
-我們還需要一個切換調弦法的功能。
+開始依序完成吧！
+
+### 基準音
+
+昨天的計算頻率過程中，有一個名為 `standardA4` 的參數，是要用來當成 A4 音高的頻率，也是計算其他音高的基準點。
+
+首先先簡單作出一個調整頻率的 UI介面：
+```htmlmixed=9
+<div class="item">
+  <label for="standardA4">A4 : <span>{{standardA4}}</span> </label>
+  <input type="range" min="430" max="450" step="1" id="standardA4Range" v-model="standardA4" @input="changeConfigHandler">
+</div> 
+```
+
+以及相對應的事件處理函數：
+```javascript=81
+changeConfigHandler() {
+  this.frequency = this.getFrequency(this.getSemitone(this.note))
+  this.setNoteConfig()
+},
+```
+
+這樣就完成了基準音參數化囉。接下來，我們還需要一個切換調弦法的功能。
 
 ### 吉他常見調弦法
 
