@@ -19,6 +19,16 @@
         </div>
       </div>
     </div>
+    <div id="drag-area" data-role="drag-drop-container" @mouseleave="onMouseUp">
+      <div id="listener"
+        @mousedown="onMouseDown" @mousemove="onMouseMove" @mouseup="onMouseUp" @mouseleave="onMouseUp"
+        :style="{left: this.dragData.listener.x + 'px', top: this.dragData.listener.y + 'px'}"
+      > 聽者 </div>
+      <div id="source"
+        @mousedown="onMouseDown" @mousemove="onMouseMove" @mouseup="onMouseUp" @mouseleave="onMouseUp"
+        :style="{left: this.dragData.source.x + 'px', top: this.dragData.source.y + 'px'}"
+      > 音源 </div>
+    </div>
   </div>
 </template>
 
@@ -42,6 +52,18 @@ export default {
       frequency: 440, // A4
       detune: 0, // 解諧 可做出和聲
       volume: 1, // 音量
+
+      draggingElem: '',
+      dragData: {
+        listener: {
+          x: 706,
+          y: 428
+        },
+        source: {
+          x: 413,
+          y: 250
+        }
+      }
     }
   },
   methods: {
@@ -72,10 +94,28 @@ export default {
       this.oscillator.frequency.value = this.frequency
       this.oscillator.detune.value = this.detune
       this.gainNode.gain.value = this.volume
-    }
+      this.panner.setPosition(this.dragData.source.x, this.dragData.source.y, 1)
+      this.listener.setPosition(this.dragData.listener.x, this.dragData.listener.y, 0)
+    },
+    onMouseDown(e) {
+      this.draggingElem = e.target.id
+
+    },
+    onMouseMove(e) {
+      if (!this.draggingElem) {
+        return
+      }
+      this.dragData[this.draggingElem].x = e.clientX - 25
+      this.dragData[this.draggingElem].y = e.clientY - 25
+      this.setNoteConfig()
+    }, 
+    onMouseUp() {
+      this.draggingElem = ''
+    },
   },
   mounted() {
     this.setNoteConfig()
+    this.panner.rolloffFactor = 0.1
     this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
     this.gainNode.connect(this.panner)
     this.oscillator.start() // 啟動音源
@@ -127,6 +167,29 @@ export default {
           margin: 0 20px;
         }
       }
+    }
+  }
+  #drag-area {
+    width: 1000px;
+    height: 400px;
+    border: solid 1px #d9d9d9;
+    margin: auto;
+    overflow: hidden;
+    line-height: 50px;
+    font-size: 150%;
+    user-select: none;
+    >div {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      padding: 10px;
+    }
+    #listener {
+      background-color: #3692BE;
+    }
+    #source {
+      background-color: #BF8F36;
     }
   }
 }
