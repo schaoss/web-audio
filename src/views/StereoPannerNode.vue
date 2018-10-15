@@ -1,6 +1,6 @@
 <template>
-  <div id="web-audio-api">
-    <h1>Hello, Web Audio API</h1>
+  <div id="stereo-panner-node">
+    <h1>Stereo Panner Node</h1>
     <button @click="clickHandler"> Play / Pause </button>
     <button @click="reset"> Reset </button>
     <div id="config">
@@ -32,30 +32,10 @@
         </div>
       </div>
       <div class="audio-note">
-        <h3><span>濾波器節點</span></h3>
+        <h3><span>雙聲道節點</span></h3>
         <div class="item">
-          <label for="filterType">filterType : <span>{{filterType}}</span> </label>
-          <select id="filterType" v-model="filterType" @change="changeHandler">
-            <option value='allpass' selected>allpass</option>
-            <option value='highpass'>highpass</option>
-            <option value='bandpass'>bandpass</option>
-            <option value='lowshelf'>lowshelf</option>
-            <option value='highshelf'>highshelf</option>
-            <option value='peaking'>peaking</option>
-            <option value='notch'>notch</option>
-          </select>
-        </div>
-        <div class="item">
-          <label for="filterF">filterF : <span>{{filterF}}</span> </label>
-          <input type="range" min="0" max="4000" step="1" id="filterF" v-model="filterF" @input="changeHandler">
-        </div>
-        <div class="item">
-          <label for="filterQ">filterQ : <span>{{filterQ}}</span> </label>
-          <input type="range" min="0.01" max="1000" step="0.01" id="filterQ" v-model="filterQ" @input="changeHandler">
-        </div>
-        <div class="item">
-          <label for="filterGain">filterGain : <span>{{filterGain}}</span> </label>
-          <input type="range" min="0" max="5" step="0.1" id="filterGain" v-model="filterGain" @input="changeHandler">
+          <label for="pan">pan : <span>{{pan}}</span> </label>
+          <input type="range" min="-1" max="1" step="0.01" id="pan" v-model="pan" @input="changeHandler">
         </div>
       </div>
     </div>
@@ -69,21 +49,18 @@ export default {
     const audioCtx = new AudioContext() // 主控台的概念
     const oscillator = audioCtx.createOscillator() // 振盪器 (音源)
     const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-    const filter = audioCtx.createBiquadFilter() // 濾波器
+    const stereoPanner = audioCtx.createStereoPanner() // 雙聲道節點
     return{
       isPlaying: false,
       audioCtx,
       oscillator,
       gainNode,
-      filter,
+      stereoPanner,
       waveType: 'sine', // sine, square, sawtooth, triangle
       frequency: 440, // A4
       detune: 0, // 解諧 可做出和聲
       volume: 1, // 音量
-      filterType: 'allpass', // lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch
-      filterF: '350', // 濾波的判斷頻率
-      filterQ: '1', // 品質參數
-      filterGain: '0' // 過濾掉的頻率通過的音量
+      pan: 0, // 左右聲道平衡
     }
   },
   methods: {
@@ -103,39 +80,33 @@ export default {
       this.frequency = 440
       this.detune = 0
       this.volume = 1
-      this.filterType = 'allpass'
-      this.filterF = 350
-      this.filterQ = 1
-      this.filterGain = 0
+      this.pan = 0
       this.setNoteConfig()
     },
     play() {
-      this.filter.connect(this.audioCtx.destination)
+      this.stereoPanner.connect(this.audioCtx.destination)
     },
     stop() {
-      this.filter.disconnect(this.audioCtx.destination)
+      this.stereoPanner.disconnect(this.audioCtx.destination)
     },
     setNoteConfig() {
       this.oscillator.type = this.waveType
       this.oscillator.frequency.value = this.frequency
       this.oscillator.detune.value = this.detune
       this.gainNode.gain.value = this.volume
-      this.filter.type = this.filterType
-      this.filter.frequency.value = this.filterF
-      this.filter.Q.value = this.filterQ
-      this.filter.gain.value = this.filterGain
+      this.stereoPanner.pan.value = this.pan
     }
   },
   mounted() {
     this.setNoteConfig()
     this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
-    this.gainNode.connect(this.filter)
+    this.gainNode.connect(this.stereoPanner)
     this.oscillator.start() // 啟動音源
   }
 }
 </script>
 <style lang="scss" scoped>
-#web-audio-api {
+#stereo-panner-node {
   >button {
     margin: 10px;
   }

@@ -1,8 +1,8 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Home from './views/Home.vue';
+import Vue from 'vue'
+import Router from 'vue-router'
+import Index from './views/Index.vue'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   mode: 'history',
@@ -10,13 +10,28 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      name: 'index',
+      component: Index
     },
     {
       path: '/web-audio-api',
       name: 'WebAudioApi',
-      component: () => import('./views/WebAudioApi.vue'),
+      component: () => import('./views/WebAudioApi.vue')
     },
-  ],
-});
+    {
+      path: '/guitar-tuner',
+      name: 'GuitarTuner',
+      component: () => import('./views/GuitarTuner.vue')
+    },
+    {
+      path: '/stereo-panner-node',
+      name: 'StereoPannerNode',
+      component: () => import('./views/StereoPannerNode.vue')
+    },
+    {
+      path: '/panner-node',
+      name: 'PannerNode',
+      component: () => import('./views/PannerNode.vue')
+    }
+  ]
+})

@@ -2,6 +2,9 @@
   <div id="nav">
     <router-link to="/">Main</router-link>
     <router-link to="web-audio-api">Web Audio Api</router-link>
+    <router-link to="guitar-tuner">Guitar Tuner</router-link>
+    <router-link to="stereo-panner-node">Stereo Panner Node</router-link>
+    <router-link to="panner-node">Panner Node</router-link>
   </div>
 </template>
 <style lang="scss">
