@@ -32,6 +32,11 @@ export default new Router({
       path: '/panner-node',
       name: 'PannerNode',
       component: () => import('./views/PannerNode.vue')
+    },
+    {
+      path: '/source',
+      name: 'Source',
+      component: () => import('./views/Source.vue')
     }
   ]
 })

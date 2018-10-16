@@ -1,4 +1,4 @@
-# 07. Web Audio API - 立體音效 2
+# 07. Web Audio API - 3D 音源計算
 
 接著昨天的話題，今天就來玩玩 PannerNode 及 AudioListener，並在最後做出一個可以藉由拖拉控制位置的程式應用範例～
 同樣的，由於是立體音效，內文中的程式 Demo，建議佩戴耳機聆聽，效果比較好喔！
