@@ -1,8 +1,8 @@
 # 02. Web Audio API
 
-今天先來介紹 Web Audio API。
+今天就開始來介紹 Web Audio API。
 
-不囉嗦，直接上個 [**範例**](https://www.google.com/logos/doodles/2017/fischinger/fischinger17.9.html)，還不錯玩對吧～
+不囉嗦，直接上個 google doodles 的[**範例**](https://www.google.com/logos/doodles/2017/fischinger/fischinger17.9.html)，還不錯玩吧～
 
 
 ## 這是什麼？
@@ -11,14 +11,14 @@
 
 ![can i use](https://i.imgur.com/uc2cyKj.jpg)
 
-~~IE11表示：什麼支援？~~
+~~IE11表示：嗯？什麼支援？~~
 
 
 ## 為什麼要玩這個？
 
-如果只是要在網頁上簡單的撥放音樂，現在Html5的`<audio>`標籤已經可以做到這件事情。
+如果只是要在網頁上簡單的撥放音樂，現在 html5 的`<audio>`標籤已經可以簡單快速的做到這件事情，甚至還幫你生出簡單的 Player。
 e.g.：
-```htmlmixed=
+```html
 <audio controls>
   <source src="horse.ogg" type="audio/ogg">
   <source src="horse.mp3" type="audio/mpeg">
@@ -26,7 +26,7 @@ e.g.：
 </audio>
 ```
 
-但如果想要在網頁上編輯、分析、甚至創造音樂，那接觸一下 Web Audio API 就是必須的了。
+但如果想要在網頁上透過 Javascript 編輯、分析、甚至創造音樂，那接觸一下 Web Audio API 就是必須的了。
 
 
 ## 功能有哪些？
@@ -54,7 +54,7 @@ e.g.：
 const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
 const audioCtx = new AudioContext()
 ```
-接著來利用振盪器，建立出音源
+接著建立一個振盪器，當成簡易的音源
 ```javascript=13
 const oscillator = audioCtx.createOscillator() 
 ```
@@ -74,8 +74,8 @@ gainNode.gain.value = 1 // 音量
 this.oscillator.connect(this.gainNode)
 this.oscillator.start() // 啟動音源
 ```
-基本上設定好囉，最後是寫個點擊事件的函式，觸發聲音撥放 & 暫停：
-```htmlmixed=4
+基本上設定好囉，最後是寫個按鈕，以及點擊事件的處理函式，切換聲音撥放 & 暫停：
+```html
 <button @click="clickHandler"> Play / Pause </button>
 ```
 ```javascript=
@@ -91,3 +91,12 @@ clickHandler(){
 
 ![day2 result](https://i.imgur.com/7Raddk9.jpg)
 以上，就是最基本的 Web Audio API 使用範例囉。
+
+> 
+> ### 筆者
+> ## Gary
+> 半路出家網站工程師；半生熟的前端加上一點點的後端。
+> 喜歡音樂，喜歡學習、分享，也喜歡當個遊戲宅。
+> 
+> 相信一切安排都是最好的路。
+> 
