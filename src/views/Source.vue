@@ -1,38 +1,47 @@
 <template>
   <div id="source">
-    <h1>Hello, Web Audio API</h1>
+    <h1>Source</h1>
     <button @click="clickHandler"> Play / Pause </button>
     <button @click="reset"> Reset </button>
     <div id="config">
       <div class="audio-note">
-        <h3><span>音源</span></h3>
-        <div class="item">
-          <label for="waveType">type : <span>{{ waveType }}</span></label>
-          <select id="waveType" v-model="waveType" @change="changeHandler">
-            <option value='sine' selected>sine</option>
-            <option value='square'>square</option>
-            <option value='sawtooth'>sawtooth</option>
-            <option value='triangle'>triangle</option>
+        <h3>
+          <span>音源：</span>
+          <select @change="sourceType=$event.target.value">
+            <option value="0">振盪器</option>
+            <option value="1">Audio Tag</option>
+            <option value="2">麥克風</option>
           </select>
-        </div>
-        <div class="item">
-          <label for="frequency">frequency : <span>{{frequency}}</span> </label>
-          <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler">
-        </div>
-        <div class="item">
-          <label for="detune">detune : <span>{{detune}}</span> </label>
-          <input type="range" min="-2000" max="2000" step="1" vid="detuneRange" v-model="detune" @input="changeHandler">
+        </h3>
+
+        <div v-show="sourceType==='0'">
+          <div class="item">
+            <label for="waveType">type : <span>{{ waveType }}</span></label>
+            <select id="waveType" v-model="waveType" @change="changeHandler">
+              <option value='sine' selected>sine</option>
+              <option value='square'>square</option>
+              <option value='sawtooth'>sawtooth</option>
+              <option value='triangle'>triangle</option>
+            </select>
+          </div>
+          <div class="item">
+            <label for="frequency">frequency : <span>{{frequency}}</span> </label>
+            <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler">
+          </div>
+          <div class="item">
+            <label for="detune">detune : <span>{{detune}}</span> </label>
+            <input type="range" min="-2000" max="2000" step="1" vid="detuneRange" v-model="detune" @input="changeHandler">
+          </div>
         </div>
       </div>
-      <div class="audio-note">
-        <h3><span>增益節點</span></h3>
-        <div class="item">
-          <label for="volume">volume : <span>{{volume}}</span> </label>
-          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeHandler">
+      <div v-show="sourceType==='1'">
+        <div class="source">
+          <!-- https://kiwi6.com/file/jsixd8uctr -->
+          <audio id="player" controls preload crossorigin="anonymous" src="http://k003.kiwi6.com/hotlink/jsixd8uctr/Rainy_Day_Games.mp3" type="audio/mpeg"></audio>
         </div>
       </div>
-      <div class="source">
-        <audio id="player"controls src="https://picosong.com/cdn/91ef733a947c0b7f39b98952c7efd869.mp3"></audio>
+      <div v-show="sourceType ==='2'">
+        <div>mic</div>
       </div>
     </div>
   </div>
@@ -40,24 +49,21 @@
 
 <script>
 export default {
+  name: "Source",
   data() {
     const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
     const audioCtx = new AudioContext() // 主控台的概念
-    const oscillator = audioCtx.createOscillator() // 振盪器 (音源)
     const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-
-    const audio = document.querySelector('audio');
-    const source = audioCtx.createMediaElementSource(audio);
 
     return{
       isPlaying: false,
+      sourceType: "0",
+      source: null,
       audioCtx,
-      oscillator,
       gainNode,
       waveType: 'sine', // sine, square, sawtooth, triangle
       frequency: 440, // A4
       detune: 0, // 解諧 可做出和聲
-      volume: 1, // 音量
     }
   },
   methods: {
@@ -67,7 +73,6 @@ export default {
       } else {
         this.play()
       }
-      this.isPlaying = !this.isPlaying
     },
     changeHandler(){
       this.setNoteConfig()
@@ -76,73 +81,117 @@ export default {
       this.waveType = 'sine'
       this.frequency = 440
       this.detune = 0
-      this.volume = 1
       this.setNoteConfig()
     },
     play() {
+      this.isPlaying = true
       this.gainNode.connect(this.audioCtx.destination)
     },
     stop() {
+      this.isPlaying = false
       this.gainNode.disconnect(this.audioCtx.destination)
     },
     setNoteConfig() {
-      this.oscillator.type = this.waveType
-      this.oscillator.frequency.value = this.frequency
-      this.oscillator.detune.value = this.detune
-      this.gainNode.gain.value = this.volume
+      if(this.sourceType === "0"){
+        this.source.type = this.waveType
+        this.source.frequency.value = this.frequency
+        this.source.detune.value = this.detune
+      }
+    },
+    getUserMic(stream) {
+      this.source = this.audioCtx.createMediaStreamSource(stream)
+      this.source.connect(this.gainNode)
+      this.play()
+    }
+  },
+  watch: {
+    'sourceType': {
+      handler: function(n, p) {
+        if (this.isPlaying) {
+          this.stop()
+        }
+        if (this.source) {
+          this.source.disconnect(this.gainNode)
+          if(p === "0") this.source.stop()
+        }
+        console.log(n)
+        switch(n) {
+          default:
+          case "0":
+            this.source = this.audioCtx.createOscillator()
+            
+            this.source.start()
+            
+            break
+          case "1":
+            const audio = document.querySelector('audio');
+            audio.crossorigin = 'anonymous'
+            audio.load()
+            this.source = this.audioCtx.createMediaElementSource(audio);
+            break
+          case "2":
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            .then(this.getUserMic)
+            .catch(e => console.log(e))
+            break
+        }
+        this.source.connect(this.gainNode)
+      },
+      immediate: true
     }
   },
   mounted() {
     this.setNoteConfig()
-    this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
-    this.oscillator.start() // 啟動音源
+  },
+  beforeDestroy() {
+    
   }
 }
 </script>
 <style lang="scss" scoped>
 #source {
-  >button {
+  > button {
     margin: 10px;
   }
   #config {
     display: flex;
     justify-content: space-around;
     flex-direction: column;
-    >.audio-note {
+    > .audio-note {
       width: 1000px;
       margin: 15px auto;
       border: solid 1px #d9d9d9;
-      >h3 {
+      > h3 {
         text-align: left;
         margin: 10px;
-        >span {
+        > span {
           display: inline-block;
           width: 100px;
           text-align: right;
         }
       }
-      >.item {
+      .item {
         display: flex;
         width: 800px;
         margin: 5px auto;
         padding: 10px;
-        >label {
+        > label {
           display: inline-block;
           width: 150px;
           text-align: right;
-          >span {
+          > span {
             font-weight: 600;
             display: inline-block;
             width: 50px;
             text-align: center;
           }
         }
-        >input {
+        > input {
           width: 600px;
           margin: 0 20px;
         }
-        >select {
-          margin:  0 20px;
+        > select {
+          margin: 0 20px;
         }
       }
     }
