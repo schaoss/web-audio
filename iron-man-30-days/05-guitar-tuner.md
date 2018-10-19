@@ -12,15 +12,17 @@
 
 昨天的計算頻率過程中，有一個名為 `standardA4` 的參數，是要用來當成 A4 音高的頻率，也是計算其他音高的基準點。
 
-首先先簡單作出一個調整頻率的 UI介面：
+首先先簡單作出一個調整頻率的 UI 介面：
+
 ```htmlmixed=9
 <div class="item">
   <label for="standardA4">A4 : <span>{{standardA4}}</span> </label>
   <input type="range" min="430" max="450" step="1" id="standardA4Range" v-model="standardA4" @input="changeConfigHandler">
-</div> 
+</div>
 ```
 
 以及相對應的事件處理函數：
+
 ```javascript=81
 changeConfigHandler() {
   this.frequency = this.getFrequency(this.getSemitone(this.note))
@@ -34,21 +36,24 @@ changeConfigHandler() {
 
 除了昨天有提到的標準調弦外，吉他常見的調弦法還有如下：
 
-* Drop D（第六弦降全音）
-* Open E（空弦音為 E 和弦）
-* Open D（空弦音為 D 和弦）
+- Drop D（第六弦降全音）
+- Open E（空弦音為 E 和弦）
+- Open D（空弦音為 D 和弦）
 
 那就先把這些調弦法整理成音高吧：
+
 ```javascript=126
 const noteNameArr = {
-    'standard' : ['E2','A2','D3','G3','B3','E4'],
-    '1-step-down' : ['D2','G2','C3','F3','A3','D4'],
-    'drop-d' : ['D2','A2','D3','G3','B3','E4'],
-    'open-e' : ['E2','B2','E3','G#3','B3','E4'],
-    'open-d' : ['D2','A2','D3','F#3','A3','D4']
+  standard: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+  '1-step-down': ['D2', 'G2', 'C3', 'F3', 'A3', 'D4'],
+  'drop-d': ['D2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+  'open-e': ['E2', 'B2', 'E3', 'G#3', 'B3', 'E4'],
+  'open-d': ['D2', 'A2', 'D3', 'F#3', 'A3', 'D4']
 }
 ```
+
 接著，切出簡單的控制介面，例如調弦法：
+
 ```htmlmixed=13
 <div class="item">
   <label for="tuning">調弦法 : <span></span></label>
@@ -61,10 +66,12 @@ const noteNameArr = {
   </select>
 </div>
 ```
+
 音符按鈕：
+
 ```htmlmixed=29
 <div id="notes">
-  <div class="note" v-for="n in noteArr" :key="n" 
+  <div class="note" v-for="n in noteArr" :key="n"
       @click="changeNoteHandler(n)">
     {{n}}
   </div>
@@ -72,6 +79,7 @@ const noteNameArr = {
 ```
 
 以及相對應的事件處理函式：
+
 ```javascript=76
 changeNoteHandler(note) {
   this.note = note
@@ -86,4 +94,13 @@ changeNoteHandler(note) {
 
 [Live Demo](https://schaoss.github.io/web-audio/#/guitar-tuner)
 
-雖然只是簡單的吉他定音器，不過藉由這樣子的實作來熟悉新技術，多少還是富有樂趣及成就感的吧？那麼先到這邊，明天就繼續介紹其它Web Audio API的其他功能囉～
+雖然只是簡單的吉他定音器，不過藉由這樣子的實作來熟悉新技術，多少還是富有樂趣及成就感的吧？那麼先到這邊，明天就繼續介紹其它 Web Audio API 的其他功能囉～
+
+> ### 筆者
+>
+> ## Gary
+>
+> 半路出家網站工程師；半生熟的前端加上一點點的後端。
+> 喜歡音樂，喜歡學習、分享，也喜歡當個遊戲宅。
+>
+> 相信一切安排都是最好的路。
