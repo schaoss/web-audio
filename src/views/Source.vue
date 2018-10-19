@@ -36,7 +36,7 @@
         <div v-show="sourceType==='1'">
           <div class="item">
             <audio id="player" controls preload>
-              <source src="Rainy_Day_Games.mp3" type="audio/mp3" />
+              <source src="../assets/Rainy_Day_Games.mp3" type="audio/mp3" />
             </audio>
           </div>
         </div>
