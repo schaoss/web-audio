@@ -1,9 +1,8 @@
 # 04. 吉他定音器 - Part.1
 
-介紹了幾天，也稍微玩了一些功能，應該對 Web Audio API 已經不太陌生了吧？
+介紹了幾天，也稍微玩了一些功能，是不是快受不了 Web Audio API 文件導讀啦 XD？
 
 那麼就用已經玩到的部分，來做個簡單的吉他定音器吧！
-
 
 ### 吉他定弦
 
@@ -13,7 +12,7 @@
 
 在 Web Audio API 中，若要播放出不同的音高，必須要先計算出各音高的頻率。所以，接著要先來上個簡單的樂理課 & 數學課啦～
 
->如果樂理的部分有表達不清或錯誤的地方，歡迎各路大神協助指正，感謝！
+> 如果樂理的部分有表達不清或錯誤的地方，歡迎各路大神協助指正，感謝！
 
 ### 半音
 
@@ -33,17 +32,17 @@
 
 一個八度，會被分成十二個半音。因此相鄰半音之間的頻率比例為![](https://i.imgur.com/mV16KE2.png)
 
-
 那麼拼圖湊齊了，就可以開始計算啦～
 
->一個音符音高為 E2，可以換算成第 40 個半音，再利用 A4 = 440hz 作為計算的基準，可以換算出 E2 = 82.4068892282175 hz
->...
+> 一個音符音高為 E2，可以換算成第 40 個半音，再利用 A4 = 440hz 作為計算的基準，可以換算出 E2 = 82.4068892282175 hz
+> ...
 
-那麼今天的定音器實作，就把這些計算過程抽成函式吧～
+那麼今天的實作部分，就先把這些計算過程抽成函式，方便後續進行吧～
 
 ### Demo
 
 首先是計算半音：
+
 ```javascript=99
 getSemitone(note) {
   if(!note || note === '-') return 69
@@ -69,21 +68,34 @@ getSemitone(note) {
   return noteList[note.slice(0,-1)] + 12 * (1 + parseInt(note.slice(-1)))
 },
 ```
+
 考慮了輸入音高時，升降號可能造成的異名同音。
 
 接著是計算頻率：
+
 ```javascript=+
 getFrequency(semitone) {
   return this.standardA4 * Math.pow(2, (semitone - 69)/12)
 },
 ```
+
 然後寫好切換音符的函式：
+
 ```javascript=72
 changeNoteHandler(note) {
-    this.note = note
-    this.frequency = this.getFrequency(this.getSemitone(note))
-    this.setNoteConfig()
+  this.note = note
+  this.frequency = this.getFrequency(this.getSemitone(note))
+  this.setNoteConfig()
 },
 ```
 
 到這邊，頻率計算相關的部分也就告一段落啦！那今天也就先到這，大家明天見～
+
+> ### 筆者
+>
+> ## Gary
+>
+> 半路出家網站工程師；半生熟的前端加上一點點的後端。
+> 喜歡音樂，喜歡學習、分享，也喜歡當個遊戲宅。
+>
+> 相信一切安排都是最好的路。

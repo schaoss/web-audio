@@ -33,15 +33,16 @@
             <input type="range" min="-2000" max="2000" step="1" vid="detuneRange" v-model="detune" @input="changeHandler">
           </div>
         </div>
-      </div>
-      <div v-show="sourceType==='1'">
-        <div class="source">
-          <!-- https://kiwi6.com/file/jsixd8uctr -->
-          <audio id="player" controls preload crossorigin="anonymous" src="http://k003.kiwi6.com/hotlink/jsixd8uctr/Rainy_Day_Games.mp3" type="audio/mpeg"></audio>
+        <div v-show="sourceType==='1'">
+          <div class="item">
+            <audio id="player" controls preload>
+              <source src="Rainy_Day_Games.mp3" type="audio/mp3" />
+            </audio>
+          </div>
         </div>
-      </div>
-      <div v-show="sourceType ==='2'">
-        <div>mic</div>
+        <div v-show="sourceType ==='2'">
+          <div class="item">{{micOutput}}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -64,6 +65,9 @@ export default {
       waveType: 'sine', // sine, square, sawtooth, triangle
       frequency: 440, // A4
       detune: 0, // 解諧 可做出和聲
+      audioSource: null,
+      micStream: null,
+      micOutput:[]
     }
   },
   methods: {
@@ -99,9 +103,19 @@ export default {
       }
     },
     getUserMic(stream) {
+      this.micStream = stream
       this.source = this.audioCtx.createMediaStreamSource(stream)
-      this.source.connect(this.gainNode)
-      this.play()
+      const processor = this.audioCtx.createScriptProcessor(1024, 1, 1)
+      processor.onaudioprocess = (e) => {
+        const input = e.inputBuffer.getChannelData(0);
+        const output = e.outputBuffer.getChannelData(0);
+        for (var i = 0; i < input.length; i++) {
+          output[i] = input[i]
+        }
+        this.micOutput = output
+      }
+      this.source.connect(processor)
+      processor.connect(this.gainNode)
     }
   },
   watch: {
@@ -111,23 +125,26 @@ export default {
           this.stop()
         }
         if (this.source) {
-          this.source.disconnect(this.gainNode)
           if(p === "0") this.source.stop()
+          else if(p === "1") document.querySelector('audio').pause()
+          else if(p === "2") this.micStream.getAudioTracks()[0].stop()
         }
-        console.log(n)
         switch(n) {
           default:
           case "0":
             this.source = this.audioCtx.createOscillator()
-            
             this.source.start()
-            
+            this.source.connect(this.gainNode)
             break
           case "1":
             const audio = document.querySelector('audio');
-            audio.crossorigin = 'anonymous'
-            audio.load()
-            this.source = this.audioCtx.createMediaElementSource(audio);
+            audio.play()
+            if(this.audioSource) {
+              this.source = this.audioSource
+            } else {
+              this.source = this.audioCtx.createMediaElementSource(audio);
+            }
+            this.source.connect(this.gainNode)
             break
           case "2":
             navigator.mediaDevices.getUserMedia({ audio: true, video: false })
@@ -135,7 +152,6 @@ export default {
             .catch(e => console.log(e))
             break
         }
-        this.source.connect(this.gainNode)
       },
       immediate: true
     }
@@ -144,7 +160,7 @@ export default {
     this.setNoteConfig()
   },
   beforeDestroy() {
-    
+    if(this.micStream) this.micStream.getAudioTracks()[0].stop()
   }
 }
 </script>
