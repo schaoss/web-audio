@@ -37,6 +37,11 @@ export default new Router({
       path: '/source',
       name: 'Source',
       component: () => import('./views/Source.vue')
+    },
+    {
+      path: '/analyser',
+      name: 'Analyser',
+      component: () => import('./views/Analyser.vue')
     }
   ]
 })
