@@ -1,12 +1,11 @@
 <template>
-  <div id="analyser">
-    <h1>Analyser</h1>
-    <button @click="clickHandler"> Play / Pause </button>
-    <button @click="muteHandler"> {{isMute ? 'unmute' : 'mute'}} </button>
+  <div id="guitar-tuner">
+    <h1>Guitar Tuner 2.0</h1>
+    <button @click="clickHandler"> On / Off </button>
     <div id="config">
       <div class="audio-note">
         <div class="result">
-          <div class="fftData" v-for="n in 512" :key="n" :style="{'height': fftArray[(n-1)]+2 + 'px'}" />
+          <div class="fftData" v-for="n in 512" :key="n" :style="{'height': timeArray[(n-1)]*5000+2 + 'px'}" />
         </div>
       </div>
     </div>
@@ -22,8 +21,8 @@ export default {
     const gainNode = audioCtx.createGain() // 增益節點 控制音量的
     const analyser = audioCtx.createAnalyser()
 
-    gainNode.gain.value = 1
-    analyser.fftSize = 1024
+    gainNode.gain.value = 0
+    analyser.fftSize = 2048
     analyser.connect(gainNode)
     return{
       isPlaying: false,
@@ -33,7 +32,7 @@ export default {
       gainNode,
       analyser,
       micStream: null,
-      fftArray: new Uint8Array(analyser.fftSize),
+      timeArray: new Float32Array(analyser.fftSize / 2),
     }
   },
   methods: {
@@ -44,19 +43,10 @@ export default {
         this.play()
       }
     },
-    muteHandler() {
-      if (this.isMute) {
-        this.isMute = false
-        this.gainNode.gain.value = 1
-      } else {
-        this.isMute = true
-        this.gainNode.gain.value = 0
-      }
-    },
     play() {
       this.isPlaying = true
       this.gainNode.connect(this.audioCtx.destination)
-      requestAnimationFrame(this.getFFTData)
+      requestAnimationFrame(this.getMicData)
     },
     stop() {
       this.isPlaying = false
@@ -67,10 +57,10 @@ export default {
       this.source = this.audioCtx.createMediaStreamSource(stream)
       this.source.connect(this.analyser)
     },
-    getFFTData(){
-      this.fftArray = new Uint8Array(this.analyser.fftSize)
-      this.analyser.getByteFrequencyData(this.fftArray)
-      if (this.isPlaying) requestAnimationFrame(this.getFFTData)
+    getMicData(){
+      this.timeArray = new Float32Array(this.analyser.fftSize)
+      this.analyser.getFloatTimeDomainData(this.timeArray)
+      if (this.isPlaying) requestAnimationFrame(this.getMicData)
     }
   },
   mounted() {
@@ -84,7 +74,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#analyser {
+#guitar-tuner {
   > button {
     margin: 10px;
   }
@@ -102,10 +92,11 @@ export default {
         height: 300px;
         vertical-align: middle;
         align-items: center;
+        overflow: hidden;
         .fftData {
           display: block;
           width: 2px;
-          background-color: #3692be;
+          background-color: #bf8f36;
         }
       }
     }

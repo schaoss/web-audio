@@ -85,7 +85,7 @@ getFFTData(){
 
 最後是排版一下，調成喜歡的樣子，就完成啦～
 
-[Live Demo](https://schaoss.github.io/web-audio/#/source)
+[Live Demo](https://schaoss.github.io/web-audio/#/analyser)
 
 ![result](https://i.imgur.com/WAv7DZf.gif)
 

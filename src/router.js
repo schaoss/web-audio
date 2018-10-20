@@ -42,6 +42,11 @@ export default new Router({
       path: '/analyser',
       name: 'Analyser',
       component: () => import('./views/Analyser.vue')
+    },
+    {
+      path: '/guitar-tuner-2.0',
+      name: 'GuitarTuner2.0',
+      component: () => import('./views/GuitarTuner_2.vue')
     }
   ]
 })
