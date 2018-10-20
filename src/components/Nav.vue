@@ -6,6 +6,8 @@
     <router-link to="stereo-panner-node">Stereo Panner Node</router-link>
     <router-link to="panner-node">Panner Node</router-link>
     <router-link to="source">Source</router-link>
+    <router-link to="analyser">Analyser</router-link>
+    <router-link to="guitar-tuner-2.0">Guitar Tuner 2.0</router-link>
   </div>
 </template>
 <style lang="scss">
