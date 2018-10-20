@@ -8,7 +8,7 @@
         <p>歡迎您與我一同踏上這趟旅程，讓我們於科技與藝術的交會處相逢，一起在音樂中肆意漫遊。</p>
       </div>
       <img src="https://svgsilh.com/svg/33908-795548.svg" />
-
+      <p>這個網站會呈現文章內提到的各種範例，讀者您可以參照文章任意賞玩。</p>
       <p>程式碼放在 <a href="https://github.com/schaoss/web-audio">Github</a></p>
       <p>參賽文章在 <a href="https://ithelp.ithome.com.tw/users/20111380/ironman/1783">這裡</a></p>
     </div>
