@@ -85,7 +85,7 @@ export default {
       return this.getInputFrequency > 0 ? this.getInputFrequency : '-'
     },
     getNoteStr() {
-      const noteStr = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+      const noteStr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
       return this.semiTone ? noteStr[this.semiTone % 12] : '-'
     },
     getCentsOffStr() {
