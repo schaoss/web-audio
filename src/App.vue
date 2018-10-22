@@ -1,7 +1,10 @@
 <template>
   <div id="app">
-    <Nav></Nav>
+    <div id="menu" v-if="isShow">
+      <Nav></Nav>
+    </div>
     <div id="content">
+      <div id="menuTrigger" @click="isShow = !isShow" />
       <router-view />
     </div>
   </div>
@@ -13,6 +16,11 @@ export default {
   name: 'App',
   components: {
     Nav,
+  },
+  data() {
+    return {
+      isShow: false
+    }
   }
 }
 </script>
@@ -29,11 +37,22 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  display: grid;
-  grid-template-columns: 200px auto;
+  display: flex;
   height: 100vh;
 }
 #content {
-  max-height: 100vh;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  #menuTrigger {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-color: #e9e9e9;
+  }
+}
+#menu {
+  width: 250px;
+  height: 100vh;
 }
 </style>

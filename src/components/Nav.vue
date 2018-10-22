@@ -13,6 +13,7 @@
 <style lang="scss">
 #nav {
   background-color: #e9e9e9;
+  height: 100%;
   overflow-y: scroll;
   a {
     display: block;
