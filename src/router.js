@@ -47,6 +47,11 @@ export default new Router({
       path: '/guitar-tuner-2.0',
       name: 'GuitarTuner2.0',
       component: () => import('./views/GuitarTuner_2.vue')
+    },
+    {
+      path: '/voice-changer',
+      name: 'VoiceChanger',
+      component: () => import('./views/VoiceChanger.vue')
     }
   ]
 })

@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  name: "Source",
+  name: "GuitarTuner2",
   data() {
     const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
     const audioCtx = new AudioContext() // 主控台的概念

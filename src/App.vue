@@ -4,10 +4,10 @@
       <Nav></Nav>
     </div>
     <div id="content">
-      <div id="menuTrigger" @click="isShow = !isShow" />
-      <router-view />
+      <div id="menuTrigger" @click="isShow = !isShow">{{isShow ? '\
+        <' : '\>' }}</div> <router-view />
+      </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -48,7 +48,13 @@ html {
     position: absolute;
     width: 25px;
     height: 25px;
-    background-color: #e9e9e9;
+    line-height: 25px;
+    font-size: 25px;
+    background-color: #3692be;
+    color: #f9f9f9;
+    border-radius: 50%;
+    margin: 10px;
+    user-select: none;
   }
 }
 #menu {
