@@ -4,14 +4,14 @@
       <Nav></Nav>
     </div>
     <div id="content">
-      <div id="menuTrigger" @click="isShow = !isShow">{{isShow ? '\
-        <' : '\>' }}</div> <router-view />
-      </div>
+      <div id="menuTrigger" @click="isShow = !isShow">{{isShow ? '&lt;' : '&gt;' }}</div>
+      <router-view />
     </div>
+  </div>
 </template>
 
 <script>
-import Nav from '@/components/Nav';
+import Nav from '@/components/Nav'
 export default {
   name: 'App',
   components: {

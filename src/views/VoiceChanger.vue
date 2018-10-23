@@ -27,6 +27,7 @@ export default {
     const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
     const audioCtx = new AudioContext() // 主控台的概念
     const gainNode = audioCtx.createGain() // 增益節點 控制音量的
+    gainNode.gain.value = 1
 
     return{
       isPlaying: false,
@@ -185,7 +186,7 @@ export default {
         .timeData {
           display: block;
           width: 2px;
-          background-color: #bf8f36;
+          background-color: #36bf4b;
         }
       }
     }
