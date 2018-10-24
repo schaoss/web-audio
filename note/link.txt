@@ -9,7 +9,10 @@ Web Audio API：
  
 Pitchdetect：
  - Github https://github.com/cwilso/PitchDetect/blob/master/js/pitchdetect.js
- 
+
+Pitchshift：
+  - Github https://github.com/urtzurd/html-audio/blob/gh-pages/static/js/pitch-shifter.js
+  
 Tone.js
  - Github https://github.com/Tonejs/Tone.js
  - Official https://tonejs.github.io/

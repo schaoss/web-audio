@@ -1,18 +1,26 @@
 <template>
   <div id="app">
-    <Nav></Nav>
+    <div id="menu" v-if="isShow">
+      <Nav></Nav>
+    </div>
     <div id="content">
+      <div id="menuTrigger" @click="isShow = !isShow">{{isShow ? '&lt;' : '&gt;' }}</div>
       <router-view />
     </div>
   </div>
 </template>
 
 <script>
-import Nav from '@/components/Nav';
+import Nav from '@/components/Nav'
 export default {
   name: 'App',
   components: {
     Nav,
+  },
+  data() {
+    return {
+      isShow: false
+    }
   }
 }
 </script>
@@ -29,11 +37,28 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  display: grid;
-  grid-template-columns: 200px auto;
+  display: flex;
   height: 100vh;
 }
 #content {
-  max-height: 100vh;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  #menuTrigger {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    font-size: 25px;
+    background-color: #3692be;
+    color: #f9f9f9;
+    border-radius: 50%;
+    margin: 10px;
+    user-select: none;
+  }
+}
+#menu {
+  width: 250px;
+  height: 100vh;
 }
 </style>
