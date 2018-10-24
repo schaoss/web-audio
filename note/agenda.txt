@@ -15,7 +15,9 @@ Web Audio API (02 - 13 / 12d)
 	10. 頻譜分析
 	11. 吉他調音器
 	12. 吉他調音器2
-	13. web audio api 總結
+	13. 處理結點
+	14. 變聲器
+	15. web audio api 總結
 	
 Tone.js (14 - 23 / 10d)
  - 初探：

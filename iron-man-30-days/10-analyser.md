@@ -1,8 +1,8 @@
-# 10. Web Audio API - Analyser
+# 10. Web Audio API - 分析結點
 
 第十天，本系列文關於 Web Audio API 的部分也逐漸邁向尾聲。今天要介紹的是做頻譜分析、音檔視覺化必要的 AnalyserNode。
 
-### Analyser
+### AnalyserNode
 
 顧名思義，當然就是要玩音頻分析時用的，可以參照 [MDN](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode) 的示意圖：
 
