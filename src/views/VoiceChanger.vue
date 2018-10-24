@@ -68,41 +68,36 @@ export default {
       processor.onaudioprocess = (e) => {
         const input = e.inputBuffer.getChannelData(0);
         const output = e.outputBuffer.getChannelData(0);
-        
-        for (var i = 0; i < input.length; i++) {
-          for (i = 0; i < input.length; i++) {
-              // hann窗函數，減少洩漏
-              input[i] *= hannWindow[i];
-              // 後半資料搬移至前面
-              buffer[i] = buffer[i + this.bufferSize];
-              // 後半資料清除
-              buffer[i + this.bufferSize] = 0.0;
-          }
+    
+        for (let i = 0; i < input.length; i++) {
+            input[i] *= hannWindow[i]
 
-          // 將輸入訊號依照頻率倍率重新計算
-          const grainData = new Float32Array(this.bufferSize * 2);
-          for (let i = 0, j = 0.0;
-                i < this.bufferSize;
-                i++, j += parseFloat(this.pitchRatio)) {
+            buffer[i] = buffer[i + this.bufferSize]
+            buffer[i + this.bufferSize] = 0.0
+        }
 
-              let index = Math.floor(j) % this.bufferSize;
-              let a = input[index];
-              let b = input[(index + 1) % this.bufferSize];
-              // 利用線性插值，塞入取樣間可能的數值
-              grainData[i] += this.linearInterpolation(a, b, j % 1.0) * hannWindow[i];
-          }
+        // 將輸入訊號依照頻率倍率重新計算
+        const grainData = new Float32Array(this.bufferSize)
+        for (let i = 0, j = 0.0;
+              i < this.bufferSize;
+              i++, j += parseFloat(this.pitchRatio)) {
+            let index = Math.floor(j) % this.bufferSize
+            let a = input[index]
+            let b = input[(index + 1) % this.bufferSize]
 
-          // 利用重疊，讓聲音聽起來較連續
-          for (let i = 0; i < this.bufferSize; i += Math.round(this.bufferSize * (this.overlapRatio))) {
-            for (let j = 0; j <= this.bufferSize; j++) {
-                buffer[i + j] += grainData[j];
-            }
-          }
+            grainData[i] += this.linearInterpolation(a, b, j % 1.0) * hannWindow[i]
+        }
 
-          // 將 buffer 內前半資料丟出去
-          for (i = 0; i < this.bufferSize; i++) {
-            output[i] = buffer[i];
+        // 利用重疊，讓聲音聽起來較連續
+        for (let i = 0; i < this.bufferSize; i += Math.round(this.bufferSize * (this.overlapRatio))) {
+          for (let j = 0; j <= this.bufferSize; j++) {
+              buffer[i + j] += grainData[j]
           }
+        }
+
+        // 將 buffer 內前半資料丟出去
+        for (let i = 0; i < this.bufferSize; i++) {
+          output[i] = buffer[i]
         }
         this.timeArray = output
       }
