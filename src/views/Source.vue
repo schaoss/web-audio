@@ -144,7 +144,7 @@ export default {
             } else {
               this.source = this.audioCtx.createMediaElementSource(audio);
             }
-            this.source.connect(this.gainNode)
+            this.gainNode.connect(this.gainNode)
             break
           case "2":
             navigator.mediaDevices.getUserMedia({ audio: true, video: false })
@@ -160,6 +160,7 @@ export default {
     this.setNoteConfig()
   },
   beforeDestroy() {
+    if(this.isPlaying) this.gainNode.disconnect(this.audioCtx.destination)
     if(this.micStream) this.micStream.getAudioTracks()[0].stop()
   }
 }

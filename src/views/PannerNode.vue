@@ -19,15 +19,9 @@
         </div>
       </div>
     </div>
-    <div id="drag-area" data-role="drag-drop-container" @mouseleave="onMouseUp">
-      <div id="listener"
-        @mousedown="onMouseDown" @mousemove="onMouseMove" @mouseup="onMouseUp" @mouseleave="onMouseUp"
-        :style="{left: this.dragData.listener.x + 'px', top: this.dragData.listener.y + 'px'}"
-      > 聽者 </div>
-      <div id="source"
-        @mousedown="onMouseDown" @mousemove="onMouseMove" @mouseup="onMouseUp" @mouseleave="onMouseUp"
-        :style="{left: this.dragData.source.x + 'px', top: this.dragData.source.y + 'px'}"
-      > 音源 </div>
+    <div id="drag-area" data-role="drag-drop-container" @mousedown="onMouseDown" @mousemove="onMouseMove" @mouseup="onMouseUp" @mouseleave="onMouseUp">
+      <div id="listener" :style="{left: this.dragData.listener.x + 'px', top: this.dragData.listener.y + 'px'}"> 聽者 </div>
+      <div id="source" :style="{left: this.dragData.source.x + 'px', top: this.dragData.source.y + 'px'}"> 音源 </div>
     </div>
   </div>
 </template>
@@ -119,6 +113,9 @@ export default {
     this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
     this.gainNode.connect(this.panner)
     this.oscillator.start() // 啟動音源
+  },
+  beforeDestroy() {
+    if(this.isPlaying) this.panner.disconnect(this.audioCtx.destination)
   }
 }
 </script>
@@ -178,7 +175,7 @@ export default {
     line-height: 50px;
     font-size: 150%;
     user-select: none;
-    >div {
+    > div {
       position: absolute;
       width: 50px;
       height: 50px;
@@ -186,10 +183,10 @@ export default {
       padding: 10px;
     }
     #listener {
-      background-color: #3692BE;
+      background-color: #3692be;
     }
     #source {
-      background-color: #BF8F36;
+      background-color: #bf8f36;
     }
   }
 }

@@ -131,53 +131,56 @@ export default {
     this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
     this.gainNode.connect(this.filter)
     this.oscillator.start() // 啟動音源
+  },
+  beforeDestroy() {
+    if(this.isPlaying) this.filter.disconnect(this.audioCtx.destination)
   }
 }
 </script>
 <style lang="scss" scoped>
 #web-audio-api {
-  >button {
+  > button {
     margin: 10px;
   }
   #config {
     display: flex;
     justify-content: space-around;
     flex-direction: column;
-    >.audio-note {
+    > .audio-note {
       width: 1000px;
       margin: 15px auto;
       border: solid 1px #d9d9d9;
-      >h3 {
+      > h3 {
         text-align: left;
         margin: 10px;
-        >span {
+        > span {
           display: inline-block;
           width: 100px;
           text-align: right;
         }
       }
-      >.item {
+      > .item {
         display: flex;
         width: 800px;
         margin: 5px auto;
         padding: 10px;
-        >label {
+        > label {
           display: inline-block;
           width: 150px;
           text-align: right;
-          >span {
+          > span {
             font-weight: 600;
             display: inline-block;
             width: 50px;
             text-align: center;
           }
         }
-        >input {
+        > input {
           width: 600px;
           margin: 0 20px;
         }
-        >select {
-          margin:  0 20px;
+        > select {
+          margin: 0 20px;
         }
       }
     }

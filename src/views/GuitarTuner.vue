@@ -6,26 +6,26 @@
     <div id="config">
       <div class="audio-note">
         <h3><span>設定</span></h3>
-      <div class="item">
-        <label for="standardA4">A4 : <span>{{standardA4}}</span> </label>
-        <input type="range" min="430" max="450" step="1" id="standardA4Range" v-model="standardA4" @input="changeConfigHandler">
-      </div> 
-      <div class="item">
-        <label for="tuning">調弦法 : <span></span></label>
-        <select id="tuning" v-model="tuning" @change="changeTuningHandler">
-          <option value='standard' selected>標準</option>
-          <option value='1-step-down'>降全音</option>
-          <option value='drop-d'>Drop D</option>
-          <option value='open-e'>Open E</option>
-          <option value='open-d'>Open D</option>
-        </select>
-      </div>
-      <div class="item">
-        <label for="volume">volume : <span>{{volume}}</span> </label>
-        <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeConfigHandler">
+        <div class="item">
+          <label for="standardA4">A4 : <span>{{standardA4}}</span> </label>
+          <input type="range" min="430" max="450" step="1" id="standardA4Range" v-model="standardA4" @input="changeConfigHandler">
+        </div>
+        <div class="item">
+          <label for="tuning">調弦法 : <span></span></label>
+          <select id="tuning" v-model="tuning" @change="changeTuningHandler">
+            <option value='standard' selected>標準</option>
+            <option value='1-step-down'>降全音</option>
+            <option value='drop-d'>Drop D</option>
+            <option value='open-e'>Open E</option>
+            <option value='open-d'>Open D</option>
+          </select>
+        </div>
+        <div class="item">
+          <label for="volume">volume : <span>{{volume}}</span> </label>
+          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeConfigHandler">
+        </div>
       </div>
     </div>
-      </div>
     <div id="notes">
       <div class="note" v-for="n in noteArr" :key="n" @click="changeNoteHandler(n)">{{n}}</div>
     </div>
@@ -142,54 +142,57 @@ export default {
     this.setNoteConfig()
     this.oscillator.connect(this.gainNode)
     this.oscillator.start() // 啟動音源
+  },
+  beforeDestroy() {
+    if(this.isPlaying) this.gainNode.disconnect(this.audioCtx.destination)
   }
 }
 </script>
 
 <style lang="scss" scoped>
 #guitar-tuner {
-  >button {
+  > button {
     margin: 10px;
   }
   #config {
     display: flex;
     justify-content: space-around;
     flex-direction: column;
-    >.audio-note {
+    > .audio-note {
       width: 1000px;
       margin: 15px auto;
       border: solid 1px #d9d9d9;
-      >h3 {
+      > h3 {
         text-align: left;
         margin: 10px;
-        >span {
+        > span {
           display: inline-block;
           width: 100px;
           text-align: right;
         }
       }
-      >.item {
+      > .item {
         display: flex;
         width: 800px;
         margin: 5px auto;
         padding: 10px;
-        >label {
+        > label {
           display: inline-block;
           width: 150px;
           text-align: right;
-          >span {
+          > span {
             font-weight: 600;
             display: inline-block;
             width: 50px;
             text-align: center;
           }
         }
-        >input {
+        > input {
           width: 600px;
           margin: 0 20px;
         }
-        >select {
-          margin:  0 20px;
+        > select {
+          margin: 0 20px;
         }
       }
     }
@@ -199,13 +202,13 @@ export default {
     margin: auto;
     display: flex;
     justify-content: space-evenly;
-    >.note {
+    > .note {
       width: 10%;
       padding: 20px;
       margin: 10px;
       cursor: pointer;
       border: solid 1px #d9d9d9;
-      background-color: #f9f9f9
+      background-color: #f9f9f9;
     }
   }
 }
