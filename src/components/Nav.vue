@@ -9,6 +9,7 @@
     <router-link to="analyser">Analyser</router-link>
     <router-link to="guitar-tuner-2.0">Guitar Tuner 2.0</router-link>
     <router-link to="voice-changer">VoiceChanger</router-link>
+    <router-link to="tone">Tone</router-link>
   </div>
 </template>
 <style lang="scss">
