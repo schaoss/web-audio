@@ -11,38 +11,23 @@ import Tone from 'tone'
 export default {
   name: 'tone',
   data() {
-    const polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster()
-    const loop = new Tone.Loop(function(time){
-      console.log(time)
-      if (time % 12 < 4 ) {
-        polySynth.triggerAttackRelease(['C3', 'E4', 'G3', 'Bb4'], "8n", time)
-      } else if (time % 12 < 6 ) {
-        polySynth.triggerAttackRelease(['F2', 'A4', 'C3', 'Eb3'], "8n", time)
-      } else if (time % 12 < 8 ) {
-        polySynth.triggerAttackRelease(['C2', 'E4', 'G3', 'Bb4'], "8n", time)
-      } else if (time % 12 < 9 ) {
-        polySynth.triggerAttackRelease(['G2', 'B4', 'D4', 'F3'], "8n", time)
-      } else if (time % 12 < 10) {
-        polySynth.triggerAttackRelease(['F2', 'A4', 'C4', 'Eb4'], "8n", time)
-      } else if (time % 12 < 11) {
-        polySynth.triggerAttackRelease(['C2', 'E4', 'G3', 'Bb4'], "8n", time)
-      } else {
-        polySynth.triggerAttackRelease(['G2', 'B4', 'D4', 'F4'], "8n", time)
-      }
-    }, "4n")
-    loop.start("0m")
+    const autoWah = new Tone.AutoWah(300, 6, -30).toMaster()
+    const synth = new Tone.Synth().connect(autoWah)
+
+    autoWah.Q.value  = 6
     return {
       isPlaying: false,
-      loop
+      synth
     }
   },
   methods: {
   },
   mounted() {
-    Tone.Transport.start()
+    // const tmp = new Tone.AMOscillator("A4", "sine", "sine").toMaster()
+    // tmp.harmonicity.value = 0.5
+    // tmp.start()
   },
   beforeDestroy() {
-    Tone.Transport.stop()
   }
 }
 </script>
