@@ -135,7 +135,8 @@ export default {
     justify-content: space-around;
     flex-direction: column;
     > .audio-note {
-      width: 1000px;
+      width: 50vw;
+      min-width: 300px;
       margin: 15px auto;
       border: solid 1px #d9d9d9;
       > h3 {
@@ -149,12 +150,13 @@ export default {
       }
       > .item {
         display: flex;
-        width: 800px;
+        width: 100%;
+        max-width: 800px;
         margin: 5px auto;
         padding: 10px;
         > label {
           display: inline-block;
-          width: 150px;
+          min-width: 150px;
           text-align: right;
           > span {
             font-weight: 600;
@@ -164,7 +166,8 @@ export default {
           }
         }
         > input {
-          width: 600px;
+          width: 100%;
+          max-width: 600px;
           margin: 0 20px;
         }
         > select {

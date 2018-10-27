@@ -26,7 +26,8 @@ export default {
   max-height: 100vh;
   overflow: auto;
   .content {
-    max-width: 50vw;
+    width: 50vw;
+    min-width: 300px;
     margin: 40px auto;
     > div {
       text-align: left;
