@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Tone from 'tone';
+import Tone from 'tone'
 export default {
   name: 'tone',
   data() {
@@ -33,17 +33,16 @@ export default {
     loop.start("0m")
     return {
       isPlaying: false,
-      Tone,
       loop
     }
   },
   methods: {
   },
   mounted() {
-    this.Tone.Transport.start()
+    Tone.Transport.start()
   },
   beforeDestroy() {
-    this.Tone.Transport.stop()
+    Tone.Transport.stop()
   }
 }
 </script>
