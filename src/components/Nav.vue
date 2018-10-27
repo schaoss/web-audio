@@ -15,8 +15,11 @@
 <style lang="scss">
 #nav {
   background-color: #e9e9e9;
+  padding-top: 2px;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
+  box-sizing: border-box;
+  z-index: 5;
   a {
     display: block;
     padding: 10px;
@@ -25,12 +28,12 @@
     text-decoration: none;
     transition: all 0.3s ease-out;
     &.router-link-exact-active {
-      background-color: #fff;
+      background-color: #ffffff;
       color: #00477d;
       font-weight: 800;
     }
     &:hover {
-      background-color: #fff;
+      background-color: #ffffff;
     }
   }
 }
