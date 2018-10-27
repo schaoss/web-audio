@@ -15,21 +15,23 @@ Web Audio API (02 - 13 / 12d)
 	10. 頻譜分析
 	11. 吉他調音器
 	12. 吉他調音器2
-	13. web audio api 總結
+	13. 處理結點
+	14. 變聲器
+	15. web audio api 總結
 	
+tonal (16 - 16 / 1d)
+  16 tonal
+
 Tone.js (14 - 23 / 10d)
  - 初探：
-	14. 認識 Tone.js。Hello Tone
-	15. triggerAttackRelease / 事件監聽
-	16. Time / Scheduling
-	17. 
-	18. Visualization
-	19. 
+	17. 認識 Tone.js。Hello Tone
+	18. triggerAttackRelease / 事件監聽
+	19. Time / Scheduling
+	20. Visualization
  - 實作：
-	20. drumpad
-	21. 取樣機 ?
-	22. Synchronizing Visuals
-	23. -
+	21. drumpad
+	22. 取樣機 ?
+	23. Synchronizing Visuals
  
 Scribbletune.js (24- 27 / 4d)
  - 初探：

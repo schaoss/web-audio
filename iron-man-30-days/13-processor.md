@@ -1,4 +1,4 @@
-# 13. Web Audio API - ScriptProcessorNode
+# 13. Web Audio API - 處理結點
 
 不知不覺來到第十三天，在這段時間我們一起認識了許多 Web Audio API 的特色功能，也在過程中做出不少小玩具。如果目前玩過的功能都無法滿足讀者您，那最後這個就是你需要的。
 

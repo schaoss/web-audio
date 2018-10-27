@@ -51,6 +51,11 @@ export default new Router({
       path: '/voice-changer',
       name: 'VoiceChanger',
       component: () => import('./views/VoiceChanger.vue')
+    },
+    {
+      path: '/tone',
+      name: 'Tone',
+      component: () => import('./views/Tone.vue')
     }
   ]
 })

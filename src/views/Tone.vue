@@ -2,27 +2,32 @@
   <div id="tone">
     <h1> Tone.js </h1>
     <div class="content">
-      <button @clicl="clickHandler"></button>
     </div>
   </div>
 </template>
 
 <script>
-import Tone from 'tone';
+import Tone from 'tone'
 export default {
   name: 'tone',
   data() {
-    const synth = new Tone.Synth().toMaster()
+    const autoWah = new Tone.AutoWah(300, 6, -30).toMaster()
+    const synth = new Tone.Synth().connect(autoWah)
+
+    autoWah.Q.value  = 6
     return {
+      isPlaying: false,
       synth
     }
   },
   methods: {
-    clickHandler() {
-      this.synth.triggerAttackRelease('C4', '8n')
-    }
   },
   mounted() {
+    // const tmp = new Tone.AMOscillator("A4", "sine", "sine").toMaster()
+    // tmp.harmonicity.value = 0.5
+    // tmp.start()
+  },
+  beforeDestroy() {
   }
 }
 </script>
