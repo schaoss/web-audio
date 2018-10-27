@@ -117,12 +117,12 @@ export default {
           this.dragData[this.draggingElem].x = e.clientX - 25
           this.dragData[this.draggingElem].y = e.clientY - 25
           this.setNoteConfig()
+          e.preventDefault()
         }, 
         mouseup: () => {
           this.draggingElem = ''
         },
         touchstart: e => {
-          console.log(e)
           const id = e.target.id
           if(id === 'source' || id === 'listener') this.draggingElem = e.target.id
         },
@@ -133,6 +133,7 @@ export default {
           this.dragData[this.draggingElem].x = e.touches[0].pageX - 25
           this.dragData[this.draggingElem].y = e.touches[0].pageY - 25
           this.setNoteConfig()
+          e.preventDefault()
         },
         touchend: () => {
           this.draggingElem = ''
