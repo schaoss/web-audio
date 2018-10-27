@@ -2,7 +2,7 @@
   <div id="app">
     <div id="mask" :class="{'show': isShow}"></div>
     <div id="menu" :class="{'show': isShow}">
-      <Nav></Nav>
+      <Nav @click.native="isShow=false"></Nav>
     </div>
     <div id="content">
       <div id="menuTrigger" @click="isShow = !isShow">{{isShow ? '&lt;' : '&gt;' }}</div>
@@ -57,7 +57,7 @@ html {
     margin: 10px;
     user-select: none;
     transition: all 0.5s;
-    z-index: 1;
+    z-index: 10;
   }
 }
 #menu {
@@ -66,6 +66,7 @@ html {
   position: absolute;
   left: -250px;
   transition: all 0.5s;
+  z-index: 5;
   &.show {
     left: 0;
   }
@@ -76,10 +77,11 @@ html {
   height: 100vh;
   background-color: rgba(#000000, 0.5);
   opacity: 0;
-  transition: all 0.5s;
+  transition: opacity 0.5s;
   z-index: -1;
   &.show {
     opacity: 1;
+    z-index: 1;
   }
 }
 </style>
