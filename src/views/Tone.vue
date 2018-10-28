@@ -2,32 +2,55 @@
   <div id="tone">
     <h1> Tone.js </h1>
     <div class="content">
+      <h2>{{getChord}}</h2>
+      <h3>{{notes[0]}}, {{notes[1]}}, {{notes[2]}}, {{notes[3]}}</h3>
+      <button @click="clickHandler"> Play / Pause</button>
     </div>
   </div>
 </template>
 
 <script>
 import Tone from 'tone'
+import { chord } from "tonal-detect"
 export default {
   name: 'tone',
   data() {
-    const autoWah = new Tone.AutoWah(300, 6, -30).toMaster()
-    const synth = new Tone.Synth().connect(autoWah)
-
-    autoWah.Q.value  = 6
+    const noteArr = ["C3", "D3", "E3", "F3", "G3", "A4", "C4", "D4", "E4", "F4", "G4", "C5"]
+    const polySynth = new Tone.PolySynth(6, Tone.Synth).toMaster()
+    const pattern = new Tone.Pattern((time, note) => {
+      polySynth.triggerAttackRelease(note, "1n")
+      this.$set(this.notes, parseInt(time * 2 % 4), note)
+    }, noteArr, "randomOnce")
     return {
       isPlaying: false,
-      synth
+      notes: ['-', '-', '-', '-'],
+      Tone,
+      pattern,
     }
   },
   methods: {
+    clickHandler() {
+      if (this.isPlaying) {
+        this.pattern.stop()
+        this.notes = ['-', '-', '-', '-']
+      } else {
+        this.pattern.start()
+      }
+      this.isPlaying = !(this.isPlaying)
+    }
+  },
+  computed: {
+    getChord() {
+      if (this.notes.every(note => note !== '-')) {
+        return chord(this.notes)[0] || '-'
+      }else return '-'
+    }
   },
   mounted() {
-    // const tmp = new Tone.AMOscillator("A4", "sine", "sine").toMaster()
-    // tmp.harmonicity.value = 0.5
-    // tmp.start()
+    this.Tone.Transport.start()
   },
   beforeDestroy() {
+    this.Tone.Transport.stop()
   }
 }
 </script>
