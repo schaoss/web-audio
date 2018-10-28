@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "tonal": "^2.0.0",
+    "tonal-detect": "^2.0.0",
     "tone": "^0.12.80",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",

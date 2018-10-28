@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import audioUnlock from '../lib/audioUnlock'
 export default {
   name: "Source",
   data() {
@@ -156,6 +157,7 @@ export default {
     }
   },
   mounted() {
+    audioUnlock(this.audioCtx)
     this.setNoteConfig()
   },
   beforeDestroy() {
