@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import audioUnlock from '../lib/audioUnlock'
 export default {
   name: "VoiceChanger",
   data() {
@@ -116,6 +117,7 @@ export default {
     }
   },
   mounted() {
+    audioUnlock(this.audioCtx)
     navigator.mediaDevices.getUserMedia({ audio: true, video: false })
     .then(this.getUserMic)
     .catch(e => console.log(e))

@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import audioUnlock from '../lib/audioUnlock'
 export default {
   data() {
     const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
@@ -127,6 +128,7 @@ export default {
     }
   },
   mounted() {
+    audioUnlock(this.audioCtx)
     this.setNoteConfig()
     this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
     this.gainNode.connect(this.filter)

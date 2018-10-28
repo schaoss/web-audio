@@ -27,8 +27,9 @@
 </template>
 
 <script>
+/* eslint-disable */
+import audioUnlock from '../lib/audioUnlock'
 export default {
-  /* eslint-disable */
   data() {
     const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
     const audioCtx = new AudioContext() // 主控台的概念
@@ -142,6 +143,7 @@ export default {
     }
   },
   mounted() {
+    audioUnlock(this.audioCtx)
     this.dragData = {
       listener: {
         x: window.innerWidth / 2 + 20,

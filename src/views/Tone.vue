@@ -12,6 +12,8 @@
 <script>
 import Tone from 'tone'
 import { chord } from "tonal-detect"
+
+import audioUnlock from '../lib/audioUnlock'
 export default {
   name: 'tone',
   data() {
@@ -47,6 +49,7 @@ export default {
     }
   },
   mounted() {
+    audioUnlock(this.Tone.context)
     this.Tone.Transport.start()
   },
   beforeDestroy() {

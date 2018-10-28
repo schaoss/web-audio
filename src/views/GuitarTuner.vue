@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import audioUnlock from '../lib/audioUnlock'
 export default {
   name: 'GuitarTuner',
   data() {
@@ -139,6 +140,7 @@ export default {
     }
   },
   mounted() {
+    audioUnlock(this.audioCtx)
     this.setNoteConfig()
     this.oscillator.connect(this.gainNode)
     this.oscillator.start() // 啟動音源
