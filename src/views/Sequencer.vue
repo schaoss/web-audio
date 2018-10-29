@@ -15,6 +15,9 @@
         <div class="hihat">
           <div v-for="i in 16" :key="`hihat_${i}`" :class="{'item': true, 'active': !!sequencer.drum.hihat[i-1] }" @click="$set(sequencer.drum.hihat, i-1, !sequencer.drum.hihat[i-1])" />
         </div>
+        <div class="snare">
+          <div v-for="i in 16" :key="`snare_${i}`" :class="{'item': true, 'active': !!sequencer.drum.snare[i-1] }" @click="$set(sequencer.drum.snare, i-1, !sequencer.drum.snare[i-1])" />
+        </div>
         <div class="tomL">
           <div v-for="i in 16" :key="`tomL_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomL[i-1] }" @click="$set(sequencer.drum.tomL, i-1, !sequencer.drum.tomL[i-1])" />
         </div>
@@ -34,7 +37,10 @@ export default {
   name: 'sequencer',
   data() {
     const kick = new Tone.MembraneSynth({
-      octaves: 3
+      octaves: 3,
+      envelope  : {
+        sustain: 0.1,
+      }
     }).toMaster()
     const tom = new Tone.MembraneSynth({
       octaves: 1
@@ -44,21 +50,41 @@ export default {
         sustain  : 0.0001
       }
     }).toMaster()
+    const snare = new Tone.NoiseSynth({
+			volume: -12,
+			noise: {
+				type: 'pink',
+			},
+			envelope: {
+				attack: 0.001,
+				decay: 0.4,
+				sustain: 0.1,
+				release: 0.3,
+			},
+		}).toMaster()
+    
+    kick.volume.value = 6
+    hihat.volume.value = -2
+    snare.volume.value = -2
+    tom.volume.value = 0
+
     Tone.Transport.scheduleRepeat((time) => {
-      let i = Math.round((this.Tone.Transport.getSecondsAtTime() * (this.BPM / 30)) % 16)
+      let i = Math.round((this.Tone.Transport.getSecondsAtTime() * (this.BPM / 15)) % 16)
       this.index = i
-      const { drum: { kick, tomL, tomH, hihat } } = this.sequencer
+      const { drum: { kick, tomL, snare, tomH, hihat } } = this.sequencer
       if(kick[i]) this.kick.triggerAttackRelease("C2", "4n", time)
-      if(hihat[i]) this.hihat.triggerAttackRelease("8n", time)
-      if(tomL[i]) this.tom.triggerAttackRelease("A2", "4n", time)
-      if(tomH[i]) this.tom.triggerAttackRelease("E3", "4n", time)
-    }, "8n")
+      if(hihat[i]) this.hihat.triggerAttackRelease("16n", time)
+      if(snare[i]) this.snare.triggerAttackRelease("16n", time)
+      if(tomL[i]) this.tom.triggerAttackRelease("A2", "8n", time)
+      if(tomH[i]) this.tom.triggerAttackRelease("E3", "8n", time)
+    }, "16n")
     const defaultItem = {
         drum: {
           kick: new Array(16),
+          hihat: new Array(16),
+          snare: new Array(16),
           tomL: new Array(16),
           tomH: new Array(16),
-          hihat: new Array(16)
         },
         lead: {
           mono: [],
@@ -72,8 +98,9 @@ export default {
     return {
       Tone,
       kick,
-      tom,
       hihat,
+      snare,
+      tom,
       isPlaying: false,
       BPM: 120,
       index: -1,
@@ -101,8 +128,10 @@ export default {
   mounted() {
     audioUnlock(this.Tone.context)
   },
-  beforeDestroy() {
+  updated() {
     localStorage.setItem("sequencer", JSON.stringify(this.sequencer))
+  },
+  beforeDestroy() {
     this.Tone.Transport.stop()
   }
 }
