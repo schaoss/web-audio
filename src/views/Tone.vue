@@ -53,6 +53,7 @@ export default {
     this.Tone.Transport.start()
   },
   beforeDestroy() {
+    this.pattern.stop()
     this.Tone.Transport.stop()
   }
 }

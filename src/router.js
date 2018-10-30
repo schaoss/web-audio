@@ -56,6 +56,11 @@ export default new Router({
       path: '/tone',
       name: 'Tone',
       component: () => import('./views/Tone.vue')
+    },
+    {
+      path: '/sequencer',
+      name: 'Sequencer',
+      component: () => import('./views/Sequencer.vue')
     }
   ]
 })
