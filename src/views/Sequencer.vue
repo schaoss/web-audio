@@ -1,7 +1,6 @@
 <template>
   <div id="sequencer">
-    <h1> Sequencer </h1>
-    <div class="content">
+    <div id="config">
       <button @click="clickHandler"> Play / Pause</button>
     </div>
     <div id="pad">
@@ -31,7 +30,7 @@
 
 <script>
 import Tone from 'tone'
-
+import Snare from '../lib/snare.js'
 import audioUnlock from '../lib/audioUnlock'
 export default {
   name: 'sequencer',
@@ -42,41 +41,34 @@ export default {
         sustain: 0.1,
       }
     }).toMaster()
-    const tom = new Tone.MembraneSynth({
+    const tomL = new Tone.MembraneSynth({
+      octaves: 1
+    }).toMaster()
+    const tomH = new Tone.MembraneSynth({
       octaves: 1
     }).toMaster()
     const hihat = new Tone.NoiseSynth({
+      playbackRate: 2,
       envelope  : {
-        sustain  : 0.0001
+        sustain  : 0.0001,
       }
     }).toMaster()
-    const snare = new Tone.NoiseSynth({
-			volume: -12,
-			noise: {
-				type: 'pink',
-			},
-			envelope: {
-				attack: 0.001,
-				decay: 0.4,
-				sustain: 0.1,
-				release: 0.3,
-			},
-		}).toMaster()
+    const snare = new Snare({volume: -6})
     
     kick.volume.value = 6
     hihat.volume.value = -2
-    snare.volume.value = -2
-    tom.volume.value = 0
+    tomL.volume.value = 0
+    tomH.volume.value = 0
 
     Tone.Transport.scheduleRepeat((time) => {
       let i = Math.round((this.Tone.Transport.getSecondsAtTime() * (this.BPM / 15)) % 16)
       this.index = i
-      const { drum: { kick, tomL, snare, tomH, hihat } } = this.sequencer
+      const { drum: { kick, tomL, tomH, snare, hihat } } = this.sequencer
       if(kick[i]) this.kick.triggerAttackRelease("C2", "4n", time)
       if(hihat[i]) this.hihat.triggerAttackRelease("16n", time)
-      if(snare[i]) this.snare.triggerAttackRelease("16n", time)
-      if(tomL[i]) this.tom.triggerAttackRelease("A2", "8n", time)
-      if(tomH[i]) this.tom.triggerAttackRelease("E3", "8n", time)
+      if(snare[i]) this.snare.trigger(time)
+      if(tomL[i]) this.tomL.triggerAttackRelease("G2", "4n", time)
+      if(tomH[i]) this.tomH.triggerAttackRelease("G#2", "4n", time)
     }, "16n")
     const defaultItem = {
         drum: {
@@ -95,12 +87,14 @@ export default {
         }
       }
     const sequencer = localStorage.getItem("sequencer") ? JSON.parse(localStorage.getItem("sequencer")) : defaultItem
+
     return {
       Tone,
       kick,
       hihat,
       snare,
-      tom,
+      tomL,
+      tomH,
       isPlaying: false,
       BPM: 120,
       index: -1,
@@ -141,9 +135,8 @@ export default {
 #sequencer {
   max-height: 100vh;
   overflow: auto;
-  .content {
-    max-width: 50vw;
-    margin: 40px auto;
+  #config {
+    margin: 20px auto;
   }
   #pad {
     #timeLine {
@@ -151,15 +144,16 @@ export default {
       flex-flow: row nowrap;
       justify-content: space-around;
       align-content: center;
-      width: 100vw;
+      width: 100%;
       .time {
-        width: 50px;
+        width: 6%;
         height: 5px;
         background-color: #e9e9e9;
-        margin: 5px;
+        margin: 5px 0;
+        border-radius: 2px;
       }
       & .active {
-        background-color: #efd915;
+        background-color: #ff5733;
       }
     }
     .set {
@@ -168,13 +162,13 @@ export default {
         flex-flow: row nowrap;
         justify-content: space-around;
         align-content: center;
-        width: 100vw;
+        width: 100%;
         .item {
-          width: 25px;
-          height: 25px;
+          width: 6%;
+          height: 0;
+          padding-top: 6%;
           background-color: #e9e9e9;
-          margin: 5px;
-          border-radius: 25%;
+          border-radius: 10%;
         }
         & .active {
           background-color: #efd915;
