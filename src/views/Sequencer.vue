@@ -10,24 +10,24 @@
         <div v-for="i in 16" :key="`time_${i}`" :class="{'time': true, 'active': index === i-1 }" />
       </div>
       <div id="drum" class="set">
-        <div class="kick">
-          <div v-for="i in 16" :key="`kick_${i}`" :class="{'item': true, 'active': !!sequencer.drum.kick[i-1] }" @click="$set(sequencer.drum.kick, i-1, !sequencer.drum.kick[i-1])" />
-        </div>
-        <div class="hihat">
-          <div v-for="i in 16" :key="`hihat_${i}`" :class="{'item': true, 'active': !!sequencer.drum.hihat[i-1] }" @click="$set(sequencer.drum.hihat, i-1, !sequencer.drum.hihat[i-1])" />
-        </div>
-        <div class="snare">
-          <div v-for="i in 16" :key="`snare_${i}`" :class="{'item': true, 'active': !!sequencer.drum.snare[i-1] }" @click="$set(sequencer.drum.snare, i-1, !sequencer.drum.snare[i-1])" />
-        </div>
-        <div class="tomL">
-          <div v-for="i in 16" :key="`tomL_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomL[i-1] }" @click="$set(sequencer.drum.tomL, i-1, !sequencer.drum.tomL[i-1])" />
-        </div>
-        <div class="tomM">
-          <div v-for="i in 16" :key="`tomM_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomM[i-1] }" @click="$set(sequencer.drum.tomM, i-1, !sequencer.drum.tomM[i-1])" />
-        </div>
-        <div class="tomH">
-          <div v-for="i in 16" :key="`tomH_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomH[i-1] }" @click="$set(sequencer.drum.tomH, i-1, !sequencer.drum.tomH[i-1])" />
-        </div>
+        <ul class="kick">
+          <li v-for="i in 16" :key="`kick_${i}`" :class="{'item': true, 'active': !!sequencer.drum.kick[i-1] }" @click="$set(sequencer.drum.kick, i-1, !sequencer.drum.kick[i-1])" />
+        </ul>
+        <ul class="hihat">
+          <li v-for="i in 16" :key="`hihat_${i}`" :class="{'item': true, 'active': !!sequencer.drum.hihat[i-1] }" @click="$set(sequencer.drum.hihat, i-1, !sequencer.drum.hihat[i-1])" />
+        </ul>
+        <ul class="snare">
+          <li v-for="i in 16" :key="`snare_${i}`" :class="{'item': true, 'active': !!sequencer.drum.snare[i-1] }" @click="$set(sequencer.drum.snare, i-1, !sequencer.drum.snare[i-1])" />
+        </ul>
+        <ul class="tomL">
+          <li v-for="i in 16" :key="`tomL_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomL[i-1] }" @click="$set(sequencer.drum.tomL, i-1, !sequencer.drum.tomL[i-1])" />
+        </ul>
+        <ul class="tomM">
+          <li v-for="i in 16" :key="`tomM_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomM[i-1] }" @click="$set(sequencer.drum.tomM, i-1, !sequencer.drum.tomM[i-1])" />
+        </ul>
+        <ul class="tomH">
+          <li v-for="i in 16" :key="`tomH_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomH[i-1] }" @click="$set(sequencer.drum.tomH, i-1, !sequencer.drum.tomH[i-1])" />
+        </ul>
       </div>
     </div>
   </div>
@@ -225,8 +225,9 @@ export default {
 <style lang="scss" scoped>
 #sequencer {
   background-color: #222222;
+  width: 100vw;
   height: 100vh;
-  overflow: auto;
+  overflow: hidden;
   #config {
     margin: 20px auto;
     display: inline-flex;
@@ -268,27 +269,53 @@ export default {
       }
     }
     .set {
-      > div {
-        display: inline-flex;
-        flex-flow: row nowrap;
+      &#drum {
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#efd915+0,fccc6c+100 */
+        background: rgb(239, 217, 21); /* Old browsers */
+        background: -moz-linear-gradient(
+          top,
+          rgba(239, 217, 21, 1) 0%,
+          rgba(252, 204, 108, 1) 100%
+        ); /* FF3.6-15 */
+        background: -webkit-linear-gradient(
+          top,
+          rgba(239, 217, 21, 1) 0%,
+          rgba(252, 204, 108, 1) 100%
+        ); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(
+          to bottom,
+          rgba(239, 217, 21, 1) 0%,
+          rgba(252, 204, 108, 1) 100%
+        ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#efd915', endColorstr='#fccc6c',GradientType=0 ); /* IE6-9 */
+      }
+      > ul {
+        display: flex;
         justify-content: space-around;
-        align-content: center;
-        width: 100%;
-        .item {
-          margin: 1px;
-          width: 6vw;
-          height: 6vw;
+        padding-inline-start: 0;
+        margin-block-start: 0;
+        margin-block-end: 0;
+        li {
+          display: block;
+          width: 100%;
+          position: relative;
+          box-sizing: border-box;
           background-color: #e9e9e9;
+          &:hover {
+            background-color: #d9d9d9;
+          }
+        }
+        li:after {
+          content: '';
+          border: 1px solid #d9d9d9;
           border-radius: 10%;
+          display: block;
+          width: 100%;
+          padding-top: 100%;
           cursor: pointer;
         }
         & .active {
-          background-color: #efd915;
-          @for $i from 1 through 16 {
-            &:nth-child(#{$i}) {
-              filter: brightness(0.8 + $i / 10);
-            }
-          }
+          opacity: 0;
         }
       }
     }
