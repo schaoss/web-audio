@@ -63,7 +63,7 @@ export default {
         sustain  : 0.0001,
       }
     }).toMaster()
-    const snare = new Snare({volume: -6})
+    const snare = new Snare({volume: -6}).toMaster()
     
     kick.volume.value = 6
     hihat.volume.value = -2
@@ -73,8 +73,9 @@ export default {
 
     // 循環撥放設定
     Tone.Transport.scheduleRepeat((time) => {
-      let i = Math.round((this.Tone.Transport.getSecondsAtTime() * (this.BPM / 15)) % 16)
+      let i = Math.round(this.Tone.Transport.getSecondsAtTime() * (this.BPM / 15) % 16)
       this.index = i
+      console.log(i)
       const { 
         drum: { 
           kick = new Array(16),
@@ -284,11 +285,6 @@ export default {
         }
         & .active {
           background-color: #efd915;
-          @for $i from 1 through 16 {
-            &:nth-child(#{$i}) {
-              filter: brightness(0.8 + $i / 10);
-            }
-          }
         }
       }
     }

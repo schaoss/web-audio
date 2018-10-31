@@ -7,7 +7,7 @@ export default class Snare {
   constructor({ volume }) {
     const lowPass = new Filter({
       frequency: 11000
-    }).toMaster()
+    })
 
     const noise = new NoiseSynth({
       volume: volume,
@@ -17,9 +17,9 @@ export default class Snare {
       },
       envelope: {
         attack: 0.001,
-        decay: 0.13,
+        decay: 0.15,
         sustain: 0.0001,
-        release: 0.03
+        release: 0.05
       }
     }).connect(lowPass)
 
@@ -35,15 +35,23 @@ export default class Snare {
         release: 0.08,
         releaseCurve: 'exponential'
       }
-    }).toMaster()
+    })
 
     this.noise = noise
     this.poly = poly
     this.lpf = lowPass
+    return this
   }
 
   trigger(time) {
     this.noise.triggerAttack(time)
     this.poly.triggerAttackRelease(['C2', 'D#2', 'G2'], '16n', time)
+    return this
+  }
+
+  toMaster() {
+    this.noise.toMaster()
+    this.poly.toMaster()
+    return this
   }
 }
