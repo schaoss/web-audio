@@ -24,7 +24,7 @@ export default class Snare {
     }).connect(lowPass)
 
     const poly = new PolySynth(6, Synth, {
-      volume: volume,
+      volume: volume + 6,
       oscillator: {
         partials: [0, 2, 3, 4]
       },
