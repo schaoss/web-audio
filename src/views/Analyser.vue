@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import audioUnlock from '../lib/audioUnlock'
 export default {
   name: "Analyser",
   data() {
@@ -74,6 +75,7 @@ export default {
     }
   },
   mounted() {
+    audioUnlock(this.audioCtx)
     navigator.mediaDevices.getUserMedia({ audio: true, video: false })
     .then(this.getUserMic)
     .catch(e => console.log(e))
@@ -93,7 +95,8 @@ export default {
     justify-content: space-around;
     flex-direction: column;
     > .audio-note {
-      width: 1000px;
+      width: 50vw;
+      min-width: 300px;
       margin: 15px auto;
       border: solid 1px #d9d9d9;
       .result {

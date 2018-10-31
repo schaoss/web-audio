@@ -7,15 +7,16 @@
 歡迎您與我一同踏上這趟旅程，讓我們於科技與藝術的交會處相逢，一起在音樂中肆意漫遊。
 
 [Live Demo](https://schaoss.github.io/web-audio/)
-![audio image](https://svgsilh.com/svg/33908-795548.svg)
+![audio image](https://i.imgur.com/5oewowO.png)
 
-## 2019 iT邦幫忙 鐵人賽
+## 2019 iT 邦幫忙 鐵人賽
 
 本專案為參加鐵人賽的程式部分；每篇文章皆可搭配當日的 branch 看程式範例。
 
 ![iron-man](https://ithelp.ithome.com.tw/images/ironman/10th/kv-bg-content.png)
 
 參賽文章在[這裡](https://ithelp.ithome.com.tw/users/20111380/ironman/1783)。
+
 ## 執行專案
 
 ```
