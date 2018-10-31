@@ -1,10 +1,10 @@
-# 15. Web Audio API - 總結
+# 15. Web Audio API - 總整理
 
 不知不覺這旅程也到一半了，讓我們稍微回顧一下目前我們聊到的東西吧。
 
 [Live Demo](https://schaoss.github.io/web-audio)
 
-![](https://i.imgur.com/5oewowO.png)
+![banner](https://i.imgur.com/5oewowO.png)
 
 在開始之前，讀者您需要準備好開發環境，並對 Javascript 的語法、特性有基礎的認識，才能透過 Javascript 對音樂資料做處理。
 
@@ -18,9 +18,9 @@
 - [Web Audio API - 立體音效](https://ithelp.ithome.com.tw/articles/10204012)
 - [Web Audio API - 3D 音源計算](https://ithelp.ithome.com.tw/articles/10204335)
 - [Web Audio API - 音源 Part.1](https://ithelp.ithome.com.tw/articles/10204660)
-- [Web Audio API - 音源 Part.2]()
-- [Web Audio API - 分析結點]()
-- [Web Audio API - 處理結點]()
+- [Web Audio API - 音源 Part.2](https://ithelp.ithome.com.tw/articles/10204983)
+- [Web Audio API - 分析結點](https://ithelp.ithome.com.tw/articles/10205296)
+- [Web Audio API - 處理結點](https://ithelp.ithome.com.tw/articles/10206210)
 
 ![result](https://i.imgur.com/WAv7DZf.gif)
 
@@ -28,9 +28,9 @@
 
 - [吉他定音器 Part.1](https://ithelp.ithome.com.tw/articles/10203302)
 - [吉他定音器 Part.2](https://ithelp.ithome.com.tw/articles/10203618)
-- [吉他調音器 Part.1]()
-- [吉他調音器 Part.2]()
-- [變聲器]()
+- [吉他調音器 Part.1](https://ithelp.ithome.com.tw/articles/10205612)
+- [吉他調音器 Part.2](https://ithelp.ithome.com.tw/articles/10205911)
+- [變聲器](https://ithelp.ithome.com.tw/articles/10206570)
 
 當然，除了這些之外，Web Audio API 還有許多可玩又實用的功能例如：
 
