@@ -133,9 +133,12 @@ export default {
     poly.set("volume", 2);
 
     // 循環撥放設定
-    Tone.Transport.bpm.value = bpm
+    const BPM = parseInt(bpm)
+    let i = 0
+    
+    Tone.Transport.bpm.value = BPM
     Tone.Transport.scheduleRepeat((time) => {
-      let i = Math.round((Tone.Transport.getSecondsAtTime() * (this.BPM / 15)) % 16)
+      i = ++i % 16
       this.index = i
       const { 
         drum: { 
@@ -192,7 +195,7 @@ export default {
     return {
       sequencer,
       defaultSequencer,
-      BPM: bpm,
+      BPM,
       kick,
       hihat,
       snare,
