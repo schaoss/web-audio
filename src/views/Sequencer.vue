@@ -59,24 +59,24 @@ export default {
       //鼓機
       const dArr = d.split(/-/)
       const drum = {
-          kick: dArr[0] ? Number.parseInt(dArr[0], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          hihat: dArr[1] ? Number.parseInt(dArr[1], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          snare: dArr[2] ? Number.parseInt(dArr[2], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          tomL: dArr[3] ? Number.parseInt(dArr[3], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          tomM: dArr[4] ? Number.parseInt(dArr[4], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          tomH: dArr[5] ? Number.parseInt(dArr[5], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+          kick: this.getInitQueryData(dArr[0]),
+          hihat: this.getInitQueryData(dArr[1]),
+          snare: this.getInitQueryData(dArr[2]),
+          tomL: this.getInitQueryData(dArr[3]),
+          tomM: this.getInitQueryData(dArr[4]),
+          tomH: this.getInitQueryData(dArr[5]),
       }
 
       //旋律
       const lArr = l.split(/-/)
       const lead = [
-        lArr[0] ? Number.parseInt(lArr[0], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[1] ? Number.parseInt(lArr[1], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[2] ? Number.parseInt(lArr[2], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[3] ? Number.parseInt(lArr[3], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[4] ? Number.parseInt(lArr[4], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[5] ? Number.parseInt(lArr[5], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[6] ? Number.parseInt(lArr[6], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+        this.getInitQueryData(lArr[0]),
+        this.getInitQueryData(lArr[1]),
+        this.getInitQueryData(lArr[2]),
+        this.getInitQueryData(lArr[3]),
+        this.getInitQueryData(lArr[4]),
+        this.getInitQueryData(lArr[5]),
+        this.getInitQueryData(lArr[6]),
       ]
 
       return {
@@ -87,7 +87,6 @@ export default {
         }
       }
     })()
-
     //建立樂器
     const kick = new Tone.MembraneSynth({
       octaves: 3,
@@ -141,12 +140,12 @@ export default {
       const i = this.index
       const { 
         drum: { 
-          kick = new Array(16).fill(0),
-          tomL = new Array(16).fill(0),
-          tomM = new Array(16).fill(0),
-          tomH = new Array(16).fill(0),
-          snare = new Array(16).fill(0),
-          hihat = new Array(16).fill(0)
+          kick = this.getEmptyArray(16),
+          tomL = this.getEmptyArray(16),
+          tomM = this.getEmptyArray(16),
+          tomH = this.getEmptyArray(16),
+          snare = this.getEmptyArray(16),
+          hihat = this.getEmptyArray(16),
         },
         lead
       } = this.sequencer
@@ -170,21 +169,21 @@ export default {
     // 空資料 for reset
     const defaultSequencer = {
         drum: {
-          kick: new Array(16).fill(0),
-          hihat: new Array(16).fill(0),
-          snare: new Array(16).fill(0),
-          tomL: new Array(16).fill(0),
-          tomM: new Array(16).fill(0),
-          tomH: new Array(16).fill(0),
+          kick: this.getEmptyArray(16),
+          hihat: this.getEmptyArray(16),
+          snare: this.getEmptyArray(16),
+          tomL: this.getEmptyArray(16),
+          tomM: this.getEmptyArray(16),
+          tomH: this.getEmptyArray(16),
         },
         lead: [
-          new Array(16).fill(0),
-          new Array(16).fill(0),
-          new Array(16).fill(0),
-          new Array(16).fill(0),
-          new Array(16).fill(0),
-          new Array(16).fill(0),
-          new Array(16).fill(0),
+          this.getEmptyArray(16),
+          this.getEmptyArray(16),
+          this.getEmptyArray(16),
+          this.getEmptyArray(16),
+          this.getEmptyArray(16),
+          this.getEmptyArray(16),
+          this.getEmptyArray(16),
         ],
         bass: {
           mono: []
@@ -247,8 +246,17 @@ export default {
         ]
       }
     },
+    getEmptyArray(length) {
+      return new Array(length).fill(0)
+    },
     getRandomArray(length) {
-      return new Array(length).fill(0).map(() => Math.random() > 0.80)
+      return this.getEmptyArray(length).map(() => Math.random() > 0.80)
+    },
+    getHexQueryString(arr) {
+      return Number.parseInt(arr.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0)
+    },
+    getInitQueryData(hexStr) {
+      return hexStr ? Number.parseInt(hexStr, 16).toString(2).padStart(16).split('').map(i => ~~i) : this.getEmptyArray(16)
     },
     play() {
       this.isPlaying = true
@@ -276,15 +284,15 @@ export default {
       handler(v) {
         const { drum, lead, bass } = v
         const d = [
-          Number.parseInt(drum.kick.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0),
-          Number.parseInt(drum.hihat.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0),
-          Number.parseInt(drum.snare.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0),
-          Number.parseInt(drum.tomL.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0),
-          Number.parseInt(drum.tomM.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0),
-          Number.parseInt(drum.tomH.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0)
+          this.getHexQueryString(drum.kick),
+          this.getHexQueryString(drum.hihat),
+          this.getHexQueryString(drum.snare),
+          this.getHexQueryString(drum.tomL),
+          this.getHexQueryString(drum.tomM),
+          this.getHexQueryString(drum.tomH),
         ].join('-')
         const l = lead.map(row => 
-          Number.parseInt(row.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0)
+          this.getHexQueryString(row)
         ).join('-')
         const { bpm = 120 } = this.$route.query
         this.$router.replace({path: '/sequencer', query: { bpm, d, l }})
