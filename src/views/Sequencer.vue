@@ -53,6 +53,40 @@ import audioUnlock from '../lib/audioUnlock'
 export default {
   name: 'sequencer',
   data() {
+    //取得前一次的狀態
+    const { bpm = 120, d = '', l = '' } = this.$route.query
+    const sequencer = (() => {
+      //鼓機
+      const dArr = d.split(/-/)
+      const drum = {
+          kick: dArr[0] ? Number.parseInt(dArr[0], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+          hihat: dArr[1] ? Number.parseInt(dArr[1], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+          snare: dArr[2] ? Number.parseInt(dArr[2], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+          tomL: dArr[3] ? Number.parseInt(dArr[3], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+          tomM: dArr[4] ? Number.parseInt(dArr[4], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+          tomH: dArr[5] ? Number.parseInt(dArr[5], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+      }
+
+      //旋律
+      const lArr = l.split(/-/)
+      const lead = [
+        lArr[0] ? Number.parseInt(lArr[0], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+        lArr[1] ? Number.parseInt(lArr[1], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+        lArr[2] ? Number.parseInt(lArr[2], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+        lArr[3] ? Number.parseInt(lArr[3], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+        lArr[4] ? Number.parseInt(lArr[4], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+        lArr[5] ? Number.parseInt(lArr[5], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+        lArr[6] ? Number.parseInt(lArr[6], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
+      ]
+
+      return {
+        drum,
+        lead,
+        bass: {
+          mono: []
+        }
+      }
+    })()
 
     //建立樂器
     const kick = new Tone.MembraneSynth({
@@ -90,6 +124,7 @@ export default {
       }
     }).toMaster()
 
+    // 音量
     kick.volume.value = 6
     hihat.volume.value = -2
     tomL.volume.value = 0
@@ -98,6 +133,7 @@ export default {
     poly.set("volume", 2);
 
     // 循環撥放設定
+    Tone.Transport.bpm.value = bpm
     Tone.Transport.scheduleRepeat((time) => {
       let i = Math.round((Tone.Transport.getSecondsAtTime() * (this.BPM / 15)) % 16)
       this.index = i
@@ -129,7 +165,7 @@ export default {
       if(lead[6][i]) this.poly.triggerAttackRelease("C5", "16n", time)
     }, "16n")
 
-    // 空資料
+    // 空資料 for reset
     const defaultSequencer = {
         drum: {
           kick: new Array(16).fill(0),
@@ -152,42 +188,11 @@ export default {
           mono: []
         }
       }
-    
-    //取得前一次的狀態
-    const { bpm, drum, lead, bass} = (({ bpm = 120, d = '', l = '' })=> {
-      //鼓機
-      const dArr = d.split(/-/)
-      const drum = {
-          kick: dArr[0] ? Number.parseInt(dArr[0], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          hihat: dArr[1] ? Number.parseInt(dArr[1], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          snare: dArr[2] ? Number.parseInt(dArr[2], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          tomL: dArr[3] ? Number.parseInt(dArr[3], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          tomM: dArr[4] ? Number.parseInt(dArr[4], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-          tomH: dArr[5] ? Number.parseInt(dArr[5], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-      }
-      const lArr = l.split(/-/)
-      const lead = [
-        lArr[0] ? Number.parseInt(lArr[0], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[1] ? Number.parseInt(lArr[1], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[2] ? Number.parseInt(lArr[2], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[3] ? Number.parseInt(lArr[3], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[4] ? Number.parseInt(lArr[4], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[5] ? Number.parseInt(lArr[5], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-        lArr[6] ? Number.parseInt(lArr[6], 16).toString(2).padStart(16).split('').map(i => ~~i) : new Array(16).fill(0),
-      ]
-      return {
-        bpm : parseInt(bpm),
-        drum,
-        lead,
-        bass: {
-          mono: []
-        }
-      }
-    })(this.$route.query)
-
-    const sequencer = { drum, lead, bass }
 
     return {
+      sequencer,
+      defaultSequencer,
+      BPM: bpm,
       kick,
       hihat,
       snare,
@@ -196,11 +201,8 @@ export default {
       tomH,
       poly,
       isPlaying: false,
-      tab: 0,
-      BPM: bpm,
       index: -1,
-      sequencer,
-      defaultSequencer,
+      tab: 0,
     }
   },
   methods: {
@@ -265,7 +267,7 @@ export default {
         this.BPM = bpm
         Tone.Transport.bpm.value = bpm
         const { d, l } = this.$route.query
-        this.$router.push({path: '/sequencer', query: { bpm, d, l }})
+        this.$router.replace({path: '/sequencer', query: { bpm, d, l }})
       }
     },
     sequencer: {
@@ -283,7 +285,7 @@ export default {
           Number.parseInt(row.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0)
         ).join('-')
         const { bpm = 120 } = this.$route.query
-        this.$router.push({path: '/sequencer', query: { bpm, d, l }})
+        this.$router.replace({path: '/sequencer', query: { bpm, d, l }})
       },
       deep: true
     }
@@ -291,9 +293,19 @@ export default {
   mounted() {
     document.querySelector('#menuTrigger').style.display = 'none'
     audioUnlock(Tone.context)
+    // screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || screen.orientation.lock;
+    // screen.lockOrientationUniversal("landscape-primary").then((res) => {
+    //   alert(res)
+    // })
+    window.addEventListener("load",function() { 
+      setTimeout(function(){
+      window.scrollTo(0, 1); }, 10);
+    });
   },
   beforeDestroy() {
     Tone.Transport.cancel().stop()
+    window.removeEventListener("load")
+    // screen.unlockOrientation()
   }
 }
 </script>
@@ -330,7 +342,7 @@ $black: #222222;
       > span {
         color: $white;
         font-size: 50%;
-        margin: 0 5px;
+        margin-right: 5px;
       }
     }
     button {
@@ -360,7 +372,7 @@ $black: #222222;
       background: linear-gradient(
         135deg,
         rgba(78, 190, 186, 1) 0%,
-        rgba(45, 199, 253, 1) 100%
+        rgba(45, 161, 253, 1) 100%
       );
     }
   }
@@ -376,14 +388,15 @@ $black: #222222;
       .time {
         width: 6%;
         height: 5px;
-        background-color: $white;
+        background-color: #ff5733;
+        opacity: 0.2;
         margin: 5px 0;
         border-radius: 5px;
         transition: all 0.1s;
       }
       & .active {
         height: 10px;
-        background-color: #ff5733;
+        opacity: 1;
       }
     }
     .set {
@@ -415,7 +428,7 @@ $black: #222222;
           width: 100%;
           position: relative;
           box-sizing: border-box;
-          background-color: $white;
+          background-color: #444444;
           border: 1px solid $black;
         }
         li:before {
@@ -427,7 +440,7 @@ $black: #222222;
           width: 100%;
           height: 100%;
           z-index: 2;
-          border-radius: 10%;
+          border-radius: 6px;
         }
         li:after {
           content: '';
