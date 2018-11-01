@@ -301,21 +301,29 @@ export default {
           position: relative;
           box-sizing: border-box;
           background-color: #e9e9e9;
-          &:hover {
-            background-color: #d9d9d9;
-          }
+          border: 1px solid #222222;
+        }
+        li:before {
+          content: '';
+          border: 2px solid #222222;
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          width: 100%;
+          height: 100%;
+          z-index: 2;
+          border-radius: 10%;
         }
         li:after {
           content: '';
-          border: 1px solid #d9d9d9;
-          border-radius: 10%;
+          position: relative;
           display: block;
           width: 100%;
           padding-top: 100%;
           cursor: pointer;
         }
         & .active {
-          opacity: 0;
+          background-color: rgba($color: #000000, $alpha: 0);
         }
       }
     }
