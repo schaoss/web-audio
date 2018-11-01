@@ -134,13 +134,11 @@ export default {
 
     // 循環撥放設定
     const BPM = parseInt(bpm)
-    let i = 0
     
     Tone.Transport.bpm.value = BPM
     Tone.Transport.scheduleRepeat((time) => {
-      i = ++i % 16
-      console.log(i)
-      this.index = i
+      this.index = ++this.index % 16
+      const i = this.index
       const { 
         drum: { 
           kick = new Array(16).fill(0),
