@@ -31,6 +31,7 @@ export default {
 <style lang="scss">
 body,
 html {
+  user-select: none;
   max-height: 100vh;
 }
 #app {

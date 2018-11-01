@@ -4,6 +4,11 @@
       <button @click="clickHandler"><i :class="{'fas': true, 'fa-play': !isPlaying, 'fa-pause': isPlaying}"></i></button>
       <button @click="reset"><i class="fas fa-undo"></i></button>
       <button @click="random"><i class="fas fa-random"></i></button>
+      <div id="bpm">
+        <button @click="BPM -= 5"><i class="fas fa-minus"></i></button>
+        <input type="text" :value="BPM" readonly />
+        <button @click="BPM += 5"><i class="fas fa-plus"></i></button>
+      </div>
     </div>
     <div id="pad">
       <div id="timeLine">
@@ -73,9 +78,8 @@ export default {
 
     // 循環撥放設定
     Tone.Transport.scheduleRepeat((time) => {
-      let i = Math.round(this.Tone.Transport.getSecondsAtTime() * (this.BPM / 15) % 16)
+      let i = Math.round((Tone.Transport.getSecondsAtTime() * (this.BPM / 15)) % 16)
       this.index = i
-      console.log(i)
       const { 
         drum: { 
           kick = new Array(16),
@@ -140,7 +144,6 @@ export default {
     const sequencer = data
 
     return {
-      Tone,
       kick,
       hihat,
       snare,
@@ -188,16 +191,26 @@ export default {
     },
     play() {
       this.isPlaying = true
-      this.Tone.Transport.start()
+      Tone.Transport.start()
     },
     stop() {
       this.isPlaying = false
-      this.Tone.Transport.stop()
+      Tone.Transport.stop()
       this.index = -1
     }
   },
   computed: {},
   watch: {
+    BPM: {
+      handler(v) {
+        if(v > 180) v = 180
+        else if(v < 60) v = 60
+        this.BPM = v
+        this.stop()
+        this.play()
+        Tone.Transport.bpm.value = v
+      }
+    },
     sequencer: {
       handler(v) {
         const { drum, lead, bass } = v
@@ -215,10 +228,10 @@ export default {
     }
   },
   mounted() {
-    audioUnlock(this.Tone.context)
+    audioUnlock(Tone.context)
   },
   beforeDestroy() {
-    this.Tone.Transport.stop()
+    Tone.Transport.cancel().stop()
   }
 }
 </script>
@@ -235,7 +248,21 @@ export default {
     justify-content: space-evenly;
     align-content: center;
     width: 100%;
-    > button {
+    #bpm {
+      line-height: 100%;
+      font-size: 3vw;
+      > input {
+        width: 10vw;
+        cursor: unset;
+        user-select: none;
+        background-color: unset;
+        color: #e9e9e9;
+        border: 0;
+        padding: 0;
+        text-align: center;
+      }
+    }
+    button {
       padding: 0;
       text-align: center;
       color: #222222;
