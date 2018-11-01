@@ -26,7 +26,6 @@ export default {
     return {
       isPlaying: false,
       notes: ['-', '-', '-', '-'],
-      Tone,
       pattern,
     }
   },
@@ -49,12 +48,12 @@ export default {
     }
   },
   mounted() {
-    audioUnlock(this.Tone.context)
-    this.Tone.Transport.start()
+    audioUnlock(Tone.context)
+    Tone.Transport.start()
   },
   beforeDestroy() {
     this.pattern.stop()
-    this.Tone.Transport.stop()
+    Tone.Transport.cancel().stop()
   }
 }
 </script>
