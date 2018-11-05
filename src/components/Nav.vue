@@ -11,6 +11,7 @@
     <router-link to="voice-changer">VoiceChanger</router-link>
     <router-link to="tone">Tone</router-link>
     <router-link to="sequencer">Sequencer</router-link>
+    <router-link to="scribbletune">Scribbletune</router-link>
   </div>
 </template>
 <style lang="scss">

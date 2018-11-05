@@ -9,20 +9,20 @@
   },
   "dependencies": {
     "scribbletune": "^1.9.2",
-    "tonal": "^2.0.0",
-    "tonal-detect": "^2.0.0",
+    "tonal": "^2.1.1",
+    "tonal-detect": "^2.1.0",
     "tone": "^0.12.80",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.1",
-    "@vue/cli-plugin-eslint": "^3.0.1",
-    "@vue/cli-service": "^3.0.1",
-    "@vue/eslint-config-airbnb": "^3.0.3",
-    "node-sass": "^4.9.0",
-    "sass-loader": "^7.0.1",
+    "@vue/cli-plugin-babel": "^3.1.1",
+    "@vue/cli-plugin-eslint": "^3.1.4",
+    "@vue/cli-service": "^3.1.2",
+    "@vue/eslint-config-airbnb": "^4.0.0",
+    "node-sass": "^4.10.0",
+    "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.17"
   }
 }

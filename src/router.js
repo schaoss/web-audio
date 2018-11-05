@@ -62,6 +62,11 @@ export default new Router({
       path: '/sequencer',
       name: 'Sequencer',
       component: () => import('./views/Sequencer.vue')
+    },
+    {
+      path: '/scribbletune',
+      name: 'Scribbletune',
+      component: () => import('./views/Scribbletune.vue')
     }
   ]
 })
