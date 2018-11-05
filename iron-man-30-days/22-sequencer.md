@@ -49,9 +49,53 @@ Tone.Transport.bpm.value = BPM
 > [BPM](<https://zh.wikipedia.org/wiki/%E9%80%9F%E5%BA%A6_(%E9%9F%B3%E6%A8%82)#%E9%87%8F%E5%BA%A6%E9%9F%B3%E6%A8%82%E9%80%9F%E5%BA%A6>)，即 beats per minute，每分鐘多少拍。
 
 接著是要做一個可以控制輸入的 BPM 的介面，
-透過 Vue 的資料綁定，可以簡單快速的做到這件事情，就不贅述了 XD
+透過 Vue 的資料綁定，可以簡單快速的做到這件事情，就不贅述囉～
 
 ![BPM](https://i.imgur.com/NaMwTmh.png)
+
+### 當前拍點標示
+
+有了 BPM 調整，當然要提示一下當然進行到哪裡囉。
+
+我們先前在設定 Tone.js 的 Transport 時，已經在程式碼中宣告了 `index`，這邊因應拍號調整的功能，要稍微更換一下實作方式：
+
+```javascript=
+Tone.Transport.scheduleRepeat((time) => {
+  this.index = ++this.index % 16
+  ...
+}, "16n")
+```
+
+這樣，透過 Vue 的資料綁定，就可以快速做完拍點標示啦！
+
+```html
+<div id="timeLine">
+  <div v-for="i in 16" :key="`time_${i}`" :class="{'time': true, 'active': index === i-1 }" />
+</div>
+```
+
+在實作這邊時，我設定當 active 時會更換高度及背景色：
+
+```css
+.time {
+  width: 6%;
+  height: 5px;
+  background-color: #ff5733;
+  opacity: 0.2;
+  margin: 5px 0;
+  border-radius: 5px;
+  transition: all 0.1s;
+}
+& .active {
+  height: 10px;
+  opacity: 1;
+}
+```
+
+結果在第一拍時會意外的爆版，整個時間軸會一起跳一下...
+不過看起來效果也蠻好的，就留下了 XD
+
+![css](https://i.imgur.com/Hwix494.gif)
 
 ### 旋律樂器
 
@@ -85,118 +129,17 @@ if(lead[2][i]) this.poly.triggerAttackRelease("E4", "16n", time)
 
 接著在畫面上加上切換分頁的按鈕，就完成囉～
 
-### 分享功能
+最後的程式放在這邊：
 
-筆者邊寫邊測試，玩著玩著，就覺得自己隨機出來的節奏也太好聽了吧，於是就寫了分享功能 XDD
+[Live Demo](https://schaoss.github.io/web-audio/#/sequencer)
 
-大方向是想把資料組成 url 的 query，方便傳遞。
+![result](https://i.imgur.com/mvDgJTa.gif)
 
-第一步是轉成 query，這邊透過了 Vue 的 `wacth` 功能，監聽資料陣列：
+大家可以上去玩玩看喔～
 
-```javascript=
-watch: {
-  BPM: {
-    handler(bpm) {
-      if(bpm > 180) bpm = 180
-      else if(bpm < 60) bpm = 60
-      this.BPM = bpm
-      Tone.Transport.bpm.value = bpm
-      const { d, l } = this.$route.query
-      this.$router.replace({path: '/sequencer', query: { bpm, d, l }})
-    }
-  },
-  sequencer: {
-    handler(v) {
-      const { drum, lead, bass } = v
-      const d = [
-        getHexQueryString(drum.kick),
-        getHexQueryString(drum.hihat),
-        getHexQueryString(drum.snare),
-        getHexQueryString(drum.tomL),
-        getHexQueryString(drum.tomM),
-        getHexQueryString(drum.tomH),
-      ].join('-')
-      const l = lead.map(row =>
-        getHexQueryString(row)
-      ).join('-')
-      const { bpm = 120 } = this.$route.query
-      this.$router.replace({path: '/sequencer', query: { bpm, d, l }})
-    },
-    deep: true
-  }
-},
-
-...
-
-getHexQueryString(arr) {
-  return Number.parseInt(arr.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0)
-},
-```
-
-> 由於一橫排有 16 格，每一格狀態都需要被儲存；為減少 url 長度，這邊把資料轉換成 16 進位的資料。
-> e.g.
+> 今天要特別感謝同事 [Adam](https://ithelp.ithome.com.tw/users/20111956/ironman/1784) & [Carol](https://ithelp.ithome.com.tw/users/20111500/ironman/1788)，他們在下班後仍然願意幫忙構想漸層的實作，甚至協助到十一點多。在最後也順利完成我提的這種腦洞大開的要求，真的非常非常感謝 XD
 >
-> - bpm = 100
-> - d = 0a02-6e66-aaaa-0a02-5145-8028
-> - l = 8804-3042-8884-0252-8008-0210-0004
-
-可以把資料用 query 傳遞了，接著是要在程式初始化時接收資料：
-
-```javascript=
-const { bpm = 120, d = '', l = '' } = this.$route.query
-const sequencer = (() => {
-  //鼓機
-  const dArr = d.split(/-/)
-  const drum = {
-      kick: this.getInitQueryData(dArr[0]),
-      hihat: this.getInitQueryData(dArr[1]),
-      snare: this.getInitQueryData(dArr[2]),
-      tomL: this.getInitQueryData(dArr[3]),
-      tomM: this.getInitQueryData(dArr[4]),
-      tomH: this.getInitQueryData(dArr[5]),
-  }
-
-  //旋律
-  const lArr = l.split(/-/)
-  const lead = [
-    this.getInitQueryData(lArr[0]),
-    this.getInitQueryData(lArr[1]),
-    this.getInitQueryData(lArr[2]),
-    this.getInitQueryData(lArr[3]),
-    this.getInitQueryData(lArr[4]),
-    this.getInitQueryData(lArr[5]),
-    this.getInitQueryData(lArr[6]),
-  ]
-
-  return {
-    drum,
-    lead
-  }
-})()
-
-...
-
-getInitQueryData(hexStr) {
-  return hexStr
-    ? Number.parseInt(hexStr, 16).toString(2).padStart(16).split('').map(i => ~~i)
-    : this.getEmptyArray(16)
-},
-```
-
-透過 Vue-Router 自動傳遞的 $route，可以快速地拿到 url 內 query 的資料，在將其解開回陣列就可以囉～
-
-最後的結果在這裡：
-
-[Live Demo](https://schaoss.github.io/web-audio/#/sequencer?bpm=100&d=0a02-6e66-aaaa-0a02-5145-8028&l=8804-3042-8884-0252-8008-0210-0004)
-
-![result](https://i.imgur.com/n5mT4gQ.png)
-
-讓我玩了一周的音序機，雖然還有很多地方要改進，不過就先到這邊吧
-XD
-
-最後要特別感謝同事 [Adam](https://ithelp.ithome.com.tw/users/20111956/ironman/1784) 大神，他在下班後仍然願意幫忙、協助到十一點多，並成功完成我提的這種腦洞大開的要求，真的非常非常感謝 XD
-
-> 透過兩個偽元素做出假邊框，讓這邊的顯示可以用簡短的 css 語法做到這樣的連續漸層，有興趣的朋友可以稍微看一下點擊區域的 css 喔 XD
+> 透過兩個偽元素做出假邊框，讓點擊區域可以用簡短的 css 語法做到這樣的連續漸層，有興趣的朋友可以稍微看一下點擊區域的 css 喔 XD
 
 那麼今天就先這樣啦，我們明天見～
 

@@ -4,7 +4,7 @@
       <button @click="tabHandler"><i :class="{'fas': true,  'fa-drum': tab === 0, 'fa-music': tab === 1}"></i></button>
       <button @click="random"><i class="fas fa-random"></i></button>
       <div id="play">
-        <button @click="clickHandler"><i :class="{'fas': true, 'fa-play': !isPlaying, 'fa-pause': isPlaying}"></i></button>
+        <button @click="playHandler"><i :class="{'fas': true, 'fa-play': !isPlaying, 'fa-pause': isPlaying}"></i></button>
       </div>
       <div id="bpm">
         <button @click="BPM -= 5"><i class="fas fa-minus"></i></button>
@@ -13,33 +13,33 @@
       </div>
       <button @click="reset"><i class="fas fa-trash-alt"></i></button>
     </div>
-    <div id="pad">
+    <div id="pad" @mousedown="mousedown" @mouseup="mouseup" @touchstart="touchstart" @touchend="touchend" @touchmove="touchmove">
       <div id="timeLine">
-        <div v-for="i in 16" :key="`time_${i}`" :class="{'time': true, 'active': index === i-1 }" />
+        <div v-for="i in 16" :key="`time_${i-1}`" :class="{'time': true, 'active': index === i-1 }" />
       </div>
       <div id="drum" class="set" v-show="tab === 0">
         <ul class="kick">
-          <li v-for="i in 16" :key="`kick_${i}`" :class="{'item': true, 'active': !!sequencer.drum.kick[i-1] }" @click="$set(sequencer.drum.kick, i-1, !sequencer.drum.kick[i-1])" />
+          <li v-for="i in 16" :key="`kick_${i-1}`" :name="`kick_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.kick[i-1] }" @mousedown="clickHandler(sequencer.drum.kick, i-1)" @mouseenter="() => mouseenter(sequencer.drum.kick, i-1)" @touchstart="clickHandler(sequencer.drum.kick, i-1)" />
         </ul>
         <ul class="hihat">
-          <li v-for="i in 16" :key="`hihat_${i}`" :class="{'item': true, 'active': !!sequencer.drum.hihat[i-1] }" @click="$set(sequencer.drum.hihat, i-1, !sequencer.drum.hihat[i-1])" />
+          <li v-for="i in 16" :key="`hihat_${i-1}`" :name="`hihat_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.hihat[i-1] }" @mousedown="clickHandler(sequencer.drum.hihat, i-1)" @mouseenter="() => mouseenter(sequencer.drum.hihat, i-1)" />
         </ul>
         <ul class="snare">
-          <li v-for="i in 16" :key="`snare_${i}`" :class="{'item': true, 'active': !!sequencer.drum.snare[i-1] }" @click="$set(sequencer.drum.snare, i-1, !sequencer.drum.snare[i-1])" />
+          <li v-for="i in 16" :key="`snare_${i-1}`" :name="`snare_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.snare[i-1] }" @mousedown="clickHandler(sequencer.drum.snare, i-1)" @mouseenter="() => mouseenter(sequencer.drum.snare, i-1)" />
         </ul>
         <ul class="tomL">
-          <li v-for="i in 16" :key="`tomL_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomL[i-1] }" @click="$set(sequencer.drum.tomL, i-1, !sequencer.drum.tomL[i-1])" />
+          <li v-for="i in 16" :key="`tomL_${i-1}`" :name="`tomL_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.tomL[i-1] }" @mousedown="clickHandler(sequencer.drum.tomL, i-1)" @mouseenter="() => mouseenter(sequencer.drum.tomL, i-1)" />
         </ul>
         <ul class="tomM">
-          <li v-for="i in 16" :key="`tomM_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomM[i-1] }" @click="$set(sequencer.drum.tomM, i-1, !sequencer.drum.tomM[i-1])" />
+          <li v-for="i in 16" :key="`tomM_${i-1}`" :name="`tomM_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.tomM[i-1] }" @mousedown="clickHandler(sequencer.drum.tomM, i-1)" @mouseenter="() => mouseenter(sequencer.drum.tomM, i-1)" />
         </ul>
         <ul class="tomH">
-          <li v-for="i in 16" :key="`tomH_${i}`" :class="{'item': true, 'active': !!sequencer.drum.tomH[i-1] }" @click="$set(sequencer.drum.tomH, i-1, !sequencer.drum.tomH[i-1])" />
+          <li v-for="i in 16" :key="`tomH_${i-1}`" :name="`tomH_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.tomH[i-1] }" @mousedown="clickHandler(sequencer.drum.tomH, i-1)" @mouseenter="() => mouseenter(sequencer.drum.tomH, i-1)" />
         </ul>
       </div>
       <div id="lead" class="set" v-show="tab === 1">
         <ul v-for="(row, i) in sequencer.lead" :key="`lead_${i}`">
-          <li v-for="j in 16" :key="`lead_${i}_${j}`" :class="{'item': true, 'active': !!sequencer.lead[i][j-1] }" @click="$set(sequencer.lead[i], j-1, !sequencer.lead[i][j-1])" />
+          <li v-for="j in 16" :key="`lead_${i}_${j-1}`" :name="`lead_${i}_${j-1}`" :class="{'item': true, 'active': !!sequencer.lead[i][j-1] }" @mousedown="clickHandler(sequencer.lead[i], j-1)" @mouseenter="() => mouseenter(sequencer.lead[i], j-1)" />
         </ul>
       </div>
     </div>
@@ -202,12 +202,14 @@ export default {
       tomH,
       poly,
       isPlaying: false,
+      isDraging: false,
+      touchTarget: '',
       index: -1,
       tab: 0,
     }
   },
   methods: {
-    clickHandler() {
+    playHandler() {
       if (this.isPlaying) {
         this.stop()
       } else {
@@ -216,6 +218,9 @@ export default {
     },
     tabHandler() {
       this.tab = (this.tab + 1) % 2
+    },
+    clickHandler(arr, i) {
+      this.$set(arr, i, !arr[i])
     },
     reset() {
       if(this.tab === 0) {
@@ -266,6 +271,47 @@ export default {
       this.isPlaying = false
       Tone.Transport.stop()
       this.index = -1
+    },
+
+    // drag event
+    mousedown() {
+      this.isDraging = true
+    },
+    mouseenter(arr, i) {
+      if (!this.isDraging) {
+        return
+      }
+      this.clickHandler(arr, i)
+    }, 
+    mouseup() {
+      this.isDraging = false
+    },
+    touchstart(e) {
+      this.isDraging = true
+      this.touchTarget = e.target.getAttribute('name')
+    },
+    touchmove(e) {
+      if (!this.isDraging) {
+        return
+      }
+      const { clientX, clientY } = e.targetTouches[0]
+      const name = document.elementFromPoint(clientX, clientY).getAttribute('name')
+      if (name) {
+        if (name !== this.touchTarget) {
+          this.touchTarget = name
+          const tmpArr = name.split('_')
+          if (tmpArr[0] === 'lead') {
+            this.clickHandler(this.sequencer.lead[tmpArr[1]], tmpArr[2])
+          } else {
+            this.clickHandler(this.sequencer.drum[tmpArr[0]], tmpArr[1])
+          }
+        }
+      }
+      e.preventDefault()
+    },
+    touchend() {
+      this.isDraging = false
+      this.touchTarget = ''
     }
   },
   computed: {},
