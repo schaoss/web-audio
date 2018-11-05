@@ -4071,6 +4071,10 @@ jsesc@~0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
 
+jsmidgen@~0.1.4:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/jsmidgen/-/jsmidgen-0.1.5.tgz#ad0afd6375eb12f51064025393ce3baec380585d"
+
 json-parse-better-errors@^1.0.1, json-parse-better-errors@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
@@ -6102,6 +6106,13 @@ schema-utils@^1.0.0:
     ajv "^6.1.0"
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
+
+scribbletune@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/scribbletune/-/scribbletune-1.9.2.tgz#6cbbd9604579736dee8685f658c6bcc2faa29140"
+  dependencies:
+    jsmidgen "~0.1.4"
+    tonal "^2.0.0"
 
 scss-tokenizer@^0.2.3:
   version "0.2.3"
