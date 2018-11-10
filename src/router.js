@@ -58,6 +58,11 @@ export default new Router({
       component: () => import('./views/Tone.vue')
     },
     {
+      path: '/sequencer',
+      name: 'Sequencer',
+      component: () => import('./views/Sequencer.vue')
+    },
+    {
       path: '/wave-surfer',
       name: 'WaveSurfer',
       component: () => import('./views/WaveSurfer.vue')
