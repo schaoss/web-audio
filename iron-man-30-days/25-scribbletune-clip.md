@@ -1,6 +1,6 @@
-# 25. Scribbletune - 功能介紹
+# 25. Scribbletune - Clip
 
-[昨天](day24待補) 我們一起認識了 Scribbletune 這個有趣的套件，如果你還沒看過昨天的文章，可以先去看完再回來喔～
+[昨天](https://ithelp.ithome.com.tw/articles/10208927) 我們一起認識了 Scribbletune 這個有趣的套件，如果你還沒看過昨天的文章，可以先去看完再回來喔～
 
 參考一下昨天最後使用的範例：
 
@@ -24,7 +24,7 @@ Clip 是 Scribbletune 中的基本單位，我們可以像上例那樣的透過`
 
 有好好跟著旅程一路走到這的讀者們一定不陌生，沒錯這就是 Tone.js 的合成器。
 
-可以參考 Scribbletune 的 [原始碼](https://github.com/scribbletune/scribbletune/blob/060484793c6c8d139fdc8a588c11a87093554098/src/browserClip.js#L123)：
+參考 Scribbletune 的 [原始碼](https://github.com/scribbletune/scribbletune/blob/060484793c6c8d139fdc8a588c11a87093554098/src/browserClip.js#L123)：
 
 ```javascript=
 ...
@@ -35,7 +35,7 @@ if (params.synth) {
 ...
 ```
 
-可以接受的屬性值就是 Tone.js 提供已經包裝好的各式合成器。
+從它的實作方式看得出來，synth 能接受的屬性值就是 Tone.js 提供已經包裝好的各式合成器。
 
 #### notes
 
@@ -43,7 +43,7 @@ notes 這個屬性是用來指定一組準備要用來播放的音名或和弦�
 
 由於 Scribbletune 內包裹了 tonal 的強大計算功能，notes 的設定也就充滿著彈性：
 
-例如最簡單的指定音名：
+例如最簡單的指定音高音名：
 
 ```javascript=
 notes: 'c4 d4 e4 f4 g4 a4 b4 c5'
@@ -79,7 +79,7 @@ Scribbletune 中定義了一組超簡單的節奏標記方式，利用三種符�
 
 以及利用中括號（[ ]）表示拍值減半，這樣就能標記出各式節奏囉！
 
-例如官網範例的：
+例如 [官網範例](https://scribbletune.com/documentation/core/clip) 的：
 
 ```javascript=
 x__-x__-x__-x__-
