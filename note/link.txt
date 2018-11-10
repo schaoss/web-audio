@@ -13,6 +13,9 @@ Pitchdetect：
 Pitchshift：
   - Github https://github.com/urtzurd/html-audio/blob/gh-pages/static/js/pitch-shifter.js
   
+Tonal
+ - Github https://github.com/danigb/tonal
+
 Tone.js
  - Github https://github.com/Tonejs/Tone.js
  - Official https://tonejs.github.io/
@@ -25,8 +28,9 @@ Scribbletune.js
  - Github https://github.com/scribbletune/scribbletune
  - Official https://scribbletune.com/
  - youtube https://www.youtube.com/watch?v=dIiwFzFvsmw
-Tonal
- - Github https://github.com/danigb/tonal
+
+Wavesurfer.js
+ - Github https://github.com/katspaugh/wavesurfer.js
 
 Rythm
  - Github https://github.com/Okazari/Rythm.js
