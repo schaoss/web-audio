@@ -8,13 +8,13 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "scribbletune": "^1.9.2",
     "tonal": "^2.1.1",
     "tonal-detect": "^2.1.0",
     "tone": "^0.12.80",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "wavesurfer.js": "^2.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.1.1",

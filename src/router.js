@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from './views/Index.vue'
 
 Vue.use(Router)
 
@@ -11,7 +10,7 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: Index
+      component: () => import('./views/Index.vue')
     },
     {
       path: '/web-audio-api',
@@ -59,14 +58,9 @@ export default new Router({
       component: () => import('./views/Tone.vue')
     },
     {
-      path: '/sequencer',
-      name: 'Sequencer',
-      component: () => import('./views/Sequencer.vue')
-    },
-    {
-      path: '/scribbletune',
-      name: 'Scribbletune',
-      component: () => import('./views/Scribbletune.vue')
+      path: '/wave-surfer',
+      name: 'WaveSurfer',
+      component: () => import('./views/WaveSurfer.vue')
     }
   ]
 })
