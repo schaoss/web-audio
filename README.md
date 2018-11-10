@@ -14,8 +14,8 @@
 本專案為參加鐵人賽的程式部分；每篇文章皆可搭配當日的 branch 看程式範例。
 
 ![iron-man](https://ithelp.ithome.com.tw/images/ironman/10th/kv-bg-content.png)
-
-參賽文章在[這裡](https://ithelp.ithome.com.tw/users/20111380/ironman/1783)。
+參賽文章在 [這裡](https://ithelp.ithome.com.tw/users/20111380/ironman/1783)。
+HackMD 好讀版在 [這裡](https://hackmd.io/c/Hksoyrxhm/%2FZyRVQ2LOQjenkhZG28iVhg)
 
 ## 執行專案
 
