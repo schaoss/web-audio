@@ -10,19 +10,19 @@
   "dependencies": {
     "tonal": "^2.2.2",
     "tonal-detect": "^2.2.2",
-    "tone": "^13.4.9",
+    "tone": "^13.8.25",
     "vue": "^2.6.10",
-    "vue-router": "^3.0.7",
-    "vuex": "^3.1.1",
-    "wavesurfer.js": "^2.2.1"
+    "vue-router": "^3.1.3",
+    "vuex": "^3.1.2",
+    "wavesurfer.js": "^3.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.2",
     "@vue/cli-plugin-eslint": "^3.9.2",
     "@vue/cli-service": "^3.9.2",
     "@vue/eslint-config-airbnb": "^4.0.1",
-    "node-sass": "^4.12.0",
-    "sass-loader": "^7.1.0",
+    "node-sass": "^4.13.0",
+    "sass-loader": "^8.0.0",
     "vue-template-compiler": "^2.6.10"
   }
 }
