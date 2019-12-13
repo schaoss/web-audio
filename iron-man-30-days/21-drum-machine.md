@@ -109,7 +109,7 @@ const defaultSequencer = {
 ...
 <div class="hihat">
   <div v-for="i in 16" :key="`hihat_${i}`"
-      :class="{'item': true, 'active': !!sequencer.drum.hihat[i-1] }"
+      class="item" :class="{'active': !!sequencer.drum.hihat[i-1] }"
       @click="$set(sequencer.drum.hihat, i-1, !sequencer.drum.hihat[i-1])" />
 </div>
 ...

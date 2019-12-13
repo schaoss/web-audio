@@ -70,7 +70,7 @@ Tone.Transport.scheduleRepeat((time) => {
 
 ```html
 <div id="timeLine">
-  <div v-for="i in 16" :key="`time_${i}`" :class="{'time': true, 'active': index === i-1 }" />
+  <div v-for="i in 16" :key="`time_${i}`" class="time" :class="{'active': index === i-1 }" />
 </div>
 ```
 

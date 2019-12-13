@@ -1,10 +1,11 @@
 <template>
   <div id="sequencer">
     <div id="config" :class="{'drum': tab === 0, 'lead': tab === 1}">
-      <button @click="tabHandler"><i :class="{'fas': true,  'fa-drum': tab === 0, 'fa-music': tab === 1}"></i></button>
+      <button @click="tabHandler"><i class="fas" :class="{ 'fa-drum': tab === 0, 'fa-music': tab === 1}"></i></button>
       <button @click="random"><i class="fas fa-random"></i></button>
       <div id="play">
-        <button @click="playHandler"><i :class="{'fas': true, 'fa-play': !isPlaying, 'fa-pause': isPlaying}"></i></button>
+        <button @click="playHandler"><i class="fas"
+            :class="{'fa-play': !isPlaying, 'fa-pause': isPlaying}"></i></button>
       </div>
       <div id="bpm">
         <button @click="BPM -= 5"><i class="fas fa-minus"></i></button>
@@ -13,33 +14,49 @@
       </div>
       <button @click="reset"><i class="fas fa-trash-alt"></i></button>
     </div>
-    <div id="pad" @mousedown="mousedown" @mouseup="mouseup" @touchstart="touchstart" @touchend="touchend" @touchmove="touchmove">
+    <div id="pad" @mousedown="mousedown" @mouseup="mouseup" @touchstart="touchstart" @touchend="touchend"
+      @touchmove="touchmove">
       <div id="timeLine">
-        <div v-for="i in 16" :key="`time_${i-1}`" :class="{'time': true, 'active': index === i-1 }" />
+        <div v-for="i in 16" :key="`time_${i-1}`" class="time" :class="{'active': index === i-1 }" />
       </div>
       <div id="drum" class="set" v-show="tab === 0">
         <ul class="kick">
-          <li v-for="i in 16" :key="`kick_${i-1}`" :name="`kick_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.kick[i-1] }" @mousedown="clickHandler(sequencer.drum.kick, i-1)" @mouseenter="() => mouseenter(sequencer.drum.kick, i-1)" @touchstart="clickHandler(sequencer.drum.kick, i-1)" />
+          <li v-for="i in 16" :key="`kick_${i-1}`" :name="`kick_${i-1}`" class='item'
+            :class="{'active': !!sequencer.drum.kick[i-1] }" @mousedown="clickHandler(sequencer.drum.kick, i-1)"
+            @mouseenter="() => mouseenter(sequencer.drum.kick, i-1)"
+            @touchstart="clickHandler(sequencer.drum.kick, i-1)" />
         </ul>
         <ul class="hihat">
-          <li v-for="i in 16" :key="`hihat_${i-1}`" :name="`hihat_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.hihat[i-1] }" @mousedown="clickHandler(sequencer.drum.hihat, i-1)" @mouseenter="() => mouseenter(sequencer.drum.hihat, i-1)" />
+          <li v-for="i in 16" :key="`hihat_${i-1}`" :name="`hihat_${i-1}`" class='item'
+            :class="{'active': !!sequencer.drum.hihat[i-1] }" @mousedown="clickHandler(sequencer.drum.hihat, i-1)"
+            @mouseenter="() => mouseenter(sequencer.drum.hihat, i-1)" />
         </ul>
         <ul class="snare">
-          <li v-for="i in 16" :key="`snare_${i-1}`" :name="`snare_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.snare[i-1] }" @mousedown="clickHandler(sequencer.drum.snare, i-1)" @mouseenter="() => mouseenter(sequencer.drum.snare, i-1)" />
+          <li v-for="i in 16" :key="`snare_${i-1}`" :name="`snare_${i-1}`" class='item'
+            :class="{'active': !!sequencer.drum.snare[i-1] }" @mousedown="clickHandler(sequencer.drum.snare, i-1)"
+            @mouseenter="() => mouseenter(sequencer.drum.snare, i-1)" />
         </ul>
         <ul class="tomL">
-          <li v-for="i in 16" :key="`tomL_${i-1}`" :name="`tomL_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.tomL[i-1] }" @mousedown="clickHandler(sequencer.drum.tomL, i-1)" @mouseenter="() => mouseenter(sequencer.drum.tomL, i-1)" />
+          <li v-for="i in 16" :key="`tomL_${i-1}`" :name="`tomL_${i-1}`" class='item'
+            :class="{'active': !!sequencer.drum.tomL[i-1] }" @mousedown="clickHandler(sequencer.drum.tomL, i-1)"
+            @mouseenter="() => mouseenter(sequencer.drum.tomL, i-1)" />
         </ul>
         <ul class="tomM">
-          <li v-for="i in 16" :key="`tomM_${i-1}`" :name="`tomM_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.tomM[i-1] }" @mousedown="clickHandler(sequencer.drum.tomM, i-1)" @mouseenter="() => mouseenter(sequencer.drum.tomM, i-1)" />
+          <li v-for="i in 16" :key="`tomM_${i-1}`" :name="`tomM_${i-1}`" class='item'
+            :class="{'active': !!sequencer.drum.tomM[i-1] }" @mousedown="clickHandler(sequencer.drum.tomM, i-1)"
+            @mouseenter="() => mouseenter(sequencer.drum.tomM, i-1)" />
         </ul>
         <ul class="tomH">
-          <li v-for="i in 16" :key="`tomH_${i-1}`" :name="`tomH_${i-1}`" :class="{'item': true, 'active': !!sequencer.drum.tomH[i-1] }" @mousedown="clickHandler(sequencer.drum.tomH, i-1)" @mouseenter="() => mouseenter(sequencer.drum.tomH, i-1)" />
+          <li v-for="i in 16" :key="`tomH_${i-1}`" :name="`tomH_${i-1}`" class='item'
+            :class="{'active': !!sequencer.drum.tomH[i-1] }" @mousedown="clickHandler(sequencer.drum.tomH, i-1)"
+            @mouseenter="() => mouseenter(sequencer.drum.tomH, i-1)" />
         </ul>
       </div>
       <div id="lead" class="set" v-show="tab === 1">
         <ul v-for="(row, i) in sequencer.lead" :key="`lead_${i}`">
-          <li v-for="j in 16" :key="`lead_${i}_${j-1}`" :name="`lead_${i}_${j-1}`" :class="{'item': true, 'active': !!sequencer.lead[i][j-1] }" @mousedown="clickHandler(sequencer.lead[i], j-1)" @mouseenter="() => mouseenter(sequencer.lead[i], j-1)" />
+          <li v-for="j in 16" :key="`lead_${i}_${j-1}`" :name="`lead_${i}_${j-1}`" class='item'
+            :class="{'active': !!sequencer.lead[i][j-1] }" @mousedown="clickHandler(sequencer.lead[i], j-1)"
+            @mouseenter="() => mouseenter(sequencer.lead[i], j-1)" />
         </ul>
       </div>
     </div>
@@ -55,43 +72,50 @@ export default {
   data() {
     //取得前一次的狀態
     const { bpm = 120, d = '', l = '' } = this.$route.query
+
+    // 空資料 for reset
+    const defaultSequencer = {
+      drum: {
+        kick: this.getEmptyArray(),
+        hihat: this.getEmptyArray(),
+        snare: this.getEmptyArray(),
+        tomL: this.getEmptyArray(),
+        tomM: this.getEmptyArray(),
+        tomH: this.getEmptyArray()
+      },
+      lead: Array.from({ length: 7 }, this.getEmptyArray)
+    }
+
     const sequencer = (() => {
       //鼓機
       const dArr = d.split(/-/)
-      const drum = {
-          kick: this.getInitQueryData(dArr[0]),
-          hihat: this.getInitQueryData(dArr[1]),
-          snare: this.getInitQueryData(dArr[2]),
-          tomL: this.getInitQueryData(dArr[3]),
-          tomM: this.getInitQueryData(dArr[4]),
-          tomH: this.getInitQueryData(dArr[5]),
-      }
+      const drum = dArr.length
+        ? defaultSequencer.drum
+        : {
+            kick: this.getInitQueryData(dArr[0]),
+            hihat: this.getInitQueryData(dArr[1]),
+            snare: this.getInitQueryData(dArr[2]),
+            tomL: this.getInitQueryData(dArr[3]),
+            tomM: this.getInitQueryData(dArr[4]),
+            tomH: this.getInitQueryData(dArr[5])
+          }
 
       //旋律
       const lArr = l.split(/-/)
-      const lead = [
-        this.getInitQueryData(lArr[0]),
-        this.getInitQueryData(lArr[1]),
-        this.getInitQueryData(lArr[2]),
-        this.getInitQueryData(lArr[3]),
-        this.getInitQueryData(lArr[4]),
-        this.getInitQueryData(lArr[5]),
-        this.getInitQueryData(lArr[6]),
-      ]
+      const lead = lArr.length
+        ? defaultSequencer.lead
+        : lArr.map(this.getInitQueryData)
 
       return {
         drum,
-        lead,
-        bass: {
-          mono: []
-        }
+        lead
       }
     })()
     //建立樂器
     const kick = new Tone.MembraneSynth({
       octaves: 3,
-      envelope  : {
-        sustain: 0.2,
+      envelope: {
+        sustain: 0.2
       }
     }).toMaster()
     const tomL = new Tone.MembraneSynth({
@@ -105,11 +129,11 @@ export default {
     }).toMaster()
     const hihat = new Tone.NoiseSynth({
       playbackRate: 5,
-      envelope  : {
-        sustain  : 0.0001,
+      envelope: {
+        sustain: 0.0001
       }
     }).toMaster()
-    const snare = new Snare({volume: -6}).toMaster()
+    const snare = new Snare({ volume: -6 }).toMaster()
 
     const poly = new Tone.PolySynth(8, Tone.Synth, {
       oscillator: {
@@ -129,66 +153,35 @@ export default {
     tomL.volume.value = 0
     tomM.volume.value = 0
     tomH.volume.value = 0
-    poly.set("volume", 2);
+    poly.set('volume', 2)
 
     // 循環撥放設定
-    const BPM = parseInt(bpm)
-    
+    const BPM = Number(bpm) || 120
+
     Tone.Transport.bpm.value = BPM
-    Tone.Transport.scheduleRepeat((time) => {
+    Tone.Transport.scheduleRepeat(time => {
       this.index = ++this.index % 16
       const i = this.index
-      const { 
-        drum: { 
-          kick = this.getEmptyArray(16),
-          tomL = this.getEmptyArray(16),
-          tomM = this.getEmptyArray(16),
-          tomH = this.getEmptyArray(16),
-          snare = this.getEmptyArray(16),
-          hihat = this.getEmptyArray(16),
-        },
+      const {
+        drum: { kick, tomL, tomM, tomH, snare, hihat },
         lead
       } = this.sequencer
 
-      if(kick[i]) this.kick.triggerAttackRelease("C2", "4n", time)
-      if(hihat[i]) this.hihat.triggerAttackRelease("8n", time)
-      if(snare[i]) this.snare.trigger(time)
-      if(tomL[i]) this.tomL.triggerAttackRelease("E2", "4n", time)
-      if(tomM[i]) this.tomM.triggerAttackRelease("G2", "4n", time)
-      if(tomH[i]) this.tomH.triggerAttackRelease("A#2", "4n", time)
+      if (kick[i]) this.kick.triggerAttackRelease('C2', '4n', time)
+      if (hihat[i]) this.hihat.triggerAttackRelease('8n', time)
+      if (snare[i]) this.snare.trigger(time)
+      if (tomL[i]) this.tomL.triggerAttackRelease('E2', '4n', time)
+      if (tomM[i]) this.tomM.triggerAttackRelease('G2', '4n', time)
+      if (tomH[i]) this.tomH.triggerAttackRelease('A#2', '4n', time)
 
-      if(lead[0][i]) this.poly.triggerAttackRelease("C4", "16n", time)
-      if(lead[1][i]) this.poly.triggerAttackRelease("D4", "16n", time)
-      if(lead[2][i]) this.poly.triggerAttackRelease("E4", "16n", time)
-      if(lead[3][i]) this.poly.triggerAttackRelease("F4", "16n", time)
-      if(lead[4][i]) this.poly.triggerAttackRelease("G4", "16n", time)
-      if(lead[5][i]) this.poly.triggerAttackRelease("A4", "16n", time)
-      if(lead[6][i]) this.poly.triggerAttackRelease("C5", "16n", time)
-    }, "16n")
-
-    // 空資料 for reset
-    const defaultSequencer = {
-        drum: {
-          kick: this.getEmptyArray(16),
-          hihat: this.getEmptyArray(16),
-          snare: this.getEmptyArray(16),
-          tomL: this.getEmptyArray(16),
-          tomM: this.getEmptyArray(16),
-          tomH: this.getEmptyArray(16),
-        },
-        lead: [
-          this.getEmptyArray(16),
-          this.getEmptyArray(16),
-          this.getEmptyArray(16),
-          this.getEmptyArray(16),
-          this.getEmptyArray(16),
-          this.getEmptyArray(16),
-          this.getEmptyArray(16),
-        ],
-        bass: {
-          mono: []
-        }
-      }
+      if (lead[0][i]) this.poly.triggerAttackRelease('C4', '16n', time)
+      if (lead[1][i]) this.poly.triggerAttackRelease('D4', '16n', time)
+      if (lead[2][i]) this.poly.triggerAttackRelease('E4', '16n', time)
+      if (lead[3][i]) this.poly.triggerAttackRelease('F4', '16n', time)
+      if (lead[4][i]) this.poly.triggerAttackRelease('G4', '16n', time)
+      if (lead[5][i]) this.poly.triggerAttackRelease('A4', '16n', time)
+      if (lead[6][i]) this.poly.triggerAttackRelease('C5', '16n', time)
+    }, '16n')
 
     return {
       sequencer,
@@ -205,7 +198,7 @@ export default {
       isDraging: false,
       touchTarget: '',
       index: -1,
-      tab: 0,
+      tab: 0
     }
   },
   methods: {
@@ -223,45 +216,49 @@ export default {
       this.$set(arr, i, !arr[i])
     },
     reset() {
-      if(this.tab === 0) {
-        this.sequencer.drum = JSON.parse(JSON.stringify(this.defaultSequencer.drum))
-      } else if( this.tab === 1 ) {
-        this.sequencer.lead = JSON.parse(JSON.stringify(this.defaultSequencer.lead))
+      if (this.tab === 0) {
+        this.sequencer.drum = JSON.parse(
+          JSON.stringify(this.defaultSequencer.drum)
+        )
+      } else if (this.tab === 1) {
+        this.sequencer.lead = JSON.parse(
+          JSON.stringify(this.defaultSequencer.lead)
+        )
       }
     },
     random() {
-      if(this.tab === 0) {
+      if (this.tab === 0) {
         this.sequencer.drum = {
-          kick: this.getRandomArray(16),
-          hihat: this.getRandomArray(16),
-          snare: this.getRandomArray(16),
-          tomL: this.getRandomArray(16),
-          tomM: this.getRandomArray(16),
-          tomH: this.getRandomArray(16),
+          kick: this.getRandomArray(),
+          hihat: this.getRandomArray(),
+          snare: this.getRandomArray(),
+          tomL: this.getRandomArray(),
+          tomM: this.getRandomArray(),
+          tomH: this.getRandomArray()
         }
-      } else if(this.tab === 1) {
-        this.sequencer.lead = [
-          this.getRandomArray(16),
-          this.getRandomArray(16),
-          this.getRandomArray(16),
-          this.getRandomArray(16),
-          this.getRandomArray(16),
-          this.getRandomArray(16),
-          this.getRandomArray(16),
-        ]
+      } else if (this.tab === 1) {
+        this.sequencer.lead = Array.from({ length: 7 }, this.getRandomArray)
       }
     },
-    getEmptyArray(length) {
-      return new Array(length).fill(0)
+    getEmptyArray(length = 16) {
+      return Array.from({ length }, () => 0)
     },
-    getRandomArray(length) {
-      return this.getEmptyArray(length).map(() => Math.random() > 0.80)
+    getRandomArray(length = 16) {
+      return Array.from({ length }, () => Math.random() > 0.8)
     },
     getHexQueryString(arr) {
-      return Number.parseInt(arr.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0)
+      return Number(arr.map(i => ~~i).join(''), 2)
+        .toString(16)
+        .padStart(4, 0)
     },
     getInitQueryData(hexStr) {
-      return hexStr ? Number.parseInt(hexStr, 16).toString(2).padStart(16).split('').map(i => ~~i) : this.getEmptyArray(16)
+      return hexStr
+        ? Number(hexStr, 16)
+            .toString(2)
+            .padStart(16)
+            .split('')
+            .map(i => ~~i)
+        : this.getEmptyArray()
     },
     play() {
       this.isPlaying = true
@@ -272,17 +269,19 @@ export default {
       Tone.Transport.stop()
       this.index = -1
     },
+    scrollTop() {
+      setTimeout(() => window.scrollTo(0, 1), 10)
+    },
 
     // drag event
     mousedown() {
       this.isDraging = true
     },
     mouseenter(arr, i) {
-      if (!this.isDraging) {
-        return
-      }
+      if (!this.isDraging) return
+
       this.clickHandler(arr, i)
-    }, 
+    },
     mouseup() {
       this.isDraging = false
     },
@@ -291,11 +290,12 @@ export default {
       this.touchTarget = e.target.getAttribute('name')
     },
     touchmove(e) {
-      if (!this.isDraging) {
-        return
-      }
+      if (!this.isDraging) return
+
       const { clientX, clientY } = e.targetTouches[0]
-      const name = document.elementFromPoint(clientX, clientY).getAttribute('name')
+      const name = document
+        .elementFromPoint(clientX, clientY)
+        .getAttribute('name')
       if (name) {
         if (name !== this.touchTarget) {
           this.touchTarget = name
@@ -318,12 +318,12 @@ export default {
   watch: {
     BPM: {
       handler(bpm) {
-        if(bpm > 180) bpm = 180
-        else if(bpm < 60) bpm = 60
+        if (bpm > 180) bpm = 180
+        else if (bpm < 60) bpm = 60
         this.BPM = bpm
         Tone.Transport.bpm.value = bpm
         const { d, l } = this.$route.query
-        this.$router.replace({path: '/sequencer', query: { bpm, d, l }})
+        this.$router.replace({ path: '/sequencer', query: { bpm, d, l } })
       }
     },
     sequencer: {
@@ -335,32 +335,27 @@ export default {
           this.getHexQueryString(drum.snare),
           this.getHexQueryString(drum.tomL),
           this.getHexQueryString(drum.tomM),
-          this.getHexQueryString(drum.tomH),
+          this.getHexQueryString(drum.tomH)
         ].join('-')
-        const l = lead.map(row => 
-          this.getHexQueryString(row)
-        ).join('-')
+        const l = lead.map(row => this.getHexQueryString(row)).join('-')
         const { bpm = 120 } = this.$route.query
-        this.$router.replace({path: '/sequencer', query: { bpm, d, l }})
+        this.$router.replace({ path: '/sequencer', query: { bpm, d, l } })
       },
       deep: true
     }
   },
   mounted() {
-    document.querySelector('#menuTrigger').style.display = 'none'
     audioUnlock(Tone.context)
+    document.querySelector('#menuTrigger').style.display = 'none'
     // screen.lockOrientationUniversal = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || screen.orientation.lock;
     // screen.lockOrientationUniversal("landscape-primary").then((res) => {
     //   alert(res)
     // })
-    window.addEventListener("load",function() { 
-      setTimeout(function(){
-      window.scrollTo(0, 1); }, 10);
-    });
+    window.addEventListener('load', this.scrollTop)
   },
   beforeDestroy() {
     Tone.Transport.cancel().stop()
-    window.removeEventListener("load")
+    window.removeEventListener('load', this.scrollTop)
     // screen.unlockOrientation()
   }
 }

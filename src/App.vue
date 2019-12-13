@@ -6,7 +6,7 @@
     </div>
     <div id="content">
       <div id="menuTrigger" @click="isShow = !isShow">
-        <i :class="{'fas': true, 'fa-times': isShow, 'fa-bars': !isShow}"></i>
+        <i class="fas" :class="{'fa-times': isShow, 'fa-bars': !isShow}"></i>
       </div>
       <router-view />
     </div>
