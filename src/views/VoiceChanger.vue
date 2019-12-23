@@ -23,20 +23,19 @@
 <script>
 import audioUnlock from '../lib/audioUnlock'
 export default {
-  name: "VoiceChanger",
+  name: 'VoiceChanger',
   data() {
     const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
     const audioCtx = new AudioContext() // 主控台的概念
     const gainNode = audioCtx.createGain() // 增益節點 控制音量的
     gainNode.gain.value = 1
 
-    return{
+    return {
       isPlaying: false,
-      source: null,
       audioCtx,
       gainNode,
       micStream: null,
-      timeArray: new Float32Array(1024),
+      timeArray: new Float32Array(2048),
 
       pitchRatio: 1.0,
       overlapRatio: 0.5,
@@ -44,7 +43,7 @@ export default {
     }
   },
   methods: {
-    clickHandler(){
+    clickHandler() {
       if (this.isPlaying) {
         this.stop()
       } else {
@@ -61,69 +60,80 @@ export default {
     },
     getUserMic(stream) {
       this.micStream = stream
-      this.source = this.audioCtx.createMediaStreamSource(stream)
-      const processor = this.audioCtx.createScriptProcessor(this.bufferSize, 1, 1)
+
       const buffer = new Float32Array(this.bufferSize * 2)
       const hannWindow = this.hannWindow(this.bufferSize)
+      
+      const source = this.audioCtx.createMediaStreamSource(stream)
+      const processor = this.audioCtx.createScriptProcessor(
+        this.bufferSize,
+        1,
+        1
+      )
 
-      processor.onaudioprocess = (e) => {
-        const input = e.inputBuffer.getChannelData(0);
-        const output = e.outputBuffer.getChannelData(0);
-    
+      processor.onaudioprocess = e => {
+        const input = e.inputBuffer.getChannelData(0)
+        const output = e.outputBuffer.getChannelData(0)
         for (let i = 0; i < input.length; i++) {
-            input[i] *= hannWindow[i]
-
-            buffer[i] = buffer[i + this.bufferSize]
-            buffer[i + this.bufferSize] = 0.0
+          input[i] *= hannWindow[i]
+          buffer[i] = buffer[i + this.bufferSize]
+          buffer[i + this.bufferSize] = 0.0
         }
 
         // 將輸入訊號依照頻率倍率重新計算
         const grainData = new Float32Array(this.bufferSize)
-        for (let i = 0, j = 0.0;
-              i < this.bufferSize;
-              i++, j += parseFloat(this.pitchRatio)) {
-            let index = Math.floor(j) % this.bufferSize
-            let a = input[index]
-            let b = input[(index + 1) % this.bufferSize]
+        for (
+          let i = 0, j = 0.0;
+          i < this.bufferSize;
+          i++, j += parseFloat(this.pitchRatio)
+        ) {
+          let index = Math.floor(j) % this.bufferSize
+          let a = input[index]
+          let b = input[(index + 1) % this.bufferSize]
 
-            grainData[i] += this.linearInterpolation(a, b, j % 1.0) * hannWindow[i]
+          grainData[i] +=
+            this.linearInterpolation(a, b, j % this.pitchRatio) * hannWindow[i]
         }
-
         // 利用重疊，讓聲音聽起來較連續
-        for (let i = 0; i < this.bufferSize; i += Math.round(this.bufferSize * (this.overlapRatio))) {
+        for (
+          let i = 0;
+          i < this.bufferSize;
+          i += Math.round(this.bufferSize * this.overlapRatio)
+        ) {
           for (let j = 0; j <= this.bufferSize; j++) {
-              buffer[i + j] += grainData[j]
+            buffer[i + j] += grainData[j]
           }
         }
 
         // 將 buffer 內前半資料丟出去
         for (let i = 0; i < this.bufferSize; i++) {
-          output[i] = buffer[i]
+          output[i] = buffer[i] || 0
         }
         this.timeArray = output
       }
-      this.source.connect(processor)
+      source.connect(processor)
       processor.connect(this.gainNode)
     },
     hannWindow(length) {
       const window = new Float32Array(length)
-      for (var i = 0; i < length; i++) {
-          window[i] = 0.5 * (1 - Math.cos(2 * Math.PI * i / (length - 1)))
+      for (let i = 0; i < length; i++) {
+        window[i] = 0.5 * (1 - Math.cos((2 * Math.PI * i) / (length - 1)))
       }
-      return window;
+      return window
     },
     linearInterpolation(a, b, t) {
-      return a + (b - a) * t;
+      return a + (b - a) * t
     }
   },
   mounted() {
     audioUnlock(this.audioCtx)
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    .then(this.getUserMic)
-    .catch(e => console.log(e))
+    navigator.mediaDevices
+      .getUserMedia({ audio: true, video: false })
+      .then(this.getUserMic)
+      .catch(e => console.log(e))
   },
   beforeDestroy() {
-    if(this.micStream) this.micStream.getAudioTracks()[0].stop()
+    if (this.micStream) this.micStream.getAudioTracks()[0].stop()
   }
 }
 </script>
