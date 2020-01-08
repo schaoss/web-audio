@@ -63,7 +63,7 @@ export default {
 
       const buffer = new Float32Array(this.bufferSize * 2)
       const hannWindow = this.hannWindow(this.bufferSize)
-      
+
       const source = this.audioCtx.createMediaStreamSource(stream)
       const processor = this.audioCtx.createScriptProcessor(
         this.bufferSize,
