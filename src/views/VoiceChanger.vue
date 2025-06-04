@@ -20,122 +20,104 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  name: 'VoiceChanger',
-  data() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
-    const audioCtx = new AudioContext() // 主控台的概念
-    const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-    gainNode.gain.value = 1
 
-    return {
-      isPlaying: false,
-      audioCtx,
-      gainNode,
-      micStream: null,
-      timeArray: new Float32Array(2048),
+const AudioContext = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContext()
+const gainNode = audioCtx.createGain()
+gainNode.gain.value = 1
 
-      pitchRatio: 1.0,
-      overlapRatio: 0.5,
-      bufferSize: 2048
-    }
-  },
-  methods: {
-    clickHandler() {
-      if (this.isPlaying) {
-        this.stop()
-      } else {
-        this.play()
-      }
-    },
-    play() {
-      this.isPlaying = true
-      this.gainNode.connect(this.audioCtx.destination)
-    },
-    stop() {
-      this.isPlaying = false
-      this.gainNode.disconnect(this.audioCtx.destination)
-    },
-    getUserMic(stream) {
-      this.micStream = stream
+const isPlaying = ref(false)
+let micStream = null
+const timeArray = ref(new Float32Array(2048))
 
-      const buffer = new Float32Array(this.bufferSize * 2)
-      const hannWindow = this.hannWindow(this.bufferSize)
+const pitchRatio = ref(1.0)
+const overlapRatio = ref(0.5)
+const bufferSize = 2048
 
-      const source = this.audioCtx.createMediaStreamSource(stream)
-      const processor = this.audioCtx.createScriptProcessor(
-        this.bufferSize,
-        1,
-        1
-      )
-
-      processor.onaudioprocess = e => {
-        const input = e.inputBuffer.getChannelData(0)
-        const output = e.outputBuffer.getChannelData(0)
-        for (let i = 0; i < input.length; i++) {
-          input[i] *= hannWindow[i]
-          buffer[i] = buffer[i + this.bufferSize]
-          buffer[i + this.bufferSize] = 0.0
-        }
-
-        // 將輸入訊號依照頻率倍率重新計算
-        const grainData = new Float32Array(this.bufferSize)
-        for (
-          let i = 0, j = 0.0;
-          i < this.bufferSize;
-          i++, j += parseFloat(this.pitchRatio)
-        ) {
-          let index = Math.floor(j) % this.bufferSize
-          let a = input[index]
-          let b = input[(index + 1) % this.bufferSize]
-
-          grainData[i] +=
-            this.linearInterpolation(a, b, j % this.pitchRatio) * hannWindow[i]
-        }
-        // 利用重疊，讓聲音聽起來較連續
-        for (
-          let i = 0;
-          i < this.bufferSize;
-          i += Math.round(this.bufferSize * this.overlapRatio)
-        ) {
-          for (let j = 0; j <= this.bufferSize; j++) {
-            buffer[i + j] += grainData[j]
-          }
-        }
-
-        // 將 buffer 內前半資料丟出去
-        for (let i = 0; i < this.bufferSize; i++) {
-          output[i] = buffer[i] || 0
-        }
-        this.timeArray = output
-      }
-      source.connect(processor)
-      processor.connect(this.gainNode)
-    },
-    hannWindow(length) {
-      const window = new Float32Array(length)
-      for (let i = 0; i < length; i++) {
-        window[i] = 0.5 * (1 - Math.cos((2 * Math.PI * i) / (length - 1)))
-      }
-      return window
-    },
-    linearInterpolation(a, b, t) {
-      return a + (b - a) * t
-    }
-  },
-  mounted() {
-    audioUnlock(this.audioCtx)
-    navigator.mediaDevices
-      .getUserMedia({ audio: true, video: false })
-      .then(this.getUserMic)
-      .catch(e => console.log(e))
-  },
-  beforeDestroy() {
-    if (this.micStream) this.micStream.getAudioTracks()[0].stop()
+function clickHandler() {
+  if (isPlaying.value) {
+    stop()
+  } else {
+    play()
   }
 }
+
+function play() {
+  isPlaying.value = true
+  gainNode.connect(audioCtx.destination)
+}
+
+function stop() {
+  isPlaying.value = false
+  gainNode.disconnect(audioCtx.destination)
+}
+
+function getUserMic(stream) {
+  micStream = stream
+
+  const buffer = new Float32Array(bufferSize * 2)
+  const hannWindow = hannWindowFn(bufferSize)
+
+  const source = audioCtx.createMediaStreamSource(stream)
+  const processor = audioCtx.createScriptProcessor(bufferSize, 1, 1)
+
+  processor.onaudioprocess = e => {
+    const input = e.inputBuffer.getChannelData(0)
+    const output = e.outputBuffer.getChannelData(0)
+    for (let i = 0; i < input.length; i++) {
+      input[i] *= hannWindow[i]
+      buffer[i] = buffer[i + bufferSize]
+      buffer[i + bufferSize] = 0.0
+    }
+
+    const grainData = new Float32Array(bufferSize)
+    for (let i = 0, j = 0.0; i < bufferSize; i++, j += parseFloat(pitchRatio.value)) {
+      const index = Math.floor(j) % bufferSize
+      const a = input[index]
+      const b = input[(index + 1) % bufferSize]
+      grainData[i] += linearInterpolation(a, b, j % pitchRatio.value) * hannWindow[i]
+    }
+    for (let i = 0; i < bufferSize; i += Math.round(bufferSize * overlapRatio.value)) {
+      for (let j = 0; j <= bufferSize; j++) {
+        buffer[i + j] += grainData[j]
+      }
+    }
+
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = buffer[i] || 0
+    }
+    timeArray.value = output
+  }
+  source.connect(processor)
+  processor.connect(gainNode)
+}
+
+function hannWindowFn(length) {
+  const window = new Float32Array(length)
+  for (let i = 0; i < length; i++) {
+    window[i] = 0.5 * (1 - Math.cos((2 * Math.PI * i) / (length - 1)))
+  }
+  return window
+}
+
+function linearInterpolation(a, b, t) {
+  return a + (b - a) * t
+}
+
+onMounted(() => {
+  audioUnlock(audioCtx)
+  navigator.mediaDevices
+    .getUserMedia({ audio: true, video: false })
+    .then(getUserMic)
+    .catch(e => console.log(e))
+})
+
+onBeforeUnmount(() => {
+  if (micStream) micStream.getAudioTracks()[0].stop()
+})
 </script>
 <style lang="scss" scoped>
 #voice-changer {

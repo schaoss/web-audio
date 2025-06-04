@@ -9,71 +9,65 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import Tone from 'tone'
 import { chord } from 'tonal-detect'
-
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  name: 'tone',
-  data() {
-    const noteArr = [
-      'C3',
-      'D3',
-      'E3',
-      'F3',
-      'G3',
-      'A4',
-      'C4',
-      'D4',
-      'E4',
-      'F4',
-      'G4',
-      'C5'
-    ]
-    const polySynth = new Tone.PolySynth(6, Tone.Synth).toMaster()
-    const pattern = new Tone.Pattern(
-      (time, note) => {
-        polySynth.triggerAttackRelease(note, '1n')
-        this.$set(this.notes, parseInt((time * 2) % 4), note)
-      },
-      noteArr,
-      'randomOnce'
-    )
-    return {
-      isPlaying: false,
-      notes: ['-', '-', '-', '-'],
-      pattern
-    }
+
+const noteArr = [
+  'C3',
+  'D3',
+  'E3',
+  'F3',
+  'G3',
+  'A4',
+  'C4',
+  'D4',
+  'E4',
+  'F4',
+  'G4',
+  'C5'
+]
+
+const polySynth = new Tone.PolySynth(6, Tone.Synth).toMaster()
+
+const notes = ref(['-', '-', '-', '-'])
+const isPlaying = ref(false)
+
+const pattern = new Tone.Pattern(
+  (time, note) => {
+    polySynth.triggerAttackRelease(note, '1n')
+    notes.value[parseInt((time * 2) % 4)] = note
   },
-  methods: {
-    clickHandler() {
-      if (this.isPlaying) {
-        this.pattern.stop()
-        this.notes = ['-', '-', '-', '-']
-      } else {
-        this.pattern.start()
-      }
-      this.isPlaying = !this.isPlaying
-    }
-  },
-  computed: {
-    getChord() {
-      if (this.notes.every(note => note !== '-')) {
-        return chord(this.notes)[0] || '-'
-      } else return '-'
-    }
-  },
-  mounted() {
-    audioUnlock(Tone.context)
-    Tone.Transport.bpm.value = 80
-    Tone.Transport.start()
-  },
-  beforeDestroy() {
-    this.pattern.cancel().stop().dispose()
-    Tone.Transport.cancel().stop()
+  noteArr,
+  'randomOnce'
+)
+
+function clickHandler() {
+  if (isPlaying.value) {
+    pattern.stop()
+    notes.value = ['-', '-', '-', '-']
+  } else {
+    pattern.start()
   }
+  isPlaying.value = !isPlaying.value
 }
+
+const getChord = computed(() => {
+  return notes.value.every(n => n !== '-') ? chord(notes.value)[0] || '-' : '-'
+})
+
+onMounted(() => {
+  audioUnlock(Tone.context)
+  Tone.Transport.bpm.value = 80
+  Tone.Transport.start()
+})
+
+onBeforeUnmount(() => {
+  pattern.cancel().stop().dispose()
+  Tone.Transport.cancel().stop()
+})
 </script>
 
 <style lang="scss" scoped>

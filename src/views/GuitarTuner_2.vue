@@ -15,137 +15,134 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  name: "GuitarTuner2",
-  data() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
-    const audioCtx = new AudioContext() // 主控台的概念
-    const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-    const analyser = audioCtx.createAnalyser()
 
-    gainNode.gain.value = 0
-    analyser.fftSize = 2048
-    analyser.connect(gainNode)
-    return{
-      isPlaying: false,
-      isMute: false,
-      source: null,
-      audioCtx,
-      gainNode,
-      analyser,
-      micStream: null,
-      timeArray: new Float32Array(analyser.fftSize / 2),
+const AudioContext = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContext()
+const gainNode = audioCtx.createGain()
+const analyser = audioCtx.createAnalyser()
 
-      semiTone: null,
-      centsOff: 0,
+gainNode.gain.value = 0
+analyser.fftSize = 2048
+analyser.connect(gainNode)
+
+const isPlaying = ref(false)
+let source = null
+let micStream = null
+const timeArray = ref(new Float32Array(analyser.fftSize / 2))
+
+const semiTone = ref(null)
+const centsOff = ref(0)
+
+const getInputFrequency = computed(() => {
+  const MAX_SAMPLES = timeArray.value.length / 2
+  const GOOD_ENOUGH_CORRELATION = 0.9
+  const correlations = new Array(MAX_SAMPLES)
+  let best_offset = -1
+  let best_correlation = 0
+  let last_correlation = 1
+  let foundGoodCorrelation = false
+
+  if(timeArray.value.reduce((rms, d) => rms += d ** 2, 0) < 0.01) return -1
+
+  for(let offset = 0; offset < MAX_SAMPLES; offset++) {
+    let correlation = 0
+    for(let n = 0; n < MAX_SAMPLES; n++) {
+      correlation += Math.abs((timeArray.value[n])-(timeArray.value[n + offset]))
     }
-  },
-  computed: {
-    getInputFrequency() {
-      const MAX_SAMPLES = this.timeArray.length / 2 // 由於需要重複測試才能判斷正確波長，故只能做到資料長度的一半
-      const GOOD_ENOUGH_CORRELATION = 0.9 // 相關係數要大於多少才接受
-      const correlations = new Array(MAX_SAMPLES)
-      let best_offset = -1
-      let best_correlation = 0
-      let last_correlation = 1
-      let foundGoodCorrelation  = false // 旗標 紀錄找到好的結果沒
+    correlation = 1 - (correlation / MAX_SAMPLES)
+    correlations[offset] = correlation
 
-      if(this.timeArray.reduce((rms, d) => rms += d ** 2, 0) < 0.01) return -1
-
-      for(let offset = 0; offset < MAX_SAMPLES; offset++) {
-        let correlation = 0
-        for(let n = 0; n < MAX_SAMPLES; n++) {
-          correlation += Math.abs((this.timeArray[n])-(this.timeArray[n + offset]))
-        }
-        correlation = 1 - (correlation / MAX_SAMPLES) // 相關係數
-        correlations[offset] = correlation
-
-        if ((correlation > GOOD_ENOUGH_CORRELATION) && (correlation > last_correlation)) {
-          // 當找到足夠好的結果的時候
-          foundGoodCorrelation = true
-          if (correlation > best_correlation) {
-            best_correlation = correlation
-            best_offset = offset
-          }
-        } else if (foundGoodCorrelation) {
-          // 前一組為足夠好的結果，且當前的不夠好時
-          const shift = (correlations[best_offset + 1] - correlations[best_offset - 1]) / correlations[best_offset];  
-          return Math.round(this.audioCtx.sampleRate / (best_offset + (8 * shift)))
-        }
-        // 不好的結果
-        last_correlation = correlation
+    if ((correlation > GOOD_ENOUGH_CORRELATION) && (correlation > last_correlation)) {
+      foundGoodCorrelation = true
+      if (correlation > best_correlation) {
+        best_correlation = correlation
+        best_offset = offset
       }
-      if (best_correlation > 0.01) {
-        return Math.round(this.audioCtx.sampleRate / best_offset)
-      }
-      return -1;
-    },
-    getFrequencyStr() {
-      return this.getInputFrequency > 0 ? this.getInputFrequency : '-'
-    },
-    getNoteStr() {
-      const noteStr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-      return this.semiTone ? noteStr[this.semiTone % 12] : '-'
-    },
-    getCentsOffStr() {
-      return this.centsOff < 0
-      ? Math.abs(this.centsOff) + ' b'
-      : this.centsOff > 0 
-        ? Math.abs(this.centsOff) + ' #'
-        : '-'
+    } else if (foundGoodCorrelation) {
+      const shift = (correlations[best_offset + 1] - correlations[best_offset - 1]) / correlations[best_offset]
+      return Math.round(audioCtx.sampleRate / (best_offset + (8 * shift)))
     }
-  },
-  methods: {
-    clickHandler(){
-      if (this.isPlaying) {
-        this.stop()
-      } else {
-        this.play()
-      }
-    },
-    play() {
-      this.isPlaying = true
-      this.gainNode.connect(this.audioCtx.destination)
-      requestAnimationFrame(this.getMicData)
-    },
-    stop() {
-      this.isPlaying = false
-      this.gainNode.disconnect(this.audioCtx.destination)
-    },
-    getUserMic(stream) {
-      this.micStream = stream
-      this.source = this.audioCtx.createMediaStreamSource(stream)
-      this.source.connect(this.analyser)
-    },
-    getMicData(){
-      this.timeArray = new Float32Array(this.analyser.fftSize)
-      this.analyser.getFloatTimeDomainData(this.timeArray)
-      this.semiTone = this.getSemitone(this.getInputFrequency)
-      this.centsOff = this.getCentsOffFromPitch(this.getInputFrequency, this.semiTone)
-      if (this.isPlaying) requestAnimationFrame(this.getMicData)
-    },
-    getSemitone(f) {
-      return Math.round(12 * (Math.log(f / 440) / Math.log(2) )) + 69
-    },
-    getFrequencyFromSemitone(note) {
-	    return 440 * Math.pow(2, (note - 69) / 12)
-    },
-    getCentsOffFromPitch(f, note) {
-      return Math.floor(1200 * Math.log(f / this.getFrequencyFromSemitone(note)) / Math.log(2))
-    }
-  },
-  mounted() {
-    audioUnlock(this.audioCtx)
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    .then(this.getUserMic)
-    .catch(e => console.log(e))
-  },
-  beforeDestroy() {
-    if(this.micStream) this.micStream.getAudioTracks()[0].stop()
+    last_correlation = correlation
+  }
+  if (best_correlation > 0.01) {
+    return Math.round(audioCtx.sampleRate / best_offset)
+  }
+  return -1;
+})
+
+const getFrequencyStr = computed(() => getInputFrequency.value > 0 ? getInputFrequency.value : '-')
+
+const getNoteStr = computed(() => {
+  const noteStr = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+  return semiTone.value ? noteStr[semiTone.value % 12] : '-'
+})
+
+const getCentsOffStr = computed(() => {
+  return centsOff.value < 0
+    ? Math.abs(centsOff.value) + ' b'
+    : centsOff.value > 0
+      ? Math.abs(centsOff.value) + ' #'
+      : '-'
+})
+
+function clickHandler(){
+  if (isPlaying.value) {
+    stop()
+  } else {
+    play()
   }
 }
+
+function play() {
+  isPlaying.value = true
+  gainNode.connect(audioCtx.destination)
+  requestAnimationFrame(getMicData)
+}
+
+function stop() {
+  isPlaying.value = false
+  gainNode.disconnect(audioCtx.destination)
+}
+
+function getUserMic(stream) {
+  micStream = stream
+  source = audioCtx.createMediaStreamSource(stream)
+  source.connect(analyser)
+}
+
+function getMicData(){
+  timeArray.value = new Float32Array(analyser.fftSize)
+  analyser.getFloatTimeDomainData(timeArray.value)
+  semiTone.value = getSemitone(getInputFrequency.value)
+  centsOff.value = getCentsOffFromPitch(getInputFrequency.value, semiTone.value)
+  if (isPlaying.value) requestAnimationFrame(getMicData)
+}
+
+function getSemitone(f) {
+  return Math.round(12 * (Math.log(f / 440) / Math.log(2) )) + 69
+}
+
+function getFrequencyFromSemitone(note) {
+  return 440 * Math.pow(2, (note - 69) / 12)
+}
+
+function getCentsOffFromPitch(f, note) {
+  return Math.floor(1200 * Math.log(f / getFrequencyFromSemitone(note)) / Math.log(2))
+}
+
+onMounted(() => {
+  audioUnlock(audioCtx)
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    .then(getUserMic)
+    .catch(e => console.log(e))
+})
+
+onBeforeUnmount(() => {
+  if(micStream) micStream.getAudioTracks()[0].stop()
+})
 </script>
 <style lang="scss" scoped>
 #guitar-tuner {
