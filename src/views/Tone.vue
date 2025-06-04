@@ -11,7 +11,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import Tone from 'tone'
+import * as Tone from 'tone'
 import { chord } from 'tonal-detect'
 import audioUnlock from '../lib/audioUnlock'
 

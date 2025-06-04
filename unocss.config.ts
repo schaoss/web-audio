@@ -1,7 +1,11 @@
-import { defineConfig } from 'unocss'
+import { defineConfig, presetUno, presetIcons, transformerVariantGroup } from 'unocss'
 
 export default defineConfig({
-  theme: {
-  },
-  rules: []
+  presets: [
+    presetUno(),
+    presetIcons(),
+  ],
+  transformers: [
+    transformerVariantGroup(),
+  ],
 })
