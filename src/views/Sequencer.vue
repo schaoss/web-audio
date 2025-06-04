@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import Tone from 'tone'
+import * as Tone from 'tone'
 import Snare from '../lib/snare.js'
 import audioUnlock from '../lib/audioUnlock'
 export default {

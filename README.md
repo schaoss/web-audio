@@ -19,7 +19,10 @@ HackMD 好讀版在 [這裡](https://hackmd.io/c/Hksoyrxhm/%2FZyRVQ2LOQjenkhZG28
 
 ## 執行專案
 
+適用於 Node.js 24 或以上版本，使用 Vite 搭配 pnpm。專案樣式由 [UnoCSS](https://github.com/unocss/unocss) 控管。
+
 ```
-yarn install
-yarn run serve
+pnpm install
+pnpm run dev
+pnpm run build
 ```

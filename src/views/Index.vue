@@ -1,8 +1,8 @@
 <template>
-  <div id="index">
+  <div id="index" class="max-h-screen overflow-auto">
     <h1> Web Audio </h1>
-    <div class="content">
-      <div>
+    <div class="content w-[50vw] min-w-[300px] mx-auto my-[40px]">
+      <div class="text-left leading-[1.8] whitespace-normal">
         <p>如同一道好料理需要具備色、香、味，一個好網站除了好內容之外，也需要透過互動性更高的視覺、聽覺，來與內容相輔相成。</p>
         <p>本系列將從 Web Audio API 出發，以說明搭配範例，從實作中逐步認識 API 規格；並挑選數個主流、有趣的 Audio 相關套件，透過 JavaScript，玩轉聲音於程式的字裡行間。</p>
         <p>歡迎您與我一同踏上這趟旅程，讓我們於科技與藝術的交會處相逢，一起在音樂中肆意漫遊。</p>
@@ -18,22 +18,3 @@
 <script setup>
 </script>
 
-<style lang="scss" scoped>
-#index {
-  max-height: 100vh;
-  overflow: auto;
-  .content {
-    width: 50vw;
-    min-width: 300px;
-    margin: 40px auto;
-    > div {
-      text-align: left;
-      line-height: 1.8;
-      white-space: normal;
-    }
-    img {
-      width: 100%;
-    }
-  }
-}
-</style>
