@@ -21,7 +21,7 @@
         </div>
         <div class="item">
           <label for="detune">detune : <span>{{detune}}</span> </label>
-          <input type="range" min="-2000" max="2000" step="1" vid="detuneRange" v-model="detune" @input="changeHandler">
+          <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler">
         </div>
       </div>
       <div class="audio-note">
