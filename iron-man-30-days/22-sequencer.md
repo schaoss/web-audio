@@ -41,10 +41,10 @@ getRandomArray(length) {
 先前也提過，可以透過：
 
 ```javascript=
-Tone.Transport.bpm.value = BPM
+Tone.getTransport().bpm.value = BPM
 ```
 
-來改變 Transport 的速度。
+來改變 getTransport() 的速度。
 
 > [BPM](<https://zh.wikipedia.org/wiki/%E9%80%9F%E5%BA%A6_(%E9%9F%B3%E6%A8%82)#%E9%87%8F%E5%BA%A6%E9%9F%B3%E6%A8%82%E9%80%9F%E5%BA%A6>)，即 beats per minute，每分鐘多少拍。
 
@@ -57,10 +57,10 @@ Tone.Transport.bpm.value = BPM
 
 有了 BPM 調整，當然要提示一下當然進行到哪裡囉。
 
-我們先前在設定 Tone.js 的 Transport 時，已經在程式碼中宣告了 `index`，這邊因應拍號調整的功能，要稍微更換一下實作方式：
+我們先前在設定 Tone.js 的 getTransport() 時，已經在程式碼中宣告了 `index`，這邊因應拍號調整的功能，要稍微更換一下實作方式：
 
 ```javascript=
-Tone.Transport.scheduleRepeat((time) => {
+Tone.getTransport().scheduleRepeat((time) => {
   this.index = ++this.index % 16
   ...
 }, "16n")
@@ -104,7 +104,7 @@ Tone.Transport.scheduleRepeat((time) => {
 這邊利用 Tone.js 的 `PolySynth` 來一次完成一整組音源的建立：
 
 ```javascript=
-const poly = new Tone.PolySynth(8, Tone.Synth, {
+const poly = new Tone.PolySynth({ maxPolyphony: 8 }, Tone.Synth, {
   oscillator: {
     type: 'triangle'
   },
@@ -114,7 +114,7 @@ const poly = new Tone.PolySynth(8, Tone.Synth, {
     sustain: 0.3,
     release: 0.02
   }
-}).toMaster()
+}).toDestination()
 ```
 
 同樣透過資料驅動聲音的觸發

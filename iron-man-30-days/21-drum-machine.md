@@ -22,14 +22,14 @@ const kick = new Tone.MembraneSynth({
   envelope: {
     sustain: 0.2
   }
-}).toMaster()
+}).toDestination()
 
 const hihat = new Tone.NoiseSynth({
   playbackRate: 5,
   envelope: {
     sustain: 0.0001
   }
-}).toMaster()
+}).toDestination()
 ```
 
 透過 Tone.js 已經封裝好的 `MembraneSynth` 及 `NoiseSynth` 兩種合成器，我們只需要逐步調整欲設定的參數，就能夠慢慢製作出想要的聲響啦。
@@ -68,7 +68,7 @@ const poly = new PolySynth(6, Synth, {
     release: 0.08,
     releaseCurve: 'exponential'
   }
-}).toMaster()
+}).toDestination()
 
 trigger(time) {
   this.noise.triggerAttack(time)
@@ -78,7 +78,7 @@ trigger(time) {
 ...
 
 // Usage
-const snare = new Snare().toMaster()
+const snare = new Snare().toDestination()
 ```
 
 由於要做出綜合的質感，必須同時觸發兩種聲響。
@@ -120,8 +120,8 @@ const defaultSequencer = {
 最後就是讓資料驅動各個樂器在拍點上發出聲響：
 
 ```javascript=
-Tone.Transport.scheduleRepeat(time => {
-  let i = Math.round((Tone.Transport.getSecondsAtTime() * (this.BPM / 60)) % 16)
+Tone.getTransport().scheduleRepeat(time => {
+  let i = Math.round((Tone.getTransport().getSecondsAtTime() * (this.BPM / 60)) % 16)
   this.index = i
   const {
     drum: {

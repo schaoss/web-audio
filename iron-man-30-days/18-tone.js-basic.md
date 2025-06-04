@@ -9,15 +9,15 @@
 例如在昨天的例子中，我們透過
 
 ```javascript=
-const synth = new Tone.Synth().toMaster()
+const synth = new Tone.Synth().toDestination()
 ```
 
-來宣告一個合成器，其中的 `toMaster()` 的用途，就如同先前在 Web Audio API 中透過 `.connect(audioCtx.destination)` 做的事，將音源連接到播放裝置上。
+來宣告一個合成器，其中的 `.toDestination()` 的用途，就如同先前在 Web Audio API 中透過 `.connect(audioCtx.destination)` 做的事，將音源連接到播放裝置上。
 
 如果要新增音效處理節點，也是同樣的透過 `connect()` 方法，將節點連接。例如將合成器連結到 [wah wah](<https://en.wikipedia.org/wiki/Wah-wah_(music)>) 上：
 
 ```javascript=
-const autoWah = new Tone.AutoWah(300, 6, -30).toMaster()
+const autoWah = new Tone.AutoWah(300, 6, -30).toDestination()
 const synth = new Tone.Synth().connect(autoWah)
 ```
 
@@ -32,7 +32,7 @@ const synth = new Tone.Synth().connect(autoWah)
 同樣的，回顧一下昨天的範例：
 
 ```javascript=
-const synth = new Tone.Synth().toMaster()
+const synth = new Tone.Synth().toDestination()
 
 synth.triggerAttackRelease('C4', '8n')
 ```

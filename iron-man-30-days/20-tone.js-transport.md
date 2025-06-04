@@ -6,28 +6,28 @@
 
 好啦，那來進入今天的正題 - 排程吧！
 
-### Transport
+### getTransport()
 
-Tone.js 提供了 `Transport` 這個時間管理介面，我們可以將播放聲音的事件，註冊在 Transport 的特定時間點上，當時間到了，聲音自己就會播出來了。~~就跟我們的 [團隊](https://ithelp.ithome.com.tw/ironman/signup/team/41) 一樣呢！時間到了文章自然就會產出來了 XD~~
+Tone.js 提供了 `getTransport()` 這個時間管理介面，我們可以將播放聲音的事件，註冊在 getTransport() 的特定時間點上，當時間到了，聲音自己就會播出來了。~~就跟我們的 [團隊](https://ithelp.ithome.com.tw/ironman/signup/team/41) 一樣呢！時間到了文章自然就會產出來了 XD~~
 
 使用上也還算簡單好懂：
 
 ```javascript=
-Tone.Transport.schedule(function(time){
+Tone.getTransport().schedule(function(time){
   polySynth.triggerAttackRelease('C4', "8n")
 }, 0)
 
 ...
 
-Tone.Transport.start() // 令 Transport 開始計時
+Tone.getTransport().start() // 令 getTransport() 開始計時
 ```
 
-這樣就會把 播放指定內容的事件，註冊在 Transport 開始的時候。
+這樣就會把 播放指定內容的事件，註冊在 getTransport() 開始的時候。
 
 如果是週期性的事件，可以換成使用 `scheduleRepeat` 來自動排程播放
 
 ```javascript=
-Tone.Transport.scheduleRepeat(
+Tone.getTransport().scheduleRepeat(
   function(time) {
     polySynth.triggerAttackRelease('C4', '8n')
   },
@@ -41,8 +41,8 @@ Tone.Transport.scheduleRepeat(
 前幾天有稍微提到，預設的速度是 120 BPM，拍號則是 4/4 拍。如果需要更改設定，可以透過：
 
 ```javascript=
-Tone.Transport.bpm.value = 80
-Tone.Transport.timeSignature = 3
+Tone.getTransport().bpm.value = 80
+Tone.getTransport().timeSignature = 3
 ```
 
 這樣來調整。
@@ -51,7 +51,7 @@ Tone.Transport.timeSignature = 3
 
 ### Loop
 
-Tone.js 裡，也將自己的 Transport 在包裝成幾種更高階的 API，使用上也更加方便。`Loop` 就是其中一個：
+Tone.js 裡，也將自己的 getTransport() 在包裝成幾種更高階的 API，使用上也更加方便。`Loop` 就是其中一個：
 
 ```javascript=
 const loop = new Tone.Loop(function(time) {
@@ -60,10 +60,10 @@ const loop = new Tone.Loop(function(time) {
 
 loop.start('1m').stop('4m')
 
-Tone.Transport.start()
+Tone.getTransport().start()
 ```
 
-上面的例子中，Loop 會自動在第一小節結束時開始播放，在第四小節停止。使用時要記得，Loop 是 Transport 包裝過的方法，因此還是依賴在 Transport 的時間軸上，要記得呼叫 `Tone.Transport.start()`，才會開始播放喔！
+上面的例子中，Loop 會自動在第一小節結束時開始播放，在第四小節停止。使用時要記得，Loop 是 getTransport() 包裝過的方法，因此還是依賴在 getTransport() 的時間軸上，要記得呼叫 `Tone.getTransport().start()`，才會開始播放喔！
 
 ### Pattern
 
@@ -79,7 +79,7 @@ const pattern = new Tone.Pattern(
 )
 
 pattern.start()
-Tone.Transport.start()
+Tone.getTransport().start()
 ```
 
 pattern 接受三個變數，callback function、音高陣列、播放的模式。前兩個應該都可以顧名思義，最後一個的播放模式指的是音高陣列的使用順序；例如由高到低、由低到高、高到低到高，甚至是亂數播放，全看創作者的創意發揮。
@@ -105,7 +105,7 @@ const noteArr = [
   'G4',
   'C5'
 ]
-const polySynth = new Tone.PolySynth(6, Tone.Synth).toMaster()
+const polySynth = new Tone.PolySynth({ maxPolyphony: 6 }, Tone.Synth).toDestination()
 const pattern = new Tone.Pattern(
   (time, note) => {
     polySynth.triggerAttackRelease(note, '1n')
@@ -130,7 +130,7 @@ import { chord } from "tonal-detect"
 chord(this.notes)
 ```
 
-這樣就搞定啦！其他部分就是 Vue 的點擊事件綁定，觸發播放、暫停。要注意的同樣就是要記得透過 `Tone.Transport.start()` 讓 Transport 的計時器開始執行，才會開始運作喔～
+這樣就搞定啦！其他部分就是 Vue 的點擊事件綁定，觸發播放、暫停。要注意的同樣就是要記得透過 `Tone.getTransport().start()` 讓 getTransport() 的計時器開始執行，才會開始運作喔～
 
 來看結果吧～
 

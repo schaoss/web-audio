@@ -75,7 +75,7 @@ watch: {
       if(bpm > 180) bpm = 180
       else if(bpm < 60) bpm = 60
       this.BPM = bpm
-      Tone.Transport.bpm.value = bpm
+      Tone.getTransport().bpm.value = bpm
       const { d, l } = this.$route.query
       this.$router.replace({path: '/sequencer', query: { bpm, d, l }})
     }

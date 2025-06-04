@@ -65,7 +65,7 @@ Scribbletune.clip({
   pattern: '[xx][x-]'.repeat(8)
 }).start()
 
-Tone.Transport.start()
+Tone.getTransport().start()
 ```
 
 這樣就完成囉。

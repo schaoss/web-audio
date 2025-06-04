@@ -7,23 +7,13 @@
   </div>
 </template>
 
-<script>
-import * as Tone from 'tone';
-export default {
-  name: 'tone',
-  data() {
-    const synth = new Tone.Synth().toMaster()
-    return {
-      synth
-    }
-  },
-  methods: {
-    clickHandler() {
-      this.synth.triggerAttackRelease('C4', '8n')
-    }
-  },
-  mounted() {
-  }
+<script setup>
+import * as Tone from 'tone'
+import { ref } from 'vue'
+
+const synth = new Tone.Synth().toDestination()
+function clickHandler() {
+  synth.triggerAttackRelease('C4', '8n')
 }
 </script>
 

@@ -49,10 +49,10 @@ const params = { pattern: 'xx[xx]' }
 kickChannel.addClip(params, 4) // index
 ```
 
-當然，記得要先讓 Tone.js 的 Transport 開始運作，Scribbletune 的播放事件才會被觸發喔！
+當然，記得要先讓 Tone.js 的 getTransport() 開始運作，Scribbletune 的播放事件才會被觸發喔！
 
 ```javascript=
-Tone.Transport.start()
+Tone.getTransport().start()
 ```
 
 ### Session

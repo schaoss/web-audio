@@ -30,7 +30,7 @@ const noteArr = [
   'C5'
 ]
 
-const polySynth = new Tone.PolySynth(6, Tone.Synth).toMaster()
+const polySynth = new Tone.PolySynth({ maxPolyphony: 6 }, Tone.Synth).toDestination()
 
 const notes = ref(['-', '-', '-', '-'])
 const isPlaying = ref(false)
@@ -59,14 +59,14 @@ const getChord = computed(() => {
 })
 
 onMounted(() => {
-  audioUnlock(Tone.context)
-  Tone.Transport.bpm.value = 80
-  Tone.Transport.start()
+  audioUnlock(Tone.getContext())
+  Tone.getTransport().bpm.value = 80
+  Tone.getTransport().start()
 })
 
 onBeforeUnmount(() => {
   pattern.cancel().stop().dispose()
-  Tone.Transport.cancel().stop()
+  Tone.getTransport().cancel().stop()
 })
 </script>
 

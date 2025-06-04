@@ -27,7 +27,7 @@ onMounted(() => {
     waveColor: 'violet',
     progressColor: 'purple',
   })
-  wavesurfer.value.load(require('../static/Epic_Sax_Gay.mp3'))
+  wavesurfer.value.load(import('../static/Epic_Sax_Gay.mp3'))
   wavesurfer.value.on('ready', () => {
     isReady.value = true
   })

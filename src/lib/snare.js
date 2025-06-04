@@ -23,7 +23,7 @@ export default class Snare {
       }
     }).connect(lowPass)
 
-    const poly = new PolySynth(6, Synth, {
+    const poly = new PolySynth({ maxPolyphony: 6 }, Synth, {
       volume: volume + 6,
       oscillator: {
         partials: [0, 2, 3, 4]
@@ -49,9 +49,9 @@ export default class Snare {
     return this
   }
 
-  toMaster() {
-    this.noise.toMaster()
-    this.poly.toMaster()
+  toDestination() {
+    this.noise.toDestination()
+    this.poly.toDestination()
     return this
   }
 }

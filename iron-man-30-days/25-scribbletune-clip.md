@@ -11,7 +11,7 @@ Scribbletune.clip({
   pattern: '[xx][x-]'
 }).start()
 
-Tone.Transport.start()
+Tone.getTransport().start()
 ```
 
 我們就透過這個範例來仔細端詳一下 Scribbletune 吧～
@@ -110,7 +110,7 @@ Scribbletune.clip({
   pattern: 'x---'
 }).start()
 
-Tone.Transport.start()
+Tone.getTransport().start()
 ```
 
 這樣就會循環撥放卡農順階和弦囉 XD

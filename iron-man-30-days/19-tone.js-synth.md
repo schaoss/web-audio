@@ -5,7 +5,7 @@
 回顧一下這幾天一直使用的範例：
 
 ```javascript=
-const synth = new Tone.Synth().toMaster()
+const synth = new Tone.Synth().toDestination()
 ```
 
 這邊就是宣告一個合成器，並把他連接到播放裝置上，後續只要透過特別的方法例如：
@@ -96,7 +96,7 @@ sampler.triggerAttackRelease("D3")
 const synth = new Tone.Synth({
   ...
 })
-const polySynth = new Tone.PolySynth(6, synth).toMaster()
+const polySynth = new Tone.PolySynth({ maxPolyphony: 6 }, synth).toDestination()
 polySynth.triggerAttackRelease(["C4", "E4", "G4"], "4n")
 ```
 

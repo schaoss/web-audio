@@ -54,7 +54,7 @@ import Tone from 'tone'
 並使用它：
 
 ```javascript=
-const synth = new Tone.Synth().toMaster()
+const synth = new Tone.Synth().toDestination()
 
 synth.triggerAttackRelease('C4', '8n')
 ```
