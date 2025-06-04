@@ -52,7 +52,7 @@ export default {
     > div {
       text-align: left;
       line-height: 1.8;
-      white-space: 1;
+      white-space: normal;
     }
     img {
       width: 100%;

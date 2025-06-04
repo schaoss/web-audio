@@ -2,7 +2,7 @@
   <div id="tone">
     <h1> Tone.js </h1>
     <div class="content">
-      <button @clicl="clickHandler"></button>
+      <button @click="clickHandler"></button>
     </div>
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
     > div {
       text-align: left;
       line-height: 1.8;
-      white-space: 1;
+      white-space: normal;
     }
     img {
       width: 100%;
