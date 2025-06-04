@@ -8,38 +8,30 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue'
 import WaveSurfer from 'wavesurfer.js'
-export default {
-  name: 'wavesurfer',
-  data() {
-    return {
-      wavesurfer: null,
-      isReady: false
-    }
-  },
-  methods: {
-    clickHandler() {
-      this.wavesurfer.playPause()
-    }
-  },
-  computed: {
-    getBtnStr() {
-      return this.isReady ? 'Play / Pause' : 'Loading...'
-    }
-  },
-  mounted() {
-    this.wavesurfer = WaveSurfer.create({
-      container: '#waveform',
-      waveColor: 'violet',
-      progressColor: 'purple',
-    })
-    this.wavesurfer.load(require('../static/Epic_Sax_Gay.mp3'))
-    this.wavesurfer.on('ready', () => {
-      this.isReady = true
-    })
-  }
+
+const wavesurfer = ref(null)
+const isReady = ref(false)
+
+function clickHandler() {
+  wavesurfer.value?.playPause()
 }
+
+const getBtnStr = computed(() => (isReady.value ? 'Play / Pause' : 'Loading...'))
+
+onMounted(() => {
+  wavesurfer.value = WaveSurfer.create({
+    container: '#waveform',
+    waveColor: 'violet',
+    progressColor: 'purple',
+  })
+  wavesurfer.value.load(require('../static/Epic_Sax_Gay.mp3'))
+  wavesurfer.value.on('ready', () => {
+    isReady.value = true
+  })
+})
 </script>
 
 <style lang="scss" scoped>

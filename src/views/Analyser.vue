@@ -13,77 +13,71 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  name: "Analyser",
-  data() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
-    const audioCtx = new AudioContext() // 主控台的概念
-    const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-    const analyser = audioCtx.createAnalyser()
 
-    gainNode.gain.value = 1
-    analyser.fftSize = 1024
-    analyser.connect(gainNode)
-    return{
-      isPlaying: false,
-      isMute: false,
-      source: null,
-      audioCtx,
-      gainNode,
-      analyser,
-      micStream: null,
-      fftArray: new Uint8Array(analyser.fftSize),
-    }
-  },
-  methods: {
-    clickHandler(){
-      if (this.isPlaying) {
-        this.stop()
-      } else {
-        this.play()
-      }
-    },
-    muteHandler() {
-      if (this.isMute) {
-        this.isMute = false
-        this.gainNode.gain.value = 1
-      } else {
-        this.isMute = true
-        this.gainNode.gain.value = 0
-      }
-    },
-    play() {
-      this.isPlaying = true
-      this.gainNode.connect(this.audioCtx.destination)
-      requestAnimationFrame(this.getFFTData)
-    },
-    stop() {
-      this.isPlaying = false
-      this.gainNode.disconnect(this.audioCtx.destination)
-    },
-    getUserMic(stream) {
-      this.micStream = stream
-      this.source = this.audioCtx.createMediaStreamSource(stream)
-      this.source.connect(this.analyser)
-    },
-    getFFTData(){
-      this.fftArray = new Uint8Array(this.analyser.fftSize)
-      this.analyser.getByteFrequencyData(this.fftArray)
-      if (this.isPlaying) requestAnimationFrame(this.getFFTData)
-    }
-  },
-  mounted() {
-    audioUnlock(this.audioCtx)
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-    .then(this.getUserMic)
-    .catch(e => console.log(e))
-  },
-  beforeDestroy() {
-    if(this.micStream) this.micStream.getAudioTracks()[0].stop()
+const AudioContext = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContext()
+const gainNode = audioCtx.createGain()
+const analyser = audioCtx.createAnalyser()
+
+gainNode.gain.value = 1
+analyser.fftSize = 1024
+analyser.connect(gainNode)
+
+const isPlaying = ref(false)
+const isMute = ref(false)
+let source = null
+let micStream = null
+const fftArray = ref(new Uint8Array(analyser.fftSize))
+
+function clickHandler(){
+  if (isPlaying.value) {
+    stop()
+  } else {
+    play()
   }
 }
+
+function muteHandler() {
+  isMute.value = !isMute.value
+  gainNode.gain.value = isMute.value ? 0 : 1
+}
+
+function play() {
+  isPlaying.value = true
+  gainNode.connect(audioCtx.destination)
+  requestAnimationFrame(getFFTData)
+}
+
+function stop() {
+  isPlaying.value = false
+  gainNode.disconnect(audioCtx.destination)
+}
+
+function getUserMic(stream) {
+  micStream = stream
+  source = audioCtx.createMediaStreamSource(stream)
+  source.connect(analyser)
+}
+
+function getFFTData(){
+  fftArray.value = new Uint8Array(analyser.fftSize)
+  analyser.getByteFrequencyData(fftArray.value)
+  if (isPlaying.value) requestAnimationFrame(getFFTData)
+}
+
+onMounted(() => {
+  audioUnlock(audioCtx)
+  navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+    .then(getUserMic)
+    .catch(e => console.log(e))
+})
+
+onBeforeUnmount(() => {
+  if(micStream) micStream.getAudioTracks()[0].stop()
+})
 </script>
 <style lang="scss" scoped>
 #analyser {

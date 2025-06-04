@@ -26,144 +26,110 @@
   </div>
 </template>
 
-<script>
+<script setup>
 /* eslint-disable */
+import { reactive, ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  data() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
-    const audioCtx = new AudioContext() // 主控台的概念
-    const oscillator = audioCtx.createOscillator() // 振盪器 (音源)
-    const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-    const panner = audioCtx.createPanner() // 3D音源計算
-    const listener = audioCtx.listener // 聽者
-    return{
-      isPlaying: false,
-      audioCtx,
-      oscillator,
-      gainNode,
-      panner,
-      listener,
-      waveType: 'triangle', // sine, square, sawtooth, triangle
-      frequency: 440, // A4
-      detune: 0, // 解諧 可做出和聲
-      volume: 1, // 音量
 
-      draggingElem: '',
-      dragData: {
-        listener: {
-          x: 0,
-          y: 0
-        },
-        source: {
-          x: 0,
-          y: 0
-        }
-      }
-    }
-  },
-  methods: {
-    clickHandler(){
-      if (this.isPlaying) {
-        this.stop()
-      } else {
-        this.play()
-      }
-      this.isPlaying = !this.isPlaying
-    },
-    changeHandler(){
-      this.setNoteConfig()
-    },
-    reset(){
-      this.frequency = 440
-      this.volume = 1
-      this.dragData = {
-        listener: {
-          x: window.innerWidth / 2 + 20,
-          y: window.innerHeight / 2 - 50
-        },
-        source: {
-          x: window.innerWidth / 2 - 20,
-          y: window.innerHeight / 2 + 50
-        }
-      }
-      this.setNoteConfig()
-    },
-    play() {
-      this.panner.connect(this.audioCtx.destination)
-    },
-    stop() {
-      this.panner.disconnect(this.audioCtx.destination)
-    },
-    setNoteConfig() {
-      this.oscillator.type = this.waveType
-      this.oscillator.frequency.value = this.frequency
-      this.oscillator.detune.value = this.detune
-      this.gainNode.gain.value = this.volume
-      this.panner.setPosition(this.dragData.source.x, this.dragData.source.y, 1)
-      this.listener.setPosition(this.dragData.listener.x, this.dragData.listener.y, 0)
-    }
-  },
-  computed: {
-    dragEvent() {
-      return {
-        mousedown: (e) => {
-          const id = e.target.id
-          if(id === 'source' || id === 'listener') this.draggingElem = e.target.id
-        },
-        mousemove: (e) => {
-          if (!this.draggingElem) {
-            return
-          }
-          this.dragData[this.draggingElem].x = e.clientX - 25
-          this.dragData[this.draggingElem].y = e.clientY - 25
-          this.setNoteConfig()
-          e.preventDefault()
-        }, 
-        mouseup: () => {
-          this.draggingElem = ''
-        },
-        touchstart: e => {
-          const id = e.target.id
-          if(id === 'source' || id === 'listener') this.draggingElem = e.target.id
-        },
-        touchmove: e => {
-          if (!this.draggingElem) {
-            return
-          }
-          this.dragData[this.draggingElem].x = e.touches[0].pageX - 25
-          this.dragData[this.draggingElem].y = e.touches[0].pageY - 25
-          this.setNoteConfig()
-          e.preventDefault()
-        },
-        touchend: () => {
-          this.draggingElem = ''
-        }
-      }
-    }
-  },
-  mounted() {
-    audioUnlock(this.audioCtx)
-    this.dragData = {
-      listener: {
-        x: window.innerWidth / 2 + 20,
-        y: window.innerHeight / 2 - 50
-      },
-      source: {
-        x: window.innerWidth / 2 - 20,
-        y: window.innerHeight / 2 + 50
-      }
-    }
-    this.setNoteConfig()
-    this.panner.rolloffFactor = 0.1
-    this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
-    this.gainNode.connect(this.panner)
-    this.oscillator.start() // 啟動音源
-  },
-  beforeDestroy() {
-    if(this.isPlaying) this.panner.disconnect(this.audioCtx.destination)
+const AudioContext = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContext()
+const oscillator = audioCtx.createOscillator()
+const gainNode = audioCtx.createGain()
+const panner = audioCtx.createPanner()
+const listener = audioCtx.listener
+
+const isPlaying = ref(false)
+const waveType = ref('triangle')
+const frequency = ref(440)
+const detune = ref(0)
+const volume = ref(1)
+
+const draggingElem = ref('')
+const dragData = reactive({
+  listener: { x: 0, y: 0 },
+  source: { x: 0, y: 0 }
+})
+
+function clickHandler(){
+  if (isPlaying.value) {
+    stop()
+  } else {
+    play()
   }
+  isPlaying.value = !isPlaying.value
 }
+
+function changeHandler(){
+  setNoteConfig()
+}
+
+function reset(){
+  frequency.value = 440
+  volume.value = 1
+  dragData.listener.x = window.innerWidth / 2 + 20
+  dragData.listener.y = window.innerHeight / 2 - 50
+  dragData.source.x = window.innerWidth / 2 - 20
+  dragData.source.y = window.innerHeight / 2 + 50
+  setNoteConfig()
+}
+
+function play() {
+  panner.connect(audioCtx.destination)
+}
+
+function stop() {
+  panner.disconnect(audioCtx.destination)
+}
+
+function setNoteConfig() {
+  oscillator.type = waveType.value
+  oscillator.frequency.value = frequency.value
+  oscillator.detune.value = detune.value
+  gainNode.gain.value = volume.value
+  panner.setPosition(dragData.source.x, dragData.source.y, 1)
+  listener.setPosition(dragData.listener.x, dragData.listener.y, 0)
+}
+
+const dragEvent = computed(() => ({
+  mousedown: e => {
+    const id = e.target.id
+    if(id === 'source' || id === 'listener') draggingElem.value = e.target.id
+  },
+  mousemove: e => {
+    if (!draggingElem.value) return
+    dragData[draggingElem.value].x = e.clientX - 25
+    dragData[draggingElem.value].y = e.clientY - 25
+    setNoteConfig()
+    e.preventDefault()
+  },
+  mouseup: () => { draggingElem.value = '' },
+  touchstart: e => {
+    const id = e.target.id
+    if(id === 'source' || id === 'listener') draggingElem.value = e.target.id
+  },
+  touchmove: e => {
+    if (!draggingElem.value) return
+    dragData[draggingElem.value].x = e.touches[0].pageX - 25
+    dragData[draggingElem.value].y = e.touches[0].pageY - 25
+    setNoteConfig()
+    e.preventDefault()
+  },
+  touchend: () => { draggingElem.value = '' }
+}))
+
+onMounted(() => {
+  audioUnlock(audioCtx)
+  reset()
+  setNoteConfig()
+  panner.rolloffFactor = 0.1
+  oscillator.connect(gainNode)
+  gainNode.connect(panner)
+  oscillator.start()
+})
+
+onBeforeUnmount(() => {
+  if(isPlaying.value) panner.disconnect(audioCtx.destination)
+})
 </script>
 <style lang="scss" scoped>
 #panner-node {

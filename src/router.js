@@ -1,11 +1,6 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
-Vue.use(Router)
-
-export default new Router({
-  base: process.env.BASE_URL,
-  routes: [
+const routes = [
     {
       path: '/',
       name: 'index',
@@ -66,5 +61,11 @@ export default new Router({
       name: 'WaveSurfer',
       component: () => import('./views/WaveSurfer.vue')
     }
-  ]
+]
+
+const router = createRouter({
+  history: createWebHashHistory(process.env.BASE_URL),
+  routes,
 })
+
+export default router

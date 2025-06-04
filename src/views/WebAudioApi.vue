@@ -62,82 +62,81 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  data() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
-    const audioCtx = new AudioContext() // 主控台的概念
-    const oscillator = audioCtx.createOscillator() // 振盪器 (音源)
-    const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-    const filter = audioCtx.createBiquadFilter() // 濾波器
-    return{
-      isPlaying: false,
-      audioCtx,
-      oscillator,
-      gainNode,
-      filter,
-      waveType: 'sine', // sine, square, sawtooth, triangle
-      frequency: 440, // A4
-      detune: 0, // 解諧 可做出和聲
-      volume: 1, // 音量
-      filterType: 'allpass', // lowpass, highpass, bandpass, lowshelf, highshelf, peaking, notch
-      filterF: '350', // 濾波的判斷頻率
-      filterQ: '1', // 品質參數
-      filterGain: '0' // 過濾掉的頻率通過的音量
-    }
-  },
-  methods: {
-    clickHandler(){
-      if (this.isPlaying) {
-        this.stop()
-      } else {
-        this.play()
-      }
-      this.isPlaying = !this.isPlaying
-    },
-    changeHandler(){
-      this.setNoteConfig()
-    },
-    reset(){
-      this.waveType = 'sine'
-      this.frequency = 440
-      this.detune = 0
-      this.volume = 1
-      this.filterType = 'allpass'
-      this.filterF = 350
-      this.filterQ = 1
-      this.filterGain = 0
-      this.setNoteConfig()
-    },
-    play() {
-      this.filter.connect(this.audioCtx.destination)
-    },
-    stop() {
-      this.filter.disconnect(this.audioCtx.destination)
-    },
-    setNoteConfig() {
-      this.oscillator.type = this.waveType
-      this.oscillator.frequency.value = this.frequency
-      this.oscillator.detune.value = this.detune
-      this.gainNode.gain.value = this.volume
-      this.filter.type = this.filterType
-      this.filter.frequency.value = this.filterF
-      this.filter.Q.value = this.filterQ
-      this.filter.gain.value = this.filterGain
-    }
-  },
-  mounted() {
-    audioUnlock(this.audioCtx)
-    this.setNoteConfig()
-    this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
-    this.gainNode.connect(this.filter)
-    this.oscillator.start() // 啟動音源
-  },
-  beforeDestroy() {
-    if(this.isPlaying) this.filter.disconnect(this.audioCtx.destination)
-  }
+
+const AudioContext = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContext()
+const oscillator = audioCtx.createOscillator()
+const gainNode = audioCtx.createGain()
+const filter = audioCtx.createBiquadFilter()
+
+const isPlaying = ref(false)
+const waveType = ref('sine')
+const frequency = ref(440)
+const detune = ref(0)
+const volume = ref(1)
+const filterType = ref('allpass')
+const filterF = ref(350)
+const filterQ = ref(1)
+const filterGain = ref(0)
+
+function setNoteConfig() {
+  oscillator.type = waveType.value
+  oscillator.frequency.value = frequency.value
+  oscillator.detune.value = detune.value
+  gainNode.gain.value = volume.value
+  filter.type = filterType.value
+  filter.frequency.value = filterF.value
+  filter.Q.value = filterQ.value
+  filter.gain.value = filterGain.value
 }
+
+function play() {
+  filter.connect(audioCtx.destination)
+}
+
+function stop() {
+  filter.disconnect(audioCtx.destination)
+}
+
+function clickHandler() {
+  if (isPlaying.value) {
+    stop()
+  } else {
+    play()
+  }
+  isPlaying.value = !isPlaying.value
+}
+
+function changeHandler() {
+  setNoteConfig()
+}
+
+function reset() {
+  waveType.value = 'sine'
+  frequency.value = 440
+  detune.value = 0
+  volume.value = 1
+  filterType.value = 'allpass'
+  filterF.value = 350
+  filterQ.value = 1
+  filterGain.value = 0
+  setNoteConfig()
+}
+
+onMounted(() => {
+  audioUnlock(audioCtx)
+  setNoteConfig()
+  oscillator.connect(gainNode)
+  gainNode.connect(filter)
+  oscillator.start()
+})
+
+onBeforeUnmount(() => {
+  if (isPlaying.value) stop()
+})
 </script>
 <style lang="scss" scoped>
 #web-audio-api {

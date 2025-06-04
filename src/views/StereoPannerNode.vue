@@ -42,73 +42,68 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  data() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
-    const audioCtx = new AudioContext() // 主控台的概念
-    const oscillator = audioCtx.createOscillator() // 振盪器 (音源)
-    const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-    const stereoPanner = audioCtx.createStereoPanner() // 雙聲道節點
-    return{
-      isPlaying: false,
-      audioCtx,
-      oscillator,
-      gainNode,
-      stereoPanner,
-      waveType: 'sine', // sine, square, sawtooth, triangle
-      frequency: 440, // A4
-      detune: 0, // 解諧 可做出和聲
-      volume: 1, // 音量
-      pan: 0, // 左右聲道平衡
-    }
-  },
-  methods: {
-    clickHandler(){
-      if (this.isPlaying) {
-        this.stop()
-      } else {
-        this.play()
-      }
-      this.isPlaying = !this.isPlaying
-    },
-    changeHandler(){
-      this.setNoteConfig()
-    },
-    reset(){
-      this.waveType = 'sine'
-      this.frequency = 440
-      this.detune = 0
-      this.volume = 1
-      this.pan = 0
-      this.setNoteConfig()
-    },
-    play() {
-      this.stereoPanner.connect(this.audioCtx.destination)
-    },
-    stop() {
-      this.stereoPanner.disconnect(this.audioCtx.destination)
-    },
-    setNoteConfig() {
-      this.oscillator.type = this.waveType
-      this.oscillator.frequency.value = this.frequency
-      this.oscillator.detune.value = this.detune
-      this.gainNode.gain.value = this.volume
-      this.stereoPanner.pan.value = this.pan
-    }
-  },
-  mounted() {
-    audioUnlock(this.audioCtx)
-    this.setNoteConfig()
-    this.oscillator.connect(this.gainNode) // 將音源接到音量節點上
-    this.gainNode.connect(this.stereoPanner)
-    this.oscillator.start() // 啟動音源
-  },
-  beforeDestroy() {
-    if(this.isPlaying) this.stereoPanner.disconnect(this.audioCtx.destination)
+
+const AudioContext = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContext()
+const oscillator = audioCtx.createOscillator()
+const gainNode = audioCtx.createGain()
+const stereoPanner = audioCtx.createStereoPanner()
+
+const isPlaying = ref(false)
+const waveType = ref('sine')
+const frequency = ref(440)
+const detune = ref(0)
+const volume = ref(1)
+const pan = ref(0)
+
+function clickHandler(){
+  if (isPlaying.value) {
+    stop()
+  } else {
+    play()
   }
+  isPlaying.value = !isPlaying.value
 }
+
+function changeHandler(){
+  setNoteConfig()
+}
+
+function reset(){
+  waveType.value = 'sine'
+  frequency.value = 440
+  detune.value = 0
+  volume.value = 1
+  pan.value = 0
+  setNoteConfig()
+}
+
+function play() { stereoPanner.connect(audioCtx.destination) }
+
+function stop() { stereoPanner.disconnect(audioCtx.destination) }
+
+function setNoteConfig() {
+  oscillator.type = waveType.value
+  oscillator.frequency.value = frequency.value
+  oscillator.detune.value = detune.value
+  gainNode.gain.value = volume.value
+  stereoPanner.pan.value = pan.value
+}
+
+onMounted(() => {
+  audioUnlock(audioCtx)
+  setNoteConfig()
+  oscillator.connect(gainNode)
+  gainNode.connect(stereoPanner)
+  oscillator.start()
+})
+
+onBeforeUnmount(() => {
+  if(isPlaying.value) stereoPanner.disconnect(audioCtx.destination)
+})
 </script>
 <style lang="scss" scoped>
 #stereo-panner-node {

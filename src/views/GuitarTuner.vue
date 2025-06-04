@@ -35,120 +35,124 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  name: 'GuitarTuner',
-  data() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
-    const audioCtx = new AudioContext() // 主控台的概念
-    const oscillator = audioCtx.createOscillator() // 振盪器 (音源)
-    const gainNode = audioCtx.createGain() // 增益節點 控制音量的
-    return {
-      isPlaying: false,
-      audioCtx,
-      oscillator,
-      gainNode,
-      waveType: 'triangle', // sine, square, sawtooth, triangle
-      frequency: 440, // A4 -> 69
-      detune: 0, // 解諧 可做出和聲
-      volume: 1, // 音量
 
-      standardA4: 440,
-      tuning: 'standard',
-      noteArr: ['E2','A2','D3','G3','B3','E4'],
-      note: '-'
-    }
-  },
-  methods: {
-    playHandler(){
-      if (this.isPlaying) {
-        this.stop()
-        this.note = '-'
-      } else {
-        this.changeNoteHandler(this.noteArr[0])
-        this.play()
-      }
-      this.isPlaying = !this.isPlaying
-    },
-    changeTuningHandler() {
-      this.noteArr = this.getTuningNoteArr(this.tuning)
-    },
-    changeNoteHandler(note) {
-      this.note = note
-      this.frequency = this.getFrequency(this.getSemitone(note))
-      this.setNoteConfig()
-    },
-    changeConfigHandler() {
-      this.frequency = this.getFrequency(this.getSemitone(this.note))
-      this.setNoteConfig()
-    },
-    reset(){
-      this.waveType = 'triangle'
-      this.standardA4 = 440
-      this.detune = 0
-      this.volume = 1
-      this.setNoteConfig()
-    },
-    play() {
-      this.gainNode.connect(this.audioCtx.destination)
-    },
-    stop() {
-      this.gainNode.disconnect(this.audioCtx.destination)
-    },
-    setNoteConfig() {
-      this.oscillator.type = this.waveType
-      this.oscillator.frequency.value = this.frequency
-      this.oscillator.detune.value = this.detune
-      this.gainNode.gain.value = this.volume
-    },
-    getSemitone(note) {
-      if(!note || note === '-') return 69
-      const noteList = {
-        'C': 0,
-        'C#': 1,
-        'Db': 1,
-        'D': 2,
-        'D#': 3,
-        'Eb': 3,
-        'E': 4,
-        'F': 5,
-        'F#': 6,
-        'Gb': 6,
-        'G': 7,
-        'G#': 8,
-        'Ab': 8,
-        'A': 9,
-        'A#': 10,
-        'Bb': 10,
-        'B': 11
-      }
-      return noteList[note.slice(0,-1)] + 12 * (1 + parseInt(note.slice(-1)))
-    },
-    getFrequency(semitone) {
-      return this.standardA4 * Math.pow(2, (semitone - 69)/12)
-    },
-    getTuningNoteArr() {
-      const noteNameArr = {
-        'standard' : ['E2','A2','D3','G3','B3','E4'],
-        '1-step-down' : ['D2','G2','C3','F3','A3','D4'],
-        'drop-d' : ['D2','A2','D3','G3','B3','E4'],
-        'open-e' : ['E2','B2','E3','G#3','B3','E4'],
-        'open-d' : ['D2','A2','D3','F#3','A3','D4']
-      }
-      return noteNameArr[this.tuning]
-    }
-  },
-  mounted() {
-    audioUnlock(this.audioCtx)
-    this.setNoteConfig()
-    this.oscillator.connect(this.gainNode)
-    this.oscillator.start() // 啟動音源
-  },
-  beforeDestroy() {
-    if(this.isPlaying) this.gainNode.disconnect(this.audioCtx.destination)
+const AudioContext = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContext()
+const oscillator = audioCtx.createOscillator()
+const gainNode = audioCtx.createGain()
+
+const isPlaying = ref(false)
+const waveType = ref('triangle')
+const frequency = ref(440)
+const detune = ref(0)
+const volume = ref(1)
+
+const standardA4 = ref(440)
+const tuning = ref('standard')
+const noteArr = ref(['E2','A2','D3','G3','B3','E4'])
+const note = ref('-')
+
+function playHandler(){
+  if (isPlaying.value) {
+    stop()
+    note.value = '-'
+  } else {
+    changeNoteHandler(noteArr.value[0])
+    play()
   }
+  isPlaying.value = !isPlaying.value
 }
+
+function changeTuningHandler() {
+  noteArr.value = getTuningNoteArr(tuning.value)
+}
+
+function changeNoteHandler(n) {
+  note.value = n
+  frequency.value = getFrequency(getSemitone(n))
+  setNoteConfig()
+}
+
+function changeConfigHandler() {
+  frequency.value = getFrequency(getSemitone(note.value))
+  setNoteConfig()
+}
+
+function reset(){
+  waveType.value = 'triangle'
+  standardA4.value = 440
+  detune.value = 0
+  volume.value = 1
+  setNoteConfig()
+}
+
+function play() {
+  gainNode.connect(audioCtx.destination)
+}
+
+function stop() {
+  gainNode.disconnect(audioCtx.destination)
+}
+
+function setNoteConfig() {
+  oscillator.type = waveType.value
+  oscillator.frequency.value = frequency.value
+  oscillator.detune.value = detune.value
+  gainNode.gain.value = volume.value
+}
+
+function getSemitone(n) {
+  if(!n || n === '-') return 69
+  const noteList = {
+    'C': 0,
+    'C#': 1,
+    'Db': 1,
+    'D': 2,
+    'D#': 3,
+    'Eb': 3,
+    'E': 4,
+    'F': 5,
+    'F#': 6,
+    'Gb': 6,
+    'G': 7,
+    'G#': 8,
+    'Ab': 8,
+    'A': 9,
+    'A#': 10,
+    'Bb': 10,
+    'B': 11
+  }
+  return noteList[n.slice(0,-1)] + 12 * (1 + parseInt(n.slice(-1)))
+}
+
+function getFrequency(semitone) {
+  return standardA4.value * Math.pow(2, (semitone - 69)/12)
+}
+
+function getTuningNoteArr() {
+  const noteNameArr = {
+    'standard' : ['E2','A2','D3','G3','B3','E4'],
+    '1-step-down' : ['D2','G2','C3','F3','A3','D4'],
+    'drop-d' : ['D2','A2','D3','G3','B3','E4'],
+    'open-e' : ['E2','B2','E3','G#3','B3','E4'],
+    'open-d' : ['D2','A2','D3','F#3','A3','D4']
+  }
+  return noteNameArr[tuning.value]
+}
+
+onMounted(() => {
+  audioUnlock(audioCtx)
+  setNoteConfig()
+  oscillator.connect(gainNode)
+  oscillator.start()
+})
+
+onBeforeUnmount(() => {
+  if(isPlaying.value) gainNode.disconnect(audioCtx.destination)
+})
 </script>
 
 <style lang="scss" scoped>

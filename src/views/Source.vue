@@ -48,123 +48,120 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
-export default {
-  name: "Source",
-  data() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext // 跨瀏覽器
-    const audioCtx = new AudioContext() // 主控台的概念
-    const gainNode = audioCtx.createGain() // 增益節點 控制音量的
 
-    return{
-      isPlaying: false,
-      sourceType: "0",
-      source: null,
-      audioCtx,
-      gainNode,
-      waveType: 'sine', // sine, square, sawtooth, triangle
-      frequency: 440, // A4
-      detune: 0, // 解諧 可做出和聲
-      audioSource: null,
-      micStream: null,
-      micOutput:[]
-    }
-  },
-  methods: {
-    clickHandler(){
-      if (this.isPlaying) {
-        this.stop()
-      } else {
-        this.play()
-      }
-    },
-    changeHandler(){
-      this.setNoteConfig()
-    },
-    reset(){
-      this.waveType = 'sine'
-      this.frequency = 440
-      this.detune = 0
-      this.setNoteConfig()
-    },
-    play() {
-      this.isPlaying = true
-      this.gainNode.connect(this.audioCtx.destination)
-    },
-    stop() {
-      this.isPlaying = false
-      this.gainNode.disconnect(this.audioCtx.destination)
-    },
-    setNoteConfig() {
-      if(this.sourceType === "0"){
-        this.source.type = this.waveType
-        this.source.frequency.value = this.frequency
-        this.source.detune.value = this.detune
-      }
-    },
-    getUserMic(stream) {
-      this.micStream = stream
-      this.source = this.audioCtx.createMediaStreamSource(stream)
-      const processor = this.audioCtx.createScriptProcessor(1024, 1, 1)
-      processor.onaudioprocess = (e) => {
-        const input = e.inputBuffer.getChannelData(0);
-        const output = e.outputBuffer.getChannelData(0);
-        for (var i = 0; i < input.length; i++) {
-          output[i] = input[i]
-        }
-        this.micOutput = output
-      }
-      this.source.connect(processor)
-      processor.connect(this.gainNode)
-    }
-  },
-  watch: {
-    'sourceType': {
-      handler: function(n, p) {
-        if (this.isPlaying) {
-          this.stop()
-        }
-        if (this.source) {
-          if(p === "0") this.source.stop()
-          else if(p === "1") document.querySelector('audio').pause()
-          else if(p === "2") this.micStream.getAudioTracks()[0].stop()
-        }
-        switch(n) {
-          default:
-          case "0":
-            this.source = this.audioCtx.createOscillator()
-            this.source.start()
-            this.source.connect(this.gainNode)
-            break
-          case "1":
-            const audio = document.querySelector('audio');
-            audio.play()
-            if(!this.audioSource) {
-              this.audioSource = this.audioCtx.createMediaElementSource(audio)
-            }
-            this.source = this.audioSource
-            this.source.connect(this.gainNode)
-            break
-          case "2":
-            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-            .then(this.getUserMic)
-            .catch(e => console.log(e))
-            break
-        }
-      },
-      immediate: true
-    }
-  },
-  mounted() {
-    audioUnlock(this.audioCtx)
-    this.setNoteConfig()
-  },
-  beforeDestroy() {
-    if(this.isPlaying) this.gainNode.disconnect(this.audioCtx.destination)
-    if(this.micStream) this.micStream.getAudioTracks()[0].stop()
+const AudioContext = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContext()
+const gainNode = audioCtx.createGain()
+
+const isPlaying = ref(false)
+const sourceType = ref('0')
+let source = null
+let audioSource = null
+let micStream = null
+const waveType = ref('sine')
+const frequency = ref(440)
+const detune = ref(0)
+const micOutput = ref([])
+
+function clickHandler(){
+  if (isPlaying.value) {
+    stop()
+  } else {
+    play()
   }
 }
+
+function changeHandler(){
+  setNoteConfig()
+}
+
+function reset(){
+  waveType.value = 'sine'
+  frequency.value = 440
+  detune.value = 0
+  setNoteConfig()
+}
+
+function play() {
+  isPlaying.value = true
+  gainNode.connect(audioCtx.destination)
+}
+
+function stop() {
+  isPlaying.value = false
+  gainNode.disconnect(audioCtx.destination)
+}
+
+function setNoteConfig() {
+  if(sourceType.value === '0' && source){
+    source.type = waveType.value
+    source.frequency.value = frequency.value
+    source.detune.value = detune.value
+  }
+}
+
+function getUserMic(stream) {
+  micStream = stream
+  source = audioCtx.createMediaStreamSource(stream)
+  const processor = audioCtx.createScriptProcessor(1024, 1, 1)
+  processor.onaudioprocess = (e) => {
+    const input = e.inputBuffer.getChannelData(0)
+    const output = e.outputBuffer.getChannelData(0)
+    for (let i = 0; i < input.length; i++) {
+      output[i] = input[i]
+    }
+    micOutput.value = output
+  }
+  source.connect(processor)
+  processor.connect(gainNode)
+}
+
+watch(sourceType, (n, p) => {
+  if (isPlaying.value) {
+    stop()
+  }
+  if (source) {
+    if(p === '0') source.stop()
+    else if(p === '1') document.querySelector('audio').pause()
+    else if(p === '2') micStream?.getAudioTracks()[0].stop()
+  }
+  switch(n) {
+    default:
+    case '0':
+      source = audioCtx.createOscillator()
+      source.start()
+      source.connect(gainNode)
+      break
+    case '1': {
+      const audio = document.querySelector('audio')
+      audio.play()
+      if(!audioSource) {
+        audioSource = audioCtx.createMediaElementSource(audio)
+      }
+      source = audioSource
+      source.connect(gainNode)
+      break
+    }
+    case '2':
+      navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+        .then(getUserMic)
+        .catch(e => console.log(e))
+      break
+  }
+}, { immediate: true })
+
+onMounted(() => {
+  audioUnlock(audioCtx)
+  setNoteConfig()
+})
+
+onBeforeUnmount(() => {
+  if(isPlaying.value) gainNode.disconnect(audioCtx.destination)
+  if(micStream) micStream.getAudioTracks()[0].stop()
+})
 </script>
 <style lang="scss" scoped>
 #source {

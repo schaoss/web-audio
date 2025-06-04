@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <div id="mask" :class="{'show': isShow}" @click="isShow = !isShow"></div>
+    <div id="mask" :class="{'show': isShow}" @click="toggleMenu()"></div>
     <div id="menu" :class="{'show': isShow}">
-      <Nav @click.native="isShow=false"></Nav>
+      <Nav @click="isShow=false"></Nav>
     </div>
     <div id="content">
-      <div id="menuTrigger" @click="isShow = !isShow">
+      <div id="menuTrigger" @click="toggleMenu()">
         <i class="fas" :class="{'fa-times': isShow, 'fa-bars': !isShow}"></i>
       </div>
       <router-view />
@@ -13,19 +13,12 @@
   </div>
 </template>
 
-<script>
+
+<script setup>
+import { useToggle } from '@vueuse/core'
 import Nav from '@/components/Nav'
-export default {
-  name: 'App',
-  components: {
-    Nav,
-  },
-  data() {
-    return {
-      isShow: false
-    }
-  }
-}
+
+const [isShow, toggleMenu] = useToggle(false)
 </script>
 
 <style lang="scss">
