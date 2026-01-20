@@ -1,6 +1,6 @@
 <template>
   <div id="index" class="max-h-screen overflow-auto">
-    <h1> Web Audio </h1>
+    <h1 class="text-3xl font-bold text-center my-8"> Web Audio </h1>
     <div class="content w-[50vw] min-w-[300px] mx-auto my-[40px]">
       <div class="text-left leading-[1.8] whitespace-normal">
         <p>如同一道好料理需要具備色、香、味，一個好網站除了好內容之外，也需要透過互動性更高的視覺、聽覺，來與內容相輔相成。</p>
@@ -9,8 +9,8 @@
       </div>
       <img src="https://i.imgur.com/5oewowO.png" />
       <p>這個網站會呈現文章內提到的各種範例，讀者您可以參照文章任意賞玩。</p>
-      <p>程式碼放在 <a href="https://github.com/schaoss/web-audio">Github</a></p>
-      <p>參賽文章在 <a href="https://ithelp.ithome.com.tw/users/20111380/ironman/1783">這裡</a></p>
+      <p>程式碼放在 <a href="https://github.com/schaoss/web-audio" class="text-primary hover:underline transition-colors">Github</a></p>
+      <p>參賽文章在 <a href="https://ithelp.ithome.com.tw/users/20111380/ironman/1783" class="text-primary hover:underline transition-colors">這裡</a></p>
     </div>
   </div>
 </template>
