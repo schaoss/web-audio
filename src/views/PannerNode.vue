@@ -1,8 +1,8 @@
 <template>
   <div id="panner-node">
-    <h1>Panner Node</h1>
-    <button @click="clickHandler"> Play / Pause </button>
-    <button @click="reset"> Reset </button>
+    <h1 class="text-3xl font-bold text-center my-8">Panner Node</h1>
+    <button class="btn" @click="clickHandler"> Play / Pause </button>
+    <button class="btn" @click="reset"> Reset </button>
     <div id="config">
       <div class="audio-note">
         <h3><span>音源</span></h3>

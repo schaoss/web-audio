@@ -1,10 +1,10 @@
 <template>
   <div id="tone">
-    <h1> Tone.js </h1>
+    <h1 class="text-3xl font-bold text-center my-8"> Tone.js </h1>
     <div class="content">
       <h2>{{getChord}}</h2>
       <h3>{{notes[0]}}, {{notes[1]}}, {{notes[2]}}, {{notes[3]}}</h3>
-      <button @click="clickHandler"> Play / Pause</button>
+      <button class="btn" @click="clickHandler"> Play / Pause</button>
     </div>
   </div>
 </template>

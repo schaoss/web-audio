@@ -21,7 +21,7 @@
     <button
       id="menuTrigger"
       class="menu-trigger"
-      :class="{ 'left-68': isShow }"
+      :class="{ 'left-72': isShow }"
       @click="toggleMenu()"
       aria-label="Toggle menu"
     >

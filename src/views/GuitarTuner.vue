@@ -1,8 +1,8 @@
 <template>
   <div id="guitar-tuner">
-    <h1> Guitar Tuner </h1>
-    <button @click="playHandler"> Play / Pause </button>
-    <button @click="reset"> Reset </button>
+    <h1 class="text-3xl font-bold text-center my-8"> Guitar Tuner </h1>
+    <button class="btn" @click="playHandler"> Play / Pause </button>
+    <button class="btn" @click="reset"> Reset </button>
     <div id="config">
       <div class="audio-note">
         <h3><span>設定</span></h3>
@@ -30,7 +30,7 @@
       <div class="note" v-for="n in noteArr" :key="n" @click="changeNoteHandler(n)">{{n}}</div>
     </div>
     <div id="display">
-      <h1>{{note}}</h1>
+      <h1 class="text-3xl font-bold text-center my-8">{{note}}</h1>
     </div>
   </div>
 </template>

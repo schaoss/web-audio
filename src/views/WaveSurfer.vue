@@ -1,8 +1,8 @@
 <template>
   <div id="wavesurfer">
-    <h1> Wavesurfer.js </h1>
+    <h1 class="text-3xl font-bold text-center my-8"> Wavesurfer.js </h1>
     <div class="content">
-      <button @click="clickHandler" :disabled="!isReady">{{getBtnStr}}</button>
+      <button class="btn" @click="clickHandler" :disabled="!isReady">{{getBtnStr}}</button>
     </div>
     <div id="waveform"></div>
   </div>

@@ -1,8 +1,8 @@
 <template>
   <div id="analyser">
-    <h1>Analyser</h1>
-    <button @click="clickHandler"> Play / Pause </button>
-    <button @click="muteHandler"> {{isMute ? 'unmute' : 'mute'}} </button>
+    <h1 class="text-3xl font-bold text-center my-8">Analyser</h1>
+    <button class="btn" @click="clickHandler"> Play / Pause </button>
+    <button class="btn" @click="muteHandler"> {{isMute ? 'unmute' : 'mute'}} </button>
     <div id="config">
       <div class="audio-note">
         <div class="result">
