@@ -1,7 +1,9 @@
 <template>
   <div id="guitar-tuner">
     <h1 class="text-3xl font-bold text-center my-8">Guitar Tuner 2.0</h1>
-    <button class="btn" @click="clickHandler"> On / Off </button>
+    <div class="text-center">
+      <button class="btn" @click="clickHandler"> On / Off </button>
+    </div>
     <div id="config">
       <div class="audio-note">
         <h3>{{getFrequencyStr}}</h3>

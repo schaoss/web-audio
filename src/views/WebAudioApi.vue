@@ -1,8 +1,10 @@
 <template>
   <div id="web-audio-api">
     <h1 class="text-3xl font-bold text-center my-8">Hello, Web Audio API</h1>
-    <button class="btn" @click="clickHandler"> Play / Pause </button>
-    <button class="btn" @click="reset"> Reset </button>
+    <div class="text-center">
+      <button class="btn" @click="clickHandler"> Play / Pause </button>
+      <button class="btn" @click="reset"> Reset </button>
+    </div>
     <div id="config">
       <div class="audio-note">
         <h3><span>音源</span></h3>

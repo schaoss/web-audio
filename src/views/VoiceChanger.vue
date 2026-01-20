@@ -1,7 +1,9 @@
 <template>
   <div id="voice-changer">
     <h1 class="text-3xl font-bold text-center my-8">VoiceChanger</h1>
-    <button class="btn" @click="clickHandler"> On / Off </button>
+    <div class="text-center">
+      <button class="btn" @click="clickHandler"> On / Off </button>
+    </div>
     <div id="config">
       <div class="audio-note">
         <div class="item">
