@@ -35,17 +35,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const oscillator = audioCtx.createOscillator()
 const gainNode = audioCtx.createGain()
 
 const isPlaying = ref(false)
-const waveType = ref('triangle')
+const waveType = ref<OscillatorType>('triangle')
 const frequency = ref(440)
 const detune = ref(0)
 const volume = ref(1)
@@ -55,7 +55,37 @@ const tuning = ref('standard')
 const noteArr = ref(['E2','A2','D3','G3','B3','E4'])
 const note = ref('-')
 
-function playHandler(){
+type TuningType = 'standard' | '1-step-down' | 'drop-d' | 'open-e' | 'open-d'
+
+const noteNameMap: Record<string, number> = {
+  'C': 0,
+  'C#': 1,
+  'Db': 1,
+  'D': 2,
+  'D#': 3,
+  'Eb': 3,
+  'E': 4,
+  'F': 5,
+  'F#': 6,
+  'Gb': 6,
+  'G': 7,
+  'G#': 8,
+  'Ab': 8,
+  'A': 9,
+  'A#': 10,
+  'Bb': 10,
+  'B': 11
+}
+
+const tuningNoteMap: Record<TuningType, string[]> = {
+  'standard': ['E2','A2','D3','G3','B3','E4'],
+  '1-step-down': ['D2','G2','C3','F3','A3','D4'],
+  'drop-d': ['D2','A2','D3','G3','B3','E4'],
+  'open-e': ['E2','B2','E3','G#3','B3','E4'],
+  'open-d': ['D2','A2','D3','F#3','A3','D4']
+}
+
+function playHandler() {
   if (isPlaying.value) {
     stop()
     note.value = '-'
@@ -67,10 +97,10 @@ function playHandler(){
 }
 
 function changeTuningHandler() {
-  noteArr.value = getTuningNoteArr(tuning.value)
+  noteArr.value = getTuningNoteArr()
 }
 
-function changeNoteHandler(n) {
+function changeNoteHandler(n: string) {
   note.value = n
   frequency.value = getFrequency(getSemitone(n))
   setNoteConfig()
@@ -81,7 +111,7 @@ function changeConfigHandler() {
   setNoteConfig()
 }
 
-function reset(){
+function reset() {
   waveType.value = 'triangle'
   standardA4.value = 440
   detune.value = 0
@@ -104,43 +134,19 @@ function setNoteConfig() {
   gainNode.gain.value = volume.value
 }
 
-function getSemitone(n) {
-  if(!n || n === '-') return 69
-  const noteList = {
-    'C': 0,
-    'C#': 1,
-    'Db': 1,
-    'D': 2,
-    'D#': 3,
-    'Eb': 3,
-    'E': 4,
-    'F': 5,
-    'F#': 6,
-    'Gb': 6,
-    'G': 7,
-    'G#': 8,
-    'Ab': 8,
-    'A': 9,
-    'A#': 10,
-    'Bb': 10,
-    'B': 11
-  }
-  return noteList[n.slice(0,-1)] + 12 * (1 + parseInt(n.slice(-1)))
+function getSemitone(n: string): number {
+  if (!n || n === '-') return 69
+  const noteName = n.slice(0, -1)
+  const octave = parseInt(n.slice(-1))
+  return (noteNameMap[noteName] ?? 0) + 12 * (1 + octave)
 }
 
-function getFrequency(semitone) {
-  return standardA4.value * Math.pow(2, (semitone - 69)/12)
+function getFrequency(semitone: number): number {
+  return standardA4.value * Math.pow(2, (semitone - 69) / 12)
 }
 
-function getTuningNoteArr() {
-  const noteNameArr = {
-    'standard' : ['E2','A2','D3','G3','B3','E4'],
-    '1-step-down' : ['D2','G2','C3','F3','A3','D4'],
-    'drop-d' : ['D2','A2','D3','G3','B3','E4'],
-    'open-e' : ['E2','B2','E3','G#3','B3','E4'],
-    'open-d' : ['D2','A2','D3','F#3','A3','D4']
-  }
-  return noteNameArr[tuning.value]
+function getTuningNoteArr(): string[] {
+  return tuningNoteMap[tuning.value as TuningType] ?? tuningNoteMap.standard
 }
 
 onMounted(() => {
@@ -151,7 +157,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if(isPlaying.value) gainNode.disconnect(audioCtx.destination)
+  if (isPlaying.value) gainNode.disconnect(audioCtx.destination)
 })
 </script>
 

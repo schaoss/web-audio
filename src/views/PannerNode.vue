@@ -20,26 +20,25 @@
       </div>
     </div>
     <div id="drag-area" data-role="drag-drop-container" v-on="dragEvent">
-      <div id="listener" :style="{left: this.dragData.listener.x + 'px', top: this.dragData.listener.y + 'px'}"> 聽者 </div>
-      <div id="source" :style="{left: this.dragData.source.x + 'px', top: this.dragData.source.y + 'px'}"> 音源 </div>
+      <div id="listener" :style="{left: dragData.listener.x + 'px', top: dragData.listener.y + 'px'}"> 聽者 </div>
+      <div id="source" :style="{left: dragData.source.x + 'px', top: dragData.source.y + 'px'}"> 音源 </div>
     </div>
   </div>
 </template>
 
-<script setup>
-/* eslint-disable */
+<script setup lang="ts">
 import { reactive, ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const oscillator = audioCtx.createOscillator()
 const gainNode = audioCtx.createGain()
 const panner = audioCtx.createPanner()
 const listener = audioCtx.listener
 
 const isPlaying = ref(false)
-const waveType = ref('triangle')
+const waveType = ref<OscillatorType>('triangle')
 const frequency = ref(440)
 const detune = ref(0)
 const volume = ref(1)
@@ -50,7 +49,7 @@ const dragData = reactive({
   source: { x: 0, y: 0 }
 })
 
-function clickHandler(){
+function clickHandler() {
   if (isPlaying.value) {
     stop()
   } else {
@@ -59,11 +58,11 @@ function clickHandler(){
   isPlaying.value = !isPlaying.value
 }
 
-function changeHandler(){
+function changeHandler() {
   setNoteConfig()
 }
 
-function reset(){
+function reset() {
   frequency.value = 440
   volume.value = 1
   dragData.listener.x = window.innerWidth / 2 + 20
@@ -91,26 +90,28 @@ function setNoteConfig() {
 }
 
 const dragEvent = computed(() => ({
-  mousedown: e => {
-    const id = e.target.id
-    if(id === 'source' || id === 'listener') draggingElem.value = e.target.id
+  mousedown: (e: MouseEvent) => {
+    const id = (e.target as HTMLElement).id
+    if (id === 'source' || id === 'listener') draggingElem.value = id
   },
-  mousemove: e => {
+  mousemove: (e: MouseEvent) => {
     if (!draggingElem.value) return
-    dragData[draggingElem.value].x = e.clientX - 25
-    dragData[draggingElem.value].y = e.clientY - 25
+    const key = draggingElem.value as 'source' | 'listener'
+    dragData[key].x = e.clientX - 25
+    dragData[key].y = e.clientY - 25
     setNoteConfig()
     e.preventDefault()
   },
   mouseup: () => { draggingElem.value = '' },
-  touchstart: e => {
-    const id = e.target.id
-    if(id === 'source' || id === 'listener') draggingElem.value = e.target.id
+  touchstart: (e: TouchEvent) => {
+    const id = (e.target as HTMLElement).id
+    if (id === 'source' || id === 'listener') draggingElem.value = id
   },
-  touchmove: e => {
+  touchmove: (e: TouchEvent) => {
     if (!draggingElem.value) return
-    dragData[draggingElem.value].x = e.touches[0].pageX - 25
-    dragData[draggingElem.value].y = e.touches[0].pageY - 25
+    const key = draggingElem.value as 'source' | 'listener'
+    dragData[key].x = e.touches[0].pageX - 25
+    dragData[key].y = e.touches[0].pageY - 25
     setNoteConfig()
     e.preventDefault()
   },
@@ -128,7 +129,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if(isPlaying.value) panner.disconnect(audioCtx.destination)
+  if (isPlaying.value) panner.disconnect(audioCtx.destination)
 })
 </script>
 <style lang="scss" scoped>

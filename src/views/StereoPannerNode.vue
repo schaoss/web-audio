@@ -42,24 +42,24 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const oscillator = audioCtx.createOscillator()
 const gainNode = audioCtx.createGain()
 const stereoPanner = audioCtx.createStereoPanner()
 
 const isPlaying = ref(false)
-const waveType = ref('sine')
+const waveType = ref<OscillatorType>('sine')
 const frequency = ref(440)
 const detune = ref(0)
 const volume = ref(1)
 const pan = ref(0)
 
-function clickHandler(){
+function clickHandler() {
   if (isPlaying.value) {
     stop()
   } else {
@@ -68,11 +68,11 @@ function clickHandler(){
   isPlaying.value = !isPlaying.value
 }
 
-function changeHandler(){
+function changeHandler() {
   setNoteConfig()
 }
 
-function reset(){
+function reset() {
   waveType.value = 'sine'
   frequency.value = 440
   detune.value = 0
@@ -102,7 +102,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if(isPlaying.value) stereoPanner.disconnect(audioCtx.destination)
+  if (isPlaying.value) stereoPanner.disconnect(audioCtx.destination)
 })
 </script>
 <style lang="scss" scoped>

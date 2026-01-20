@@ -9,36 +9,26 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import * as Tone from 'tone'
-import { chord } from 'tonal-detect'
+import { Chord } from 'tonal'
 import audioUnlock from '../lib/audioUnlock'
 
 const noteArr = [
-  'C3',
-  'D3',
-  'E3',
-  'F3',
-  'G3',
-  'A4',
-  'C4',
-  'D4',
-  'E4',
-  'F4',
-  'G4',
-  'C5'
+  'C3', 'D3', 'E3', 'F3', 'G3', 'A4', 'C4', 'D4', 'E4', 'F4', 'G4', 'C5'
 ]
 
-const polySynth = new Tone.PolySynth({ maxPolyphony: 6 }, Tone.Synth).toDestination()
+const polySynth = new Tone.PolySynth(Tone.Synth, {}).toDestination()
+polySynth.maxPolyphony = 6
 
-const notes = ref(['-', '-', '-', '-'])
+const notes = ref<string[]>(['-', '-', '-', '-'])
 const isPlaying = ref(false)
 
 const pattern = new Tone.Pattern(
   (time, note) => {
     polySynth.triggerAttackRelease(note, '1n')
-    notes.value[parseInt((time * 2) % 4)] = note
+    notes.value[Math.floor((time * 2) % 4)] = note
   },
   noteArr,
   'randomOnce'
@@ -55,11 +45,11 @@ function clickHandler() {
 }
 
 const getChord = computed(() => {
-  return notes.value.every(n => n !== '-') ? chord(notes.value)[0] || '-' : '-'
+  return notes.value.every(n => n !== '-') ? Chord.detect(notes.value)[0] || '-' : '-'
 })
 
 onMounted(() => {
-  audioUnlock(Tone.getContext())
+  audioUnlock(Tone.getContext() as unknown as AudioContext)
   Tone.getTransport().bpm.value = 80
   Tone.getTransport().start()
 })

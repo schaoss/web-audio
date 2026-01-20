@@ -1,36 +1,55 @@
 <template>
-  <div id="app" class="font-sans text-center text-[#2c3e50] flex h-screen">
-    <div
-      id="mask"
-      class="fixed top-0 left-0 w-screen h-screen bg-black/65 opacity-0 transition-opacity duration-500 z-[-1]"
-      :class="{ 'opacity-100 z-[1]': isShow }"
-      @click="toggleMenu()"
-    ></div>
-    <div
-      id="menu"
-      class="fixed top-0 left-[-250px] w-[250px] h-screen transition-left duration-500 z-[5]"
-      :class="{ 'left-0': isShow }"
-    >
-      <Nav @click="isShow=false"></Nav>
-    </div>
-    <div id="content" class="relative w-full h-full overflow-auto">
+  <div id="app" class="font-sans text-slate-dark h-screen overflow-hidden">
+    <!-- Backdrop overlay -->
+    <Transition name="fade">
       <div
-        id="menuTrigger"
-        class="absolute w-[25px] h-[25px] leading-[25px] text-[15px] bg-gray-600 text-gray-100 rounded-full m-[10px] select-none transition-all duration-500 z-10"
+        v-if="isShow"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
         @click="toggleMenu()"
-      >
-        <i class="fas" :class="{'fa-times': isShow, 'fa-bars': !isShow}"></i>
-      </div>
+      />
+    </Transition>
+
+    <!-- Sidebar -->
+    <aside
+      class="fixed top-0 left-0 h-full w-64 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out"
+      :class="isShow ? 'translate-x-0' : '-translate-x-full'"
+    >
+      <Nav @click="isShow = false" />
+    </aside>
+
+    <!-- Menu trigger button -->
+    <button
+      id="menuTrigger"
+      class="menu-trigger"
+      :class="{ 'left-68': isShow }"
+      @click="toggleMenu()"
+      aria-label="Toggle menu"
+    >
+      <i class="fas text-lg" :class="isShow ? 'fa-times' : 'fa-bars'" />
+    </button>
+
+    <!-- Main content -->
+    <main class="h-full overflow-auto">
       <router-view />
-    </div>
+    </main>
   </div>
 </template>
 
-
-<script setup>
+<script setup lang="ts">
 import { useToggle } from '@vueuse/core'
 import Nav from '@/components/Nav.vue'
 
 const [isShow, toggleMenu] = useToggle(false)
 </script>
 
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

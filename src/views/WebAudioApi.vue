@@ -62,22 +62,22 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const oscillator = audioCtx.createOscillator()
 const gainNode = audioCtx.createGain()
 const filter = audioCtx.createBiquadFilter()
 
 const isPlaying = ref(false)
-const waveType = ref('sine')
+const waveType = ref<OscillatorType>('sine')
 const frequency = ref(440)
 const detune = ref(0)
 const volume = ref(1)
-const filterType = ref('allpass')
+const filterType = ref<BiquadFilterType>('allpass')
 const filterF = ref(350)
 const filterQ = ref(1)
 const filterGain = ref(0)

@@ -1,10 +1,15 @@
-// snare by vibertthio
-// https://gist.github.com/vibertthio/9c815b7edeee2aab3aec35de7dfa57bb
-
+import type { Unit } from 'tone'
 import { Filter, NoiseSynth, Synth, PolySynth } from 'tone'
 
+interface SnareOptions {
+  volume: number
+}
+
 export default class Snare {
-  constructor({ volume }) {
+  private noise: NoiseSynth
+  private poly: PolySynth
+
+  constructor({ volume }: SnareOptions) {
     const lowPass = new Filter({
       frequency: 11000
     })
@@ -23,7 +28,7 @@ export default class Snare {
       }
     }).connect(lowPass)
 
-    const poly = new PolySynth({ maxPolyphony: 6 }, Synth, {
+    const poly = new PolySynth(Synth, {
       volume: volume + 6,
       oscillator: {
         partials: [0, 2, 3, 4]
@@ -39,17 +44,16 @@ export default class Snare {
 
     this.noise = noise
     this.poly = poly
-    this.lpf = lowPass
-    return this
+    this.poly.maxPolyphony = 6
   }
 
-  trigger(time) {
+  trigger(time: Unit.Time): this {
     this.noise.triggerAttack(time)
     this.poly.triggerAttackRelease(['C2', 'D#2', 'G2'], '16n', time)
     return this
   }
 
-  toDestination() {
+  toDestination(): this {
     this.noise.toDestination()
     this.poly.toDestination()
     return this

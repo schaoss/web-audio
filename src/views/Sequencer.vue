@@ -53,7 +53,7 @@
         </ul>
       </div>
       <div id="lead" class="set" v-show="tab === 1">
-        <ul v-for="(row, i) in sequencer.lead" :key="`lead_${i}`">
+        <ul v-for="(_row, i) in sequencer.lead" :key="`lead_${i}`">
           <li v-for="j in 16" :key="`lead_${i}_${j-1}`" :name="`lead_${i}_${j-1}`" class='item'
             :class="{'active': !!sequencer.lead[i][j-1] }" @mousedown="clickHandler(sequencer.lead[i], j-1)"
             @mouseenter="() => mouseenter(sequencer.lead[i], j-1)" />
@@ -63,31 +63,40 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+<script setup lang="ts">
+import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import * as Tone from 'tone'
-import Snare from '../lib/snare.js'
+import Snare from '../lib/snare'
 import audioUnlock from '../lib/audioUnlock'
 import { useRoute } from 'vue-router'
 
+interface DrumSequencer {
+  kick: boolean[]
+  hihat: boolean[]
+  snare: boolean[]
+  tomL: boolean[]
+  tomM: boolean[]
+  tomH: boolean[]
+}
+
 const route = useRoute()
-const { bpm = 120, d = '', l = '' } = route.query
+const { bpm = '120' } = route.query as { bpm?: string }
 
 const defaultSequencer = reactive({
   drum: {
-    kick: Array(16).fill(false),
-    hihat: Array(16).fill(false),
-    snare: Array(16).fill(false),
-    tomL: Array(16).fill(false),
-    tomM: Array(16).fill(false),
-    tomH: Array(16).fill(false)
+    kick: Array(16).fill(false) as boolean[],
+    hihat: Array(16).fill(false) as boolean[],
+    snare: Array(16).fill(false) as boolean[],
+    tomL: Array(16).fill(false) as boolean[],
+    tomM: Array(16).fill(false) as boolean[],
+    tomH: Array(16).fill(false) as boolean[]
   },
-  lead: Array.from({ length: 7 }, () => Array(16).fill(false))
+  lead: Array.from({ length: 7 }, () => Array(16).fill(false) as boolean[])
 })
 
 const sequencer = reactive({
-  drum: JSON.parse(JSON.stringify(defaultSequencer.drum)),
-  lead: JSON.parse(JSON.stringify(defaultSequencer.lead))
+  drum: JSON.parse(JSON.stringify(defaultSequencer.drum)) as DrumSequencer,
+  lead: JSON.parse(JSON.stringify(defaultSequencer.lead)) as boolean[][]
 })
 
 const tab = ref(0)
@@ -102,7 +111,8 @@ const tomM = new Tone.MembraneSynth({ octaves: 1 }).toDestination()
 const tomH = new Tone.MembraneSynth({ octaves: 1 }).toDestination()
 const hihat = new Tone.NoiseSynth({}).toDestination()
 const snare = new Snare({ volume: -6 }).toDestination()
-const poly = new Tone.PolySynth({ maxPolyphony: 8 }, Tone.Synth, {}).toDestination()
+const poly = new Tone.PolySynth(Tone.Synth, {}).toDestination()
+poly.maxPolyphony = 8
 
 kick.volume.value = 6
 hihat.volume.value = -2
@@ -111,10 +121,20 @@ tomM.volume.value = 0
 tomH.volume.value = 0
 poly.set({ volume: 2 })
 
-const BPM = Number(bpm) || 120
-Tone.getTransport().bpm.value = BPM
+const BPM = ref(Number(bpm) || 120)
+Tone.getTransport().bpm.value = BPM.value
 Tone.getTransport().scheduleRepeat(time => {
-  if (sequencer.lead[6][index.value]) poly.triggerAttackRelease('C5', '16n', time)
+  index.value = (index.value + 1) % 16
+  if (sequencer.drum.kick[index.value]) kick.triggerAttackRelease('C1', '8n', time)
+  if (sequencer.drum.hihat[index.value]) hihat.triggerAttackRelease('16n', time)
+  if (sequencer.drum.snare[index.value]) snare.trigger(time)
+  if (sequencer.drum.tomL[index.value]) tomL.triggerAttackRelease('G1', '8n', time)
+  if (sequencer.drum.tomM[index.value]) tomM.triggerAttackRelease('C2', '8n', time)
+  if (sequencer.drum.tomH[index.value]) tomH.triggerAttackRelease('E2', '8n', time)
+  const leadNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'C5']
+  leadNotes.forEach((note, i) => {
+    if (sequencer.lead[i][index.value]) poly.triggerAttackRelease(note, '16n', time)
+  })
 }, '16n')
 
 function playHandler() {
@@ -124,12 +144,15 @@ function playHandler() {
     play()
   }
 }
+
 function tabHandler() {
   tab.value = (tab.value + 1) % 2
 }
-function clickHandler(arr, i) {
+
+function clickHandler(arr: boolean[], i: number) {
   arr[i] = !arr[i]
 }
+
 function reset() {
   if (tab.value === 0) {
     sequencer.drum = JSON.parse(JSON.stringify(defaultSequencer.drum))
@@ -137,6 +160,7 @@ function reset() {
     sequencer.lead = JSON.parse(JSON.stringify(defaultSequencer.lead))
   }
 }
+
 function random() {
   if (tab.value === 0) {
     sequencer.drum = {
@@ -151,71 +175,80 @@ function random() {
     sequencer.lead = Array.from({ length: 7 }, getRandomArray)
   }
 }
-function getEmptyArray(length = 16) {
-  return Array.from({ length }, () => 0)
-}
-function getRandomArray(length = 16) {
+
+function getRandomArray(length = 16): boolean[] {
   return Array.from({ length }, () => Math.random() > 0.8)
 }
-function getHexQueryString(arr) {
-  return Number(arr.map(i => ~~i).join(''), 2).toString(16).padStart(4, 0)
-}
-function getInitQueryData(hexStr) {
-  return hexStr
-    ? Number(hexStr, 16).toString(2).padStart(16).split('').map(i => ~~i)
-    : getEmptyArray()
-}
+
 function play() {
   isPlaying.value = true
   Tone.getTransport().start()
 }
+
 function stop() {
   isPlaying.value = false
   Tone.getTransport().stop()
   index.value = -1
 }
+
 function scrollTop() {
   setTimeout(() => window.scrollTo(0, 1), 10)
 }
+
 function mousedown() {
   isDraging.value = true
 }
-function mouseenter(arr, i) {
+
+function mouseenter(arr: boolean[], i: number) {
   if (!isDraging.value) return
   clickHandler(arr, i)
 }
+
 function mouseup() {
   isDraging.value = false
 }
-function touchstart(e) {
+
+function touchstart(e: TouchEvent) {
   isDraging.value = true
-  touchTarget.value = e.target.getAttribute('name')
+  touchTarget.value = (e.target as HTMLElement).getAttribute('name') || ''
 }
-function touchmove(e) {
+
+function touchmove(e: TouchEvent) {
   if (!isDraging.value) return
   const { clientX, clientY } = e.targetTouches[0]
-  const name = document.elementFromPoint(clientX, clientY).getAttribute('name')
+  const elem = document.elementFromPoint(clientX, clientY)
+  const name = elem?.getAttribute('name')
   if (name) {
     if (name !== touchTarget.value) {
       touchTarget.value = name
       const tmpArr = name.split('_')
       if (tmpArr[0] === 'lead') {
-        clickHandler(sequencer.lead[tmpArr[1]], tmpArr[2])
+        clickHandler(sequencer.lead[parseInt(tmpArr[1])], parseInt(tmpArr[2]))
       } else {
-        clickHandler(sequencer.drum[tmpArr[0]], tmpArr[1])
+        clickHandler(sequencer.drum[tmpArr[0] as keyof DrumSequencer], parseInt(tmpArr[1]))
       }
     }
   }
   e.preventDefault()
 }
+
 function touchend() {
   isDraging.value = false
   touchTarget.value = ''
 }
+
 onMounted(() => {
-  audioUnlock(Tone.getContext())
-  document.querySelector('#menuTrigger').style.display = 'none'
+  audioUnlock(Tone.getContext() as unknown as AudioContext)
+  const menuTrigger = document.querySelector('#menuTrigger') as HTMLElement | null
+  if (menuTrigger) menuTrigger.style.display = 'none'
   window.addEventListener('load', scrollTop)
+})
+
+onBeforeUnmount(() => {
+  const menuTrigger = document.querySelector('#menuTrigger') as HTMLElement | null
+  if (menuTrigger) menuTrigger.style.display = ''
+  Tone.getTransport().stop()
+  window.removeEventListener('load', scrollTop)
 })
 </script>
 

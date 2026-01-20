@@ -20,17 +20,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const gainNode = audioCtx.createGain()
 gainNode.gain.value = 1
 
 const isPlaying = ref(false)
-let micStream = null
+let micStream: MediaStream | null = null
 const timeArray = ref(new Float32Array(2048))
 
 const pitchRatio = ref(1.0)
@@ -55,7 +55,7 @@ function stop() {
   gainNode.disconnect(audioCtx.destination)
 }
 
-function getUserMic(stream) {
+function getUserMic(stream: MediaStream) {
   micStream = stream
 
   const buffer = new Float32Array(bufferSize * 2)
@@ -74,7 +74,7 @@ function getUserMic(stream) {
     }
 
     const grainData = new Float32Array(bufferSize)
-    for (let i = 0, j = 0.0; i < bufferSize; i++, j += parseFloat(pitchRatio.value)) {
+    for (let i = 0, j = 0.0; i < bufferSize; i++, j += parseFloat(String(pitchRatio.value))) {
       const index = Math.floor(j) % bufferSize
       const a = input[index]
       const b = input[(index + 1) % bufferSize]
@@ -95,7 +95,7 @@ function getUserMic(stream) {
   processor.connect(gainNode)
 }
 
-function hannWindowFn(length) {
+function hannWindowFn(length: number): Float32Array {
   const window = new Float32Array(length)
   for (let i = 0; i < length; i++) {
     window[i] = 0.5 * (1 - Math.cos((2 * Math.PI * i) / (length - 1)))
@@ -103,7 +103,7 @@ function hannWindowFn(length) {
   return window
 }
 
-function linearInterpolation(a, b, t) {
+function linearInterpolation(a: number, b: number, t: number): number {
   return a + (b - a) * t
 }
 
@@ -112,7 +112,7 @@ onMounted(() => {
   navigator.mediaDevices
     .getUserMedia({ audio: true, video: false })
     .then(getUserMic)
-    .catch(e => console.log(e))
+    .catch(e => console.error(e))
 })
 
 onBeforeUnmount(() => {

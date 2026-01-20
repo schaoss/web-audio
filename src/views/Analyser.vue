@@ -13,12 +13,12 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const gainNode = audioCtx.createGain()
 const analyser = audioCtx.createAnalyser()
 
@@ -28,11 +28,11 @@ analyser.connect(gainNode)
 
 const isPlaying = ref(false)
 const isMute = ref(false)
-let source = null
-let micStream = null
+let source: MediaStreamAudioSourceNode | null = null
+let micStream: MediaStream | null = null
 const fftArray = ref(new Uint8Array(analyser.fftSize))
 
-function clickHandler(){
+function clickHandler() {
   if (isPlaying.value) {
     stop()
   } else {
@@ -56,13 +56,13 @@ function stop() {
   gainNode.disconnect(audioCtx.destination)
 }
 
-function getUserMic(stream) {
+function getUserMic(stream: MediaStream) {
   micStream = stream
   source = audioCtx.createMediaStreamSource(stream)
   source.connect(analyser)
 }
 
-function getFFTData(){
+function getFFTData() {
   fftArray.value = new Uint8Array(analyser.fftSize)
   analyser.getByteFrequencyData(fftArray.value)
   if (isPlaying.value) requestAnimationFrame(getFFTData)
@@ -72,11 +72,11 @@ onMounted(() => {
   audioUnlock(audioCtx)
   navigator.mediaDevices.getUserMedia({ audio: true, video: false })
     .then(getUserMic)
-    .catch(e => console.log(e))
+    .catch(e => console.error(e))
 })
 
 onBeforeUnmount(() => {
-  if(micStream) micStream.getAudioTracks()[0].stop()
+  if (micStream) micStream.getAudioTracks()[0].stop()
 })
 </script>
 <style lang="scss" scoped>

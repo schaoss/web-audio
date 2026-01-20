@@ -8,11 +8,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import WaveSurfer from 'wavesurfer.js'
 
-const wavesurfer = ref(null)
+const wavesurfer = ref<WaveSurfer | null>(null)
 const isReady = ref(false)
 
 function clickHandler() {
@@ -21,13 +21,14 @@ function clickHandler() {
 
 const getBtnStr = computed(() => (isReady.value ? 'Play / Pause' : 'Loading...'))
 
-onMounted(() => {
+onMounted(async () => {
   wavesurfer.value = WaveSurfer.create({
     container: '#waveform',
     waveColor: 'violet',
     progressColor: 'purple',
   })
-  wavesurfer.value.load(import('../static/Epic_Sax_Gay.mp3'))
+  const audioModule = await import('../static/Epic_Sax_Gay.mp3')
+  wavesurfer.value.load(audioModule.default)
   wavesurfer.value.on('ready', () => {
     isReady.value = true
   })
