@@ -8,9 +8,9 @@
             :class="{'fa-play': !isPlaying, 'fa-pause': isPlaying}"></i></button>
       </div>
       <div id="bpm">
-        <button @click="BPM -= 5"><i class="fas fa-minus"></i></button>
+        <button @click="decreaseBPM"><i class="fas fa-minus"></i></button>
         <input type="text" :value="BPM" readonly /><span>bpm</span>
-        <button @click="BPM += 5"><i class="fas fa-plus"></i></button>
+        <button @click="increaseBPM"><i class="fas fa-plus"></i></button>
       </div>
       <button @click="reset"><i class="fas fa-trash-alt"></i></button>
     </div>
@@ -147,6 +147,16 @@ function playHandler() {
 
 function tabHandler() {
   tab.value = (tab.value + 1) % 2
+}
+
+function decreaseBPM() {
+  BPM.value = Math.max(40, BPM.value - 5)
+  Tone.getTransport().bpm.value = BPM.value
+}
+
+function increaseBPM() {
+  BPM.value = Math.min(300, BPM.value + 5)
+  Tone.getTransport().bpm.value = BPM.value
 }
 
 function clickHandler(arr: boolean[], i: number) {
