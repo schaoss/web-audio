@@ -1,0 +1,1 @@
+function n(t){if(t.state==="suspended"&&"ontouchstart"in window){const e=()=>{t.resume().then(()=>{document.body.removeEventListener("touchstart",e),document.body.removeEventListener("touchend",e)})};document.body.addEventListener("touchstart",e,!1),document.body.addEventListener("touchend",e,!1)}}export{n as a};
