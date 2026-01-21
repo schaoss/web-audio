@@ -50,7 +50,7 @@ importers:
         version: 6.0.3(vite@7.3.1(@types/node@22.19.7)(jiti@2.6.1)(sass@1.97.2))(vue@3.5.27(typescript@5.8.3))
       '@vitest/coverage-v8':
         specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/node@22.19.7)(happy-dom@18.0.1)(jiti@2.6.1)(sass@1.97.2))
+        version: 3.2.4(vitest@3.2.4(@types/node@22.19.7)(happy-dom@20.0.2)(jiti@2.6.1)(sass@1.97.2))
       '@vue/compiler-sfc':
         specifier: ^3.5.27
         version: 3.5.27
@@ -70,8 +70,8 @@ importers:
         specifier: ^17.0.0
         version: 17.0.0
       happy-dom:
-        specifier: ^18.0.1
-        version: 18.0.1
+        specifier: ^20.0.2
+        version: 20.0.2
       sass:
         specifier: ^1.97.2
         version: 1.97.2
@@ -89,7 +89,7 @@ importers:
         version: 7.3.1(@types/node@22.19.7)(jiti@2.6.1)(sass@1.97.2)
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.19.7)(happy-dom@18.0.1)(jiti@2.6.1)(sass@1.97.2)
+        version: 3.2.4(@types/node@22.19.7)(happy-dom@20.0.2)(jiti@2.6.1)(sass@1.97.2)
       vue-tsc:
         specifier: ^3.2.2
         version: 3.2.2(typescript@5.8.3)
@@ -1335,8 +1335,8 @@ packages:
     resolution: {integrity: sha512-ax7ZYomf6jqPTQ4+XCpUGyXKHk5WweS+e05MBO4/y3WJ5RkmPXNKvX+bx1behVILVwr6JSQvZAku021CHPXG3Q==}
     engines: {node: '>=10'}
 
-  happy-dom@18.0.1:
-    resolution: {integrity: sha512-qn+rKOW7KWpVTtgIUi6RVmTBZJSe2k0Db0vh1f7CWrWclkkc7/Q+FrOfkZIb2eiErLyqu5AXEzE7XthO9JVxRA==}
+  happy-dom@20.0.2:
+    resolution: {integrity: sha512-pYOyu624+6HDbY+qkjILpQGnpvZOusItCk+rvF5/V+6NkcgTKnbOldpIy22tBnxoaLtlM9nXgoqAcW29/B7CIw==}
     engines: {node: '>=20.0.0'}
 
   has-flag@4.0.0:
@@ -2765,7 +2765,7 @@ snapshots:
       vite: 7.3.1(@types/node@22.19.7)(jiti@2.6.1)(sass@1.97.2)
       vue: 3.5.27(typescript@5.8.3)
 
-  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/node@22.19.7)(happy-dom@18.0.1)(jiti@2.6.1)(sass@1.97.2))':
+  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/node@22.19.7)(happy-dom@20.0.2)(jiti@2.6.1)(sass@1.97.2))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -2780,7 +2780,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@22.19.7)(happy-dom@18.0.1)(jiti@2.6.1)(sass@1.97.2)
+      vitest: 3.2.4(@types/node@22.19.7)(happy-dom@20.0.2)(jiti@2.6.1)(sass@1.97.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -3286,7 +3286,7 @@ snapshots:
     dependencies:
       duplexer: 0.1.2
 
-  happy-dom@18.0.1:
+  happy-dom@20.0.2:
     dependencies:
       '@types/node': 20.19.30
       '@types/whatwg-mimetype': 3.0.2
@@ -3817,7 +3817,7 @@ snapshots:
       jiti: 2.6.1
       sass: 1.97.2
 
-  vitest@3.2.4(@types/node@22.19.7)(happy-dom@18.0.1)(jiti@2.6.1)(sass@1.97.2):
+  vitest@3.2.4(@types/node@22.19.7)(happy-dom@20.0.2)(jiti@2.6.1)(sass@1.97.2):
     dependencies:
       '@types/chai': 5.2.3
       '@vitest/expect': 3.2.4
@@ -3844,7 +3844,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.7
-      happy-dom: 18.0.1
+      happy-dom: 20.0.2
     transitivePeerDependencies:
       - jiti
       - less
