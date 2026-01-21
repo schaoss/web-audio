@@ -2,16 +2,16 @@ import { describe, it, expect, vi, beforeAll } from 'vitest'
 
 vi.mock('tone', () => ({
   Filter: vi.fn().mockImplementation(function FilterMock() { return {} }),
-  NoiseSynth: vi.fn().mockImplementation(function NoiseSynthMock() {
-    this.connect = vi.fn().mockReturnThis()
-    this.triggerAttack = vi.fn()
-    this.toDestination = vi.fn()
+  NoiseSynth: vi.fn().mockImplementation(function NoiseSynthMock(this: any) {
+    ;(this as any).connect = vi.fn().mockReturnThis()
+    ;(this as any).triggerAttack = vi.fn()
+    ;(this as any).toDestination = vi.fn()
   }),
   Synth: vi.fn(),
-  PolySynth: vi.fn().mockImplementation(function PolySynthMock() {
-    this.triggerAttackRelease = vi.fn()
-    this.toDestination = vi.fn()
-    this.maxPolyphony = 0
+  PolySynth: vi.fn().mockImplementation(function PolySynthMock(this: any) {
+    ;(this as any).triggerAttackRelease = vi.fn()
+    ;(this as any).toDestination = vi.fn()
+    ;(this as any).maxPolyphony = 0
   })
 }))
 
