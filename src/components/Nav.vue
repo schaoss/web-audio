@@ -42,10 +42,10 @@
         </span>
       </router-link>
 
-      <router-link to="panner-node" class="nav-link">
+       <router-link to="panner-node" class="nav-link">
         <span class="flex items-center gap-3">
           <i class="fas fa-cube w-5 text-center opacity-60" />
-          3D Panner
+          2D Panner
         </span>
       </router-link>
 

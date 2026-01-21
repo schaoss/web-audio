@@ -200,25 +200,23 @@ onMounted(() => {
   }
   #listener {
     line-height: 50px;
-    font-size: 150%;
+    font-size: 12px;
     user-select: none;
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    padding: 10px;
     background-color: #3692be;
     color: white;
   }
   #source {
     line-height: 50px;
-    font-size: 150%;
+    font-size: 12px;
     user-select: none;
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    padding: 10px;
     background-color: #bf8f36;
     color: white;
   }
