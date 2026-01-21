@@ -1,13 +1,15 @@
 <template>
   <div id="source">
-    <h1>Source</h1>
-    <button @click="clickHandler"> Play / Pause </button>
-    <button @click="reset"> Reset </button>
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Source</h1>
+    <div class="text-center my-4">
+      <button class="btn" @click="clickHandler"> Play / Pause </button>
+      <button class="btn" @click="reset"> Reset </button>
+    </div>
     <div id="config">
       <div class="audio-note">
         <h3>
           <span>音源：</span>
-          <select @change="sourceType=$event.target.value">
+          <select @change="(e: Event) => sourceType = (e.target as HTMLSelectElement).value" class="styled-select">
             <option value="0">振盪器</option>
             <option value="1">Audio Tag</option>
             <option value="2">麥克風</option>
@@ -17,7 +19,7 @@
         <div v-show="sourceType==='0'">
           <div class="item">
             <label for="waveType">type : <span>{{ waveType }}</span></label>
-            <select id="waveType" v-model="waveType" @change="changeHandler">
+            <select id="waveType" v-model="waveType" @change="changeHandler" class="styled-select">
               <option value='sine' selected>sine</option>
               <option value='square'>square</option>
               <option value='sawtooth'>sawtooth</option>
@@ -26,16 +28,16 @@
           </div>
           <div class="item">
             <label for="frequency">frequency : <span>{{frequency}}</span> </label>
-            <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler">
+            <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler" class="accent-primary">
           </div>
           <div class="item">
             <label for="detune">detune : <span>{{detune}}</span> </label>
-            <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler">
+            <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler" class="accent-primary">
           </div>
         </div>
         <div v-show="sourceType==='1'">
           <div class="item">
-            <audio id="player" controls preload>
+            <audio id="player" controls preload="auto" class="w-full accent-primary">
               <source src="../static/Rainy_Day_Games.mp3" type="audio/mp3" />
             </audio>
           </div>
@@ -48,25 +50,25 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const gainNode = audioCtx.createGain()
 
 const isPlaying = ref(false)
 const sourceType = ref('0')
-let source = null
-let audioSource = null
-let micStream = null
-const waveType = ref('sine')
+let source: OscillatorNode | MediaElementAudioSourceNode | MediaStreamAudioSourceNode | null = null
+let audioSource: MediaElementAudioSourceNode | null = null
+let micStream: MediaStream | null = null
+const waveType = ref<OscillatorType>('sine')
 const frequency = ref(440)
 const detune = ref(0)
-const micOutput = ref([])
+const micOutput = ref<Float32Array>(new Float32Array(0))
 
-function clickHandler(){
+function clickHandler() {
   if (isPlaying.value) {
     stop()
   } else {
@@ -74,11 +76,11 @@ function clickHandler(){
   }
 }
 
-function changeHandler(){
+function changeHandler() {
   setNoteConfig()
 }
 
-function reset(){
+function reset() {
   waveType.value = 'sine'
   frequency.value = 440
   detune.value = 0
@@ -96,14 +98,15 @@ function stop() {
 }
 
 function setNoteConfig() {
-  if(sourceType.value === '0' && source){
-    source.type = waveType.value
-    source.frequency.value = frequency.value
-    source.detune.value = detune.value
+  if (sourceType.value === '0' && source && 'type' in source) {
+    const osc = source as OscillatorNode
+    osc.type = waveType.value
+    osc.frequency.value = frequency.value
+    osc.detune.value = detune.value
   }
 }
 
-function getUserMic(stream) {
+function getUserMic(stream: MediaStream) {
   micStream = stream
   source = audioCtx.createMediaStreamSource(stream)
   const processor = audioCtx.createScriptProcessor(1024, 1, 1)
@@ -124,11 +127,11 @@ watch(sourceType, (n, p) => {
     stop()
   }
   if (source) {
-    if(p === '0') source.stop()
-    else if(p === '1') document.querySelector('audio').pause()
-    else if(p === '2') micStream?.getAudioTracks()[0].stop()
+    if (p === '0' && 'stop' in source) (source as OscillatorNode).stop()
+    else if (p === '1') (document.querySelector('audio') as HTMLAudioElement)?.pause()
+    else if (p === '2') micStream?.getAudioTracks()[0].stop()
   }
-  switch(n) {
+  switch (n) {
     default:
     case '0':
       source = audioCtx.createOscillator()
@@ -136,9 +139,9 @@ watch(sourceType, (n, p) => {
       source.connect(gainNode)
       break
     case '1': {
-      const audio = document.querySelector('audio')
+      const audio = document.querySelector('audio') as HTMLAudioElement
       audio.play()
-      if(!audioSource) {
+      if (!audioSource) {
         audioSource = audioCtx.createMediaElementSource(audio)
       }
       source = audioSource
@@ -148,7 +151,7 @@ watch(sourceType, (n, p) => {
     case '2':
       navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then(getUserMic)
-        .catch(e => console.log(e))
+        .catch(e => console.error(e))
       break
   }
 }, { immediate: true })
@@ -159,8 +162,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if(isPlaying.value) gainNode.disconnect(audioCtx.destination)
-  if(micStream) micStream.getAudioTracks()[0].stop()
+  if (isPlaying.value) gainNode.disconnect(audioCtx.destination)
+  if (micStream) micStream.getAudioTracks()[0].stop()
 })
 </script>
 <style lang="scss" scoped>
@@ -180,6 +183,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: left;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
           width: 100px;
@@ -194,6 +198,7 @@ onBeforeUnmount(() => {
         padding: 10px;
         max-height: 60vh;
         overflow: hidden;
+        color: #1e293b;
         > audio {
           margin: auto;
         }
@@ -217,6 +222,15 @@ onBeforeUnmount(() => {
           margin: 0 20px;
         }
       }
+    }
+  }
+}
+
+html.dark #source {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, .item {
+      color: #e2e8f0;
     }
   }
 }

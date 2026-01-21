@@ -1,0 +1,8 @@
+{
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true
+  },
+  "include": ["vite.config.ts", "eslint.config.ts", "vitest.config.ts", "postcss.config.ts", "unocss.config.ts"]
+}

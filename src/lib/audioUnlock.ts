@@ -1,6 +1,6 @@
-export default function(audioCtx) {
+export default function audioUnlock(audioCtx: AudioContext): void {
   if (audioCtx.state === 'suspended' && 'ontouchstart' in window) {
-    const unlock = () => {
+    const unlock = (): void => {
       audioCtx.resume().then(() => {
         document.body.removeEventListener('touchstart', unlock)
         document.body.removeEventListener('touchend', unlock)

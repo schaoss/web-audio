@@ -1,16 +1,18 @@
 <template>
   <div id="voice-changer">
-    <h1>VoiceChanger</h1>
-    <button @click="clickHandler"> On / Off </button>
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">VoiceChanger</h1>
+    <div class="text-center my-4">
+      <button class="btn" @click="clickHandler"> On / Off </button>
+    </div>
     <div id="config">
       <div class="audio-note">
         <div class="item">
-          <label for="pitchRatio">頻率倍率 : <span>{{pitchRatio}}</span> </label>
-          <input type="range" min="0.5" max="2" step="0.01" id="pitchRatio" v-model="pitchRatio">
+          <label for="pitchRatio">頻率倍率 : <span>{{pitchRatio}}</span></label>
+          <input type="range" min="0.5" max="2" step="0.01" id="pitchRatio" v-model="pitchRatio" class="accent-primary">
         </div>
         <div class="item">
-          <label for="overlapRatio">重疊率 : <span>{{overlapRatio}}</span> </label>
-          <input type="range" min="0.1" max="1" step="0.01" id="overlapRatio" v-model="overlapRatio">
+          <label for="overlapRatio">重疊率 : <span>{{overlapRatio}}</span></label>
+          <input type="range" min="0.1" max="1" step="0.01" id="overlapRatio" v-model="overlapRatio" class="accent-primary">
         </div>
         <div class="result">
           <div class="timeData" v-for="n in 512" :key="n" :style="{'height': timeArray[(n-1)]*200+2 + 'px'}" />
@@ -20,17 +22,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const gainNode = audioCtx.createGain()
 gainNode.gain.value = 1
 
 const isPlaying = ref(false)
-let micStream = null
+let micStream: MediaStream | null = null
 const timeArray = ref(new Float32Array(2048))
 
 const pitchRatio = ref(1.0)
@@ -55,7 +57,7 @@ function stop() {
   gainNode.disconnect(audioCtx.destination)
 }
 
-function getUserMic(stream) {
+function getUserMic(stream: MediaStream) {
   micStream = stream
 
   const buffer = new Float32Array(bufferSize * 2)
@@ -74,7 +76,7 @@ function getUserMic(stream) {
     }
 
     const grainData = new Float32Array(bufferSize)
-    for (let i = 0, j = 0.0; i < bufferSize; i++, j += parseFloat(pitchRatio.value)) {
+    for (let i = 0, j = 0.0; i < bufferSize; i++, j += parseFloat(String(pitchRatio.value))) {
       const index = Math.floor(j) % bufferSize
       const a = input[index]
       const b = input[(index + 1) % bufferSize]
@@ -95,7 +97,7 @@ function getUserMic(stream) {
   processor.connect(gainNode)
 }
 
-function hannWindowFn(length) {
+function hannWindowFn(length: number): Float32Array {
   const window = new Float32Array(length)
   for (let i = 0; i < length; i++) {
     window[i] = 0.5 * (1 - Math.cos((2 * Math.PI * i) / (length - 1)))
@@ -103,7 +105,7 @@ function hannWindowFn(length) {
   return window
 }
 
-function linearInterpolation(a, b, t) {
+function linearInterpolation(a: number, b: number, t: number): number {
   return a + (b - a) * t
 }
 
@@ -112,7 +114,7 @@ onMounted(() => {
   navigator.mediaDevices
     .getUserMedia({ audio: true, video: false })
     .then(getUserMic)
-    .catch(e => console.log(e))
+    .catch(e => console.error(e))
 })
 
 onBeforeUnmount(() => {
@@ -136,6 +138,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: left;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
           width: 100px;
@@ -148,6 +151,7 @@ onBeforeUnmount(() => {
         max-width: 800px;
         margin: 5px auto;
         padding: 10px;
+        color: #1e293b;
         > label {
           display: inline-block;
           min-width: 150px;
@@ -181,6 +185,15 @@ onBeforeUnmount(() => {
           background-color: #36bf4b;
         }
       }
+    }
+  }
+}
+
+html.dark #voice-changer {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, > .item {
+      color: #e2e8f0;
     }
   }
 }

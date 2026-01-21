@@ -1,7 +1,9 @@
 <template>
   <div id="guitar-tuner">
-    <h1>Guitar Tuner 2.0</h1>
-    <button @click="clickHandler"> On / Off </button>
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Guitar Tuner 2.0</h1>
+    <div class="text-center my-4">
+      <button class="btn" @click="clickHandler"> On / Off </button>
+    </div>
     <div id="config">
       <div class="audio-note">
         <h3>{{getFrequencyStr}}</h3>
@@ -15,12 +17,12 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const gainNode = audioCtx.createGain()
 const analyser = audioCtx.createAnalyser()
 
@@ -29,28 +31,28 @@ analyser.fftSize = 2048
 analyser.connect(gainNode)
 
 const isPlaying = ref(false)
-let source = null
-let micStream = null
+let source: MediaStreamAudioSourceNode | null = null
+let micStream: MediaStream | null = null
 const timeArray = ref(new Float32Array(analyser.fftSize / 2))
 
-const semiTone = ref(null)
+const semiTone = ref<number | null>(null)
 const centsOff = ref(0)
 
 const getInputFrequency = computed(() => {
   const MAX_SAMPLES = timeArray.value.length / 2
   const GOOD_ENOUGH_CORRELATION = 0.9
-  const correlations = new Array(MAX_SAMPLES)
+  const correlations = new Array<number>(MAX_SAMPLES)
   let best_offset = -1
   let best_correlation = 0
   let last_correlation = 1
   let foundGoodCorrelation = false
 
-  if(timeArray.value.reduce((rms, d) => rms += d ** 2, 0) < 0.01) return -1
+  if (timeArray.value.reduce((rms, d) => rms += d ** 2, 0) < 0.01) return -1
 
-  for(let offset = 0; offset < MAX_SAMPLES; offset++) {
+  for (let offset = 0; offset < MAX_SAMPLES; offset++) {
     let correlation = 0
-    for(let n = 0; n < MAX_SAMPLES; n++) {
-      correlation += Math.abs((timeArray.value[n])-(timeArray.value[n + offset]))
+    for (let n = 0; n < MAX_SAMPLES; n++) {
+      correlation += Math.abs((timeArray.value[n]) - (timeArray.value[n + offset]))
     }
     correlation = 1 - (correlation / MAX_SAMPLES)
     correlations[offset] = correlation
@@ -70,13 +72,13 @@ const getInputFrequency = computed(() => {
   if (best_correlation > 0.01) {
     return Math.round(audioCtx.sampleRate / best_offset)
   }
-  return -1;
+  return -1
 })
 
 const getFrequencyStr = computed(() => getInputFrequency.value > 0 ? getInputFrequency.value : '-')
 
 const getNoteStr = computed(() => {
-  const noteStr = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+  const noteStr = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
   return semiTone.value ? noteStr[semiTone.value % 12] : '-'
 })
 
@@ -88,7 +90,7 @@ const getCentsOffStr = computed(() => {
       : '-'
 })
 
-function clickHandler(){
+function clickHandler() {
   if (isPlaying.value) {
     stop()
   } else {
@@ -107,13 +109,13 @@ function stop() {
   gainNode.disconnect(audioCtx.destination)
 }
 
-function getUserMic(stream) {
+function getUserMic(stream: MediaStream) {
   micStream = stream
   source = audioCtx.createMediaStreamSource(stream)
   source.connect(analyser)
 }
 
-function getMicData(){
+function getMicData() {
   timeArray.value = new Float32Array(analyser.fftSize)
   analyser.getFloatTimeDomainData(timeArray.value)
   semiTone.value = getSemitone(getInputFrequency.value)
@@ -121,15 +123,15 @@ function getMicData(){
   if (isPlaying.value) requestAnimationFrame(getMicData)
 }
 
-function getSemitone(f) {
-  return Math.round(12 * (Math.log(f / 440) / Math.log(2) )) + 69
+function getSemitone(f: number): number {
+  return Math.round(12 * (Math.log(f / 440) / Math.log(2))) + 69
 }
 
-function getFrequencyFromSemitone(note) {
+function getFrequencyFromSemitone(note: number): number {
   return 440 * Math.pow(2, (note - 69) / 12)
 }
 
-function getCentsOffFromPitch(f, note) {
+function getCentsOffFromPitch(f: number, note: number): number {
   return Math.floor(1200 * Math.log(f / getFrequencyFromSemitone(note)) / Math.log(2))
 }
 
@@ -137,11 +139,11 @@ onMounted(() => {
   audioUnlock(audioCtx)
   navigator.mediaDevices.getUserMedia({ audio: true, video: false })
     .then(getUserMic)
-    .catch(e => console.log(e))
+    .catch(e => console.error(e))
 })
 
 onBeforeUnmount(() => {
-  if(micStream) micStream.getAudioTracks()[0].stop()
+  if (micStream) micStream.getAudioTracks()[0].stop()
 })
 </script>
 <style lang="scss" scoped>
@@ -158,6 +160,9 @@ onBeforeUnmount(() => {
       min-width: 300px;
       margin: 15px auto;
       border: solid 1px #d9d9d9;
+      h2, h3, h4 {
+        color: #1e293b;
+      }
       .result {
         display: flex;
         justify-content: center;
@@ -171,6 +176,15 @@ onBeforeUnmount(() => {
           background-color: #bf8f36;
         }
       }
+    }
+  }
+}
+
+html.dark #guitar-tuner {
+  #config .audio-note {
+    border-color: #475569;
+    h2, h3, h4 {
+      color: #e2e8f0;
     }
   }
 }

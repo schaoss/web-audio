@@ -1,18 +1,20 @@
 <template>
   <div id="guitar-tuner">
-    <h1> Guitar Tuner </h1>
-    <button @click="playHandler"> Play / Pause </button>
-    <button @click="reset"> Reset </button>
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white"> Guitar Tuner </h1>
+    <div class="text-center my-4">
+      <button class="btn" @click="playHandler"> Play / Pause </button>
+      <button class="btn" @click="reset"> Reset </button>
+    </div>
     <div id="config">
       <div class="audio-note">
         <h3><span>設定</span></h3>
         <div class="item">
           <label for="standardA4">A4 : <span>{{standardA4}}</span> </label>
-          <input type="range" min="430" max="450" step="1" id="standardA4Range" v-model="standardA4" @input="changeConfigHandler">
+          <input type="range" min="430" max="450" step="1" id="standardA4Range" v-model="standardA4" @input="changeConfigHandler" class="accent-primary">
         </div>
         <div class="item">
           <label for="tuning">調弦法 : <span></span></label>
-          <select id="tuning" v-model="tuning" @change="changeTuningHandler">
+          <select id="tuning" v-model="tuning" @change="changeTuningHandler" class="styled-select">
             <option value='standard' selected>標準</option>
             <option value='1-step-down'>降全音</option>
             <option value='drop-d'>Drop D</option>
@@ -22,7 +24,7 @@
         </div>
         <div class="item">
           <label for="volume">volume : <span>{{volume}}</span> </label>
-          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeConfigHandler">
+          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeConfigHandler" class="accent-primary">
         </div>
       </div>
     </div>
@@ -30,22 +32,22 @@
       <div class="note" v-for="n in noteArr" :key="n" @click="changeNoteHandler(n)">{{n}}</div>
     </div>
     <div id="display">
-      <h1>{{note}}</h1>
+      <h1 class="text-3xl font-bold text-center my-8">{{note}}</h1>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import audioUnlock from '../lib/audioUnlock'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext
-const audioCtx = new AudioContext()
+const AudioContextClass = window.AudioContext || window.webkitAudioContext
+const audioCtx = new AudioContextClass()
 const oscillator = audioCtx.createOscillator()
 const gainNode = audioCtx.createGain()
 
 const isPlaying = ref(false)
-const waveType = ref('triangle')
+const waveType = ref<OscillatorType>('triangle')
 const frequency = ref(440)
 const detune = ref(0)
 const volume = ref(1)
@@ -55,7 +57,37 @@ const tuning = ref('standard')
 const noteArr = ref(['E2','A2','D3','G3','B3','E4'])
 const note = ref('-')
 
-function playHandler(){
+type TuningType = 'standard' | '1-step-down' | 'drop-d' | 'open-e' | 'open-d'
+
+const noteNameMap: Record<string, number> = {
+  'C': 0,
+  'C#': 1,
+  'Db': 1,
+  'D': 2,
+  'D#': 3,
+  'Eb': 3,
+  'E': 4,
+  'F': 5,
+  'F#': 6,
+  'Gb': 6,
+  'G': 7,
+  'G#': 8,
+  'Ab': 8,
+  'A': 9,
+  'A#': 10,
+  'Bb': 10,
+  'B': 11
+}
+
+const tuningNoteMap: Record<TuningType, string[]> = {
+  'standard': ['E2','A2','D3','G3','B3','E4'],
+  '1-step-down': ['D2','G2','C3','F3','A3','D4'],
+  'drop-d': ['D2','A2','D3','G3','B3','E4'],
+  'open-e': ['E2','B2','E3','G#3','B3','E4'],
+  'open-d': ['D2','A2','D3','F#3','A3','D4']
+}
+
+function playHandler() {
   if (isPlaying.value) {
     stop()
     note.value = '-'
@@ -67,10 +99,10 @@ function playHandler(){
 }
 
 function changeTuningHandler() {
-  noteArr.value = getTuningNoteArr(tuning.value)
+  noteArr.value = getTuningNoteArr()
 }
 
-function changeNoteHandler(n) {
+function changeNoteHandler(n: string) {
   note.value = n
   frequency.value = getFrequency(getSemitone(n))
   setNoteConfig()
@@ -81,7 +113,7 @@ function changeConfigHandler() {
   setNoteConfig()
 }
 
-function reset(){
+function reset() {
   waveType.value = 'triangle'
   standardA4.value = 440
   detune.value = 0
@@ -104,43 +136,19 @@ function setNoteConfig() {
   gainNode.gain.value = volume.value
 }
 
-function getSemitone(n) {
-  if(!n || n === '-') return 69
-  const noteList = {
-    'C': 0,
-    'C#': 1,
-    'Db': 1,
-    'D': 2,
-    'D#': 3,
-    'Eb': 3,
-    'E': 4,
-    'F': 5,
-    'F#': 6,
-    'Gb': 6,
-    'G': 7,
-    'G#': 8,
-    'Ab': 8,
-    'A': 9,
-    'A#': 10,
-    'Bb': 10,
-    'B': 11
-  }
-  return noteList[n.slice(0,-1)] + 12 * (1 + parseInt(n.slice(-1)))
+function getSemitone(n: string): number {
+  if (!n || n === '-') return 69
+  const noteName = n.slice(0, -1)
+  const octave = parseInt(n.slice(-1))
+  return (noteNameMap[noteName] ?? 0) + 12 * (1 + octave)
 }
 
-function getFrequency(semitone) {
-  return standardA4.value * Math.pow(2, (semitone - 69)/12)
+function getFrequency(semitone: number): number {
+  return standardA4.value * Math.pow(2, (semitone - 69) / 12)
 }
 
-function getTuningNoteArr() {
-  const noteNameArr = {
-    'standard' : ['E2','A2','D3','G3','B3','E4'],
-    '1-step-down' : ['D2','G2','C3','F3','A3','D4'],
-    'drop-d' : ['D2','A2','D3','G3','B3','E4'],
-    'open-e' : ['E2','B2','E3','G#3','B3','E4'],
-    'open-d' : ['D2','A2','D3','F#3','A3','D4']
-  }
-  return noteNameArr[tuning.value]
+function getTuningNoteArr(): string[] {
+  return tuningNoteMap[tuning.value as TuningType] ?? tuningNoteMap.standard
 }
 
 onMounted(() => {
@@ -151,7 +159,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  if(isPlaying.value) gainNode.disconnect(audioCtx.destination)
+  if (isPlaying.value) gainNode.disconnect(audioCtx.destination)
 })
 </script>
 
@@ -172,6 +180,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: left;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
           width: 100px;
@@ -184,6 +193,7 @@ onBeforeUnmount(() => {
         max-width: 800px;
         margin: 5px auto;
         padding: 10px;
+        color: #1e293b;
         > label {
           display: inline-block;
           min-width: 150px;
@@ -222,6 +232,26 @@ onBeforeUnmount(() => {
       border: solid 1px #d9d9d9;
       background-color: #f9f9f9;
     }
+  }
+  #display h1 {
+    color: #1e293b;
+  }
+}
+
+html.dark #guitar-tuner {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, .item {
+      color: #e2e8f0;
+    }
+  }
+  #notes .note {
+    border-color: #475569;
+    background-color: #1e293b;
+    color: #e2e8f0;
+  }
+  #display h1 {
+    color: #e2e8f0;
   }
 }
 </style>

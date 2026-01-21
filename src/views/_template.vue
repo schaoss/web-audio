@@ -7,9 +7,8 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import * as Tone from 'tone'
-import { ref } from 'vue'
 
 const synth = new Tone.Synth().toDestination()
 function clickHandler() {

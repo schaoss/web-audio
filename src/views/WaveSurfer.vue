@@ -1,18 +1,18 @@
 <template>
   <div id="wavesurfer">
-    <h1> Wavesurfer.js </h1>
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white"> Wavesurfer.js </h1>
     <div class="content">
-      <button @click="clickHandler" :disabled="!isReady">{{getBtnStr}}</button>
+      <button class="btn" @click="clickHandler" :disabled="!isReady">{{getBtnStr}}</button>
     </div>
     <div id="waveform"></div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import WaveSurfer from 'wavesurfer.js'
 
-const wavesurfer = ref(null)
+const wavesurfer = ref<WaveSurfer | null>(null)
 const isReady = ref(false)
 
 function clickHandler() {
@@ -21,13 +21,14 @@ function clickHandler() {
 
 const getBtnStr = computed(() => (isReady.value ? 'Play / Pause' : 'Loading...'))
 
-onMounted(() => {
+onMounted(async () => {
   wavesurfer.value = WaveSurfer.create({
     container: '#waveform',
     waveColor: 'violet',
     progressColor: 'purple',
   })
-  wavesurfer.value.load(import('../static/Epic_Sax_Gay.mp3'))
+  const audioModule = await import('../static/Epic_Sax_Gay.mp3')
+  wavesurfer.value.load(audioModule.default)
   wavesurfer.value.on('ready', () => {
     isReady.value = true
   })
@@ -49,6 +50,12 @@ onMounted(() => {
     img {
       width: 100%;
     }
+  }
+}
+
+html.dark #wavesurfer {
+  .content > div {
+    color: #e2e8f0;
   }
 }
 </style>
