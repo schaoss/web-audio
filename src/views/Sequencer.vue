@@ -330,19 +330,18 @@ $black: #222222;
   }
   #pad {
     #timeLine {
-      display: inline-flex;
-      flex-flow: row nowrap;
+      display: flex;
       justify-content: space-around;
-      align-content: center;
       align-items: center;
       width: 100%;
       height: 10px;
       .time {
-        width: 6%;
+        flex: 1;
+        max-width: 6%;
         height: 5px;
         background-color: #ff5733;
         opacity: 0.2;
-        margin: 5px 0;
+        margin: 0 2px;
         border-radius: 5px;
         transition: all 0.1s;
       }
