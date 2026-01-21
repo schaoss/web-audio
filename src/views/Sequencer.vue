@@ -388,8 +388,8 @@ $black: #222222;
           position: absolute;
           top: -2px;
           left: -2px;
-          width: 100%;
-          height: 100%;
+          width: calc(100% + 4px);
+          height: calc(100% + 4px);
           z-index: 2;
           border-radius: 6px;
         }
