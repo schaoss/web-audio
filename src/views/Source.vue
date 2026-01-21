@@ -6,14 +6,26 @@
       <button class="btn" @click="reset"> Reset </button>
     </div>
     <div id="config">
-         <div class="audio-note">
-          <h3><span>音源：</span></h3>
+      <div class="audio-note">
+        <h3>
+          <span>音源：</span>
           <select @change="(e: Event) => sourceType = (e.target as HTMLSelectElement).value" class="styled-select">
             <option value="0">振盪器</option>
             <option value="1">Audio Tag</option>
             <option value="2">麥克風</option>
           </select>
-        </div>
+        </h3>
+
+        <div v-show="sourceType==='0'">
+          <div class="item">
+            <label for="waveType">type : <span>{{ waveType }}</span></label>
+            <select id="waveType" v-model="waveType" @change="changeHandler" class="styled-select">
+              <option value='sine' selected>sine</option>
+              <option value='square'>square</option>
+              <option value='sawtooth'>sawtooth</option>
+              <option value='triangle'>triangle</option>
+            </select>
+          </div>
           <div class="item">
             <label for="frequency">frequency : <span>{{frequency}}</span> </label>
             <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler" class="accent-primary">
