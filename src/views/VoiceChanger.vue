@@ -1,18 +1,18 @@
 <template>
   <div id="voice-changer">
-    <h1 class="text-3xl font-bold text-center my-8">VoiceChanger</h1>
-    <div class="text-center">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">VoiceChanger</h1>
+    <div class="text-center my-4">
       <button class="btn" @click="clickHandler"> On / Off </button>
     </div>
     <div id="config">
       <div class="audio-note">
         <div class="item">
           <label for="pitchRatio">頻率倍率 : <span>{{pitchRatio}}</span> </label>
-          <input type="range" min="0.5" max="2" step="0.01" id="pitchRatio" v-model="pitchRatio">
+          <input type="range" min="0.5" max="2" step="0.01" id="pitchRatio" v-model="pitchRatio" class="accent-primary">
         </div>
         <div class="item">
           <label for="overlapRatio">重疊率 : <span>{{overlapRatio}}</span> </label>
-          <input type="range" min="0.1" max="1" step="0.01" id="overlapRatio" v-model="overlapRatio">
+          <input type="range" min="0.1" max="1" step="0.01" id="overlapRatio" v-model="overlapRatio" class="accent-primary">
         </div>
         <div class="result">
           <div class="timeData" v-for="n in 512" :key="n" :style="{'height': timeArray[(n-1)]*200+2 + 'px'}" />
@@ -138,6 +138,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: left;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
           width: 100px;
@@ -150,6 +151,7 @@ onBeforeUnmount(() => {
         max-width: 800px;
         margin: 5px auto;
         padding: 10px;
+        color: #1e293b;
         > label {
           display: inline-block;
           min-width: 150px;
@@ -183,6 +185,15 @@ onBeforeUnmount(() => {
           background-color: #36bf4b;
         }
       }
+    }
+  }
+}
+
+html.dark #voice-changer {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, > .item {
+      color: #e2e8f0;
     }
   }
 }

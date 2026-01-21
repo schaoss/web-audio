@@ -1,7 +1,7 @@
 <template>
   <div id="stereo-panner-node">
-    <h1 class="text-3xl font-bold text-center my-8">Stereo Panner Node</h1>
-    <div class="text-center">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Stereo Panner Node</h1>
+    <div class="text-center my-4">
       <button class="btn" @click="clickHandler"> Play / Pause </button>
       <button class="btn" @click="reset"> Reset </button>
     </div>
@@ -10,7 +10,7 @@
         <h3><span>音源</span></h3>
         <div class="item">
           <label for="waveType">type : <span>{{ waveType }}</span></label>
-          <select id="waveType" v-model="waveType" @change="changeHandler">
+          <select id="waveType" v-model="waveType" @change="changeHandler" class="styled-select">
             <option value='sine' selected>sine</option>
             <option value='square'>square</option>
             <option value='sawtooth'>sawtooth</option>
@@ -19,25 +19,25 @@
         </div>
         <div class="item">
           <label for="frequency">frequency : <span>{{frequency}}</span> </label>
-          <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler">
+          <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler" class="accent-primary">
         </div>
         <div class="item">
           <label for="detune">detune : <span>{{detune}}</span> </label>
-          <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler">
+          <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler" class="accent-primary">
         </div>
       </div>
       <div class="audio-note">
         <h3><span>增益節點</span></h3>
         <div class="item">
           <label for="volume">volume : <span>{{volume}}</span> </label>
-          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeHandler">
+          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeHandler" class="accent-primary">
         </div>
       </div>
       <div class="audio-note">
         <h3><span>雙聲道節點</span></h3>
         <div class="item">
           <label for="pan">pan : <span>{{pan}}</span> </label>
-          <input type="range" min="-1" max="1" step="0.01" id="pan" v-model="pan" @input="changeHandler">
+          <input type="range" min="-1" max="1" step="0.01" id="pan" v-model="pan" @input="changeHandler" class="accent-primary">
         </div>
       </div>
     </div>
@@ -124,6 +124,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: left;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
           width: 100px;
@@ -136,6 +137,7 @@ onBeforeUnmount(() => {
         max-width: 800px;
         margin: 5px auto;
         padding: 10px;
+        color: #1e293b;
         > label {
           display: inline-block;
           min-width: 150px;
@@ -156,6 +158,15 @@ onBeforeUnmount(() => {
           margin: 0 20px;
         }
       }
+    }
+  }
+}
+
+html.dark #stereo-panner-node {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, > .item {
+      color: #e2e8f0;
     }
   }
 }

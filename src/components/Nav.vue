@@ -1,11 +1,11 @@
 <template>
-  <nav class="h-full flex flex-col bg-gradient-to-b from-slate-50 to-white">
+  <nav class="h-full flex flex-col bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
     <!-- Header -->
-    <div class="p-6 border-b border-slate-200">
-      <h1 class="text-xl font-bold text-slate-800 tracking-tight">
+    <div class="p-6 border-b border-slate-200 dark:border-slate-700">
+      <h1 class="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
         Web Audio
       </h1>
-      <p class="text-xs text-slate-500 mt-1">JavaScript 音樂漫遊</p>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">JavaScript 音樂漫遊</p>
     </div>
 
     <!-- Navigation links -->
@@ -18,7 +18,7 @@
       </router-link>
 
       <div class="px-4 py-2 mt-4">
-        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Web Audio API</span>
+        <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Web Audio API</span>
       </div>
 
       <router-link to="web-audio-api" class="nav-link">
@@ -78,7 +78,7 @@
       </router-link>
 
       <div class="px-4 py-2 mt-4">
-        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Libraries</span>
+        <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Libraries</span>
       </div>
 
       <router-link to="tone" class="nav-link">
@@ -104,14 +104,35 @@
     </div>
 
     <!-- Footer -->
-    <div class="p-4 border-t border-slate-200 text-center">
+    <div class="p-4 border-t border-slate-200 dark:border-slate-700 text-center flex items-center justify-center gap-3">
+      <!-- Dark mode toggle -->
+      <button
+        @click="toggleTheme"
+        class="flex-1 px-4 py-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+        aria-label="Toggle dark mode"
+      >
+        <i class="fas" :class="isDark ? 'fa-sun' : 'fa-moon'" />
+        <span>{{ isDark ? 'Light' : 'Dark' }}</span>
+      </button>
+      <!-- Github link -->
       <a
         href="https://github.com/schaoss/web-audio"
         target="_blank"
-        class="text-slate-400 hover:text-slate-600 transition-colors"
+        class="w-10 h-10 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-300 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-200"
+        aria-label="View on GitHub"
       >
-        <i class="fab fa-github text-xl" />
+        <i class="fab fa-github text-lg" />
       </a>
     </div>
-  </nav>
-</template>
+    </nav>
+  </template>
+
+  <script setup lang="ts">
+  import { useTheme } from '@/composables/useTheme'
+
+  const { isDark, toggleDark } = useTheme()
+
+  function toggleTheme() {
+    toggleDark()
+  }
+  </script>

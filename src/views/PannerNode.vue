@@ -1,7 +1,7 @@
 <template>
   <div id="panner-node">
-    <h1 class="text-3xl font-bold text-center my-8">Panner Node</h1>
-    <div class="text-center">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Panner Node</h1>
+    <div class="text-center my-4">
       <button class="btn" @click="clickHandler"> Play / Pause </button>
       <button class="btn" @click="reset"> Reset </button>
     </div>
@@ -10,14 +10,14 @@
         <h3><span>音源</span></h3>
         <div class="item">
           <label for="frequency">frequency : <span>{{frequency}}</span> </label>
-          <input type="range" min="0" max="1960" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler">
+          <input type="range" min="0" max="1960" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler" class="accent-primary">
         </div>
       </div>
       <div class="audio-note">
         <h3><span>增益節點</span></h3>
         <div class="item">
           <label for="volume">volume : <span>{{volume}}</span> </label>
-          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeHandler">
+          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeHandler" class="accent-primary">
         </div>
       </div>
     </div>
@@ -155,6 +155,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: center;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
         }
@@ -164,6 +165,7 @@ onBeforeUnmount(() => {
         width: 100%;
         margin: 5px auto;
         padding: 10px;
+        color: #1e293b;
         > label {
           display: inline-block;
           min-width: 50px;
@@ -203,6 +205,7 @@ onBeforeUnmount(() => {
     border-radius: 50%;
     padding: 10px;
     background-color: #3692be;
+    color: white;
   }
   #source {
     line-height: 50px;
@@ -214,6 +217,19 @@ onBeforeUnmount(() => {
     border-radius: 50%;
     padding: 10px;
     background-color: #bf8f36;
+    color: white;
+  }
+}
+
+html.dark #panner-node {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, > .item {
+      color: #e2e8f0;
+    }
+  }
+  #drag-area {
+    border-color: #475569;
   }
 }
 </style>

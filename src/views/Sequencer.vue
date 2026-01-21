@@ -290,7 +290,7 @@ $black: #222222;
     button {
       padding: 0;
       text-align: center;
-      color: $black;
+      color: #222;
       line-height: 100%;
       font-size: 3vw;
       width: 6vw;
@@ -371,7 +371,7 @@ $black: #222222;
           position: relative;
           box-sizing: border-box;
           background-color: #444444;
-          border: 1px solid $black;
+          border:1px solid $black;
         }
         li:before {
           content: '';
@@ -399,4 +399,5 @@ $black: #222222;
     }
   }
 }
+
 </style>

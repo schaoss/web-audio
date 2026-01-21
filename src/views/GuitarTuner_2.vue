@@ -1,7 +1,7 @@
 <template>
   <div id="guitar-tuner">
-    <h1 class="text-3xl font-bold text-center my-8">Guitar Tuner 2.0</h1>
-    <div class="text-center">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Guitar Tuner 2.0</h1>
+    <div class="text-center my-4">
       <button class="btn" @click="clickHandler"> On / Off </button>
     </div>
     <div id="config">
@@ -160,6 +160,9 @@ onBeforeUnmount(() => {
       min-width: 300px;
       margin: 15px auto;
       border: solid 1px #d9d9d9;
+      h2, h3, h4 {
+        color: #1e293b;
+      }
       .result {
         display: flex;
         justify-content: center;
@@ -173,6 +176,15 @@ onBeforeUnmount(() => {
           background-color: #bf8f36;
         }
       }
+    }
+  }
+}
+
+html.dark #guitar-tuner {
+  #config .audio-note {
+    border-color: #475569;
+    h2, h3, h4 {
+      color: #e2e8f0;
     }
   }
 }

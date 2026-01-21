@@ -1,10 +1,12 @@
 <template>
-  <div id="tone">
-    <h1 class="text-3xl font-bold text-center my-8"> Tone.js </h1>
-    <div class="content">
-      <h2>{{getChord}}</h2>
-      <h3>{{notes[0]}}, {{notes[1]}}, {{notes[2]}}, {{notes[3]}}</h3>
-      <button class="btn" @click="clickHandler"> Play / Pause</button>
+  <div id="tone" class="px-4">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white"> Tone.js </h1>
+    <div class="content max-w-2xl mx-auto my-8 p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-center mb-4 dark:text-slate-300">{{getChord}}</h2>
+      <h3 class="text-xl text-center mb-6 dark:text-slate-300">{{notes[0]}}, {{notes[1]}}, {{notes[2]}}, {{notes[3]}}</h3>
+      <div class="text-center">
+        <button class="btn" @click="clickHandler"> Play / Pause</button>
+      </div>
     </div>
   </div>
 </template>
@@ -75,6 +77,12 @@ onBeforeUnmount(() => {
     img {
       width: 100%;
     }
+  }
+}
+
+html.dark #tone {
+  .content > div {
+    color: #e2e8f0;
   }
 }
 </style>

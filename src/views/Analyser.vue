@@ -1,7 +1,7 @@
 <template>
   <div id="analyser">
-    <h1 class="text-3xl font-bold text-center my-8">Analyser</h1>
-    <div class="text-center">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Analyser</h1>
+    <div class="text-center my-4">
       <button class="btn" @click="clickHandler"> Play / Pause </button>
       <button class="btn" @click="muteHandler"> {{isMute ? 'unmute' : 'mute'}} </button>
     </div>
@@ -95,6 +95,7 @@ onBeforeUnmount(() => {
       min-width: 300px;
       margin: 15px auto;
       border: solid 1px #d9d9d9;
+      background-color: white;
       .result {
         display: flex;
         justify-content: center;
@@ -108,6 +109,13 @@ onBeforeUnmount(() => {
         }
       }
     }
+  }
+}
+
+html.dark #analyser {
+  #config .audio-note {
+    border-color: #475569;
+    background-color: #1e293b;
   }
 }
 </style>

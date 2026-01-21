@@ -14,7 +14,7 @@ const routerActiveVariant: Variant = {
 
 export default defineConfig({
   presets: [
-    presetUno(),
+    presetUno({ dark: 'class' }),
     presetAttributify(),
     presetIcons({
       scale: 1.2,
@@ -23,10 +23,11 @@ export default defineConfig({
   ],
   variants: [routerActiveVariant],
   shortcuts: {
-    'btn': 'px-4 py-2 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50',
+    'btn': 'px-5 py-2.5 rounded-lg inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50 mx-2 transition-all duration-200',
     'icon-btn': 'inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100',
-    'nav-link': 'block px-4 py-3 text-slate-600 font-medium no-underline transition-all duration-200 border-l-3 border-transparent hover:bg-slate-100 hover:text-slate-900 hover:border-l-primary active:bg-white active:text-primary active:border-l-primary active:font-semibold',
+    'nav-link': 'block px-4 py-3 text-slate-600 dark:text-slate-300 font-medium no-underline transition-all duration-200 border-l-3 border-transparent hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 hover:border-l-primary active:bg-white dark:active:bg-slate-900 active:text-primary dark:active:text-primary active:border-l-primary active:font-semibold',
     'menu-trigger': 'fixed top-4 left-4 z-50 w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-lg shadow-lg cursor-pointer transition-all duration-300 hover:bg-slate-700 hover:scale-105',
+    'styled-select': 'px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none cursor-pointer',
   },
   theme: {
     colors: {

@@ -1,7 +1,7 @@
 <template>
   <div id="web-audio-api">
-    <h1 class="text-3xl font-bold text-center my-8">Hello, Web Audio API</h1>
-    <div class="text-center">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Hello, Web Audio API</h1>
+    <div class="text-center my-4">
       <button class="btn" @click="clickHandler"> Play / Pause </button>
       <button class="btn" @click="reset"> Reset </button>
     </div>
@@ -10,7 +10,7 @@
         <h3><span>音源</span></h3>
         <div class="item">
           <label for="waveType">type : <span>{{ waveType }}</span></label>
-          <select id="waveType" v-model="waveType" @change="changeHandler">
+          <select id="waveType" v-model="waveType" @change="changeHandler" class="styled-select">
             <option value='sine' selected>sine</option>
             <option value='square'>square</option>
             <option value='sawtooth'>sawtooth</option>
@@ -19,25 +19,25 @@
         </div>
         <div class="item">
           <label for="frequency">frequency : <span>{{frequency}}</span> </label>
-          <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler">
+          <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler" class="accent-primary">
         </div>
         <div class="item">
           <label for="detune">detune : <span>{{detune}}</span> </label>
-          <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler">
+          <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler" class="accent-primary">
         </div>
       </div>
       <div class="audio-note">
         <h3><span>增益節點</span></h3>
         <div class="item">
           <label for="volume">volume : <span>{{volume}}</span> </label>
-          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeHandler">
+          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeHandler" class="accent-primary">
         </div>
       </div>
       <div class="audio-note">
         <h3><span>濾波器節點</span></h3>
         <div class="item">
           <label for="filterType">filterType : <span>{{filterType}}</span> </label>
-          <select id="filterType" v-model="filterType" @change="changeHandler">
+          <select id="filterType" v-model="filterType" @change="changeHandler" class="styled-select">
             <option value='allpass' selected>allpass</option>
             <option value='highpass'>highpass</option>
             <option value='bandpass'>bandpass</option>
@@ -49,15 +49,15 @@
         </div>
         <div class="item">
           <label for="filterF">filterF : <span>{{filterF}}</span> </label>
-          <input type="range" min="0" max="4000" step="1" id="filterF" v-model="filterF" @input="changeHandler">
+          <input type="range" min="0" max="4000" step="1" id="filterF" v-model="filterF" @input="changeHandler" class="accent-primary">
         </div>
         <div class="item">
           <label for="filterQ">filterQ : <span>{{filterQ}}</span> </label>
-          <input type="range" min="0.01" max="1000" step="0.01" id="filterQ" v-model="filterQ" @input="changeHandler">
+          <input type="range" min="0.01" max="1000" step="0.01" id="filterQ" v-model="filterQ" @input="changeHandler" class="accent-primary">
         </div>
         <div class="item">
           <label for="filterGain">filterGain : <span>{{filterGain}}</span> </label>
-          <input type="range" min="0" max="5" step="0.1" id="filterGain" v-model="filterGain" @input="changeHandler">
+          <input type="range" min="0" max="5" step="0.1" id="filterGain" v-model="filterGain" @input="changeHandler" class="accent-primary">
         </div>
       </div>
     </div>
@@ -157,6 +157,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: left;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
           width: 100px;
@@ -169,6 +170,7 @@ onBeforeUnmount(() => {
         max-width: 800px;
         margin: 5px auto;
         padding: 10px;
+        color: #1e293b;
         > label {
           display: inline-block;
           min-width: 150px;
@@ -189,6 +191,15 @@ onBeforeUnmount(() => {
           margin: 0 20px;
         }
       }
+    }
+  }
+}
+
+html.dark #web-audio-api {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, > .item {
+      color: #e2e8f0;
     }
   }
 }

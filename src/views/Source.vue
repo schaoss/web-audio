@@ -1,7 +1,7 @@
 <template>
   <div id="source">
-    <h1 class="text-3xl font-bold text-center my-8">Source</h1>
-    <div class="text-center">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Source</h1>
+    <div class="text-center my-4">
       <button class="btn" @click="clickHandler"> Play / Pause </button>
       <button class="btn" @click="reset"> Reset </button>
     </div>
@@ -19,7 +19,7 @@
         <div v-show="sourceType==='0'">
           <div class="item">
             <label for="waveType">type : <span>{{ waveType }}</span></label>
-            <select id="waveType" v-model="waveType" @change="changeHandler">
+            <select id="waveType" v-model="waveType" @change="changeHandler" class="styled-select">
               <option value='sine' selected>sine</option>
               <option value='square'>square</option>
               <option value='sawtooth'>sawtooth</option>
@@ -28,16 +28,16 @@
           </div>
           <div class="item">
             <label for="frequency">frequency : <span>{{frequency}}</span> </label>
-            <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler">
+            <input type="range" min="0" max="4000" step="1" id="frequencyRange" v-model="frequency" @input="changeHandler" class="accent-primary">
           </div>
           <div class="item">
             <label for="detune">detune : <span>{{detune}}</span> </label>
-            <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler">
+            <input type="range" min="-2000" max="2000" step="1" id="detuneRange" v-model="detune" @input="changeHandler" class="accent-primary">
           </div>
         </div>
         <div v-show="sourceType==='1'">
           <div class="item">
-            <audio id="player" controls preload="auto">
+            <audio id="player" controls preload="auto" class="w-full accent-primary">
               <source src="../static/Rainy_Day_Games.mp3" type="audio/mp3" />
             </audio>
           </div>
@@ -183,6 +183,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: left;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
           width: 100px;
@@ -197,6 +198,7 @@ onBeforeUnmount(() => {
         padding: 10px;
         max-height: 60vh;
         overflow: hidden;
+        color: #1e293b;
         > audio {
           margin: auto;
         }
@@ -220,6 +222,15 @@ onBeforeUnmount(() => {
           margin: 0 20px;
         }
       }
+    }
+  }
+}
+
+html.dark #source {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, .item {
+      color: #e2e8f0;
     }
   }
 }

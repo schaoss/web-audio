@@ -1,7 +1,7 @@
 <template>
   <div id="guitar-tuner">
-    <h1 class="text-3xl font-bold text-center my-8"> Guitar Tuner </h1>
-    <div class="text-center">
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white"> Guitar Tuner </h1>
+    <div class="text-center my-4">
       <button class="btn" @click="playHandler"> Play / Pause </button>
       <button class="btn" @click="reset"> Reset </button>
     </div>
@@ -10,11 +10,11 @@
         <h3><span>設定</span></h3>
         <div class="item">
           <label for="standardA4">A4 : <span>{{standardA4}}</span> </label>
-          <input type="range" min="430" max="450" step="1" id="standardA4Range" v-model="standardA4" @input="changeConfigHandler">
+          <input type="range" min="430" max="450" step="1" id="standardA4Range" v-model="standardA4" @input="changeConfigHandler" class="accent-primary">
         </div>
         <div class="item">
           <label for="tuning">調弦法 : <span></span></label>
-          <select id="tuning" v-model="tuning" @change="changeTuningHandler">
+          <select id="tuning" v-model="tuning" @change="changeTuningHandler" class="styled-select">
             <option value='standard' selected>標準</option>
             <option value='1-step-down'>降全音</option>
             <option value='drop-d'>Drop D</option>
@@ -24,7 +24,7 @@
         </div>
         <div class="item">
           <label for="volume">volume : <span>{{volume}}</span> </label>
-          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeConfigHandler">
+          <input type="range" min="0" max="5" step="0.1" id="volumeRange" v-model="volume" @input="changeConfigHandler" class="accent-primary">
         </div>
       </div>
     </div>
@@ -180,6 +180,7 @@ onBeforeUnmount(() => {
       > h3 {
         text-align: left;
         margin: 10px;
+        color: #1e293b;
         > span {
           display: inline-block;
           width: 100px;
@@ -192,6 +193,7 @@ onBeforeUnmount(() => {
         max-width: 800px;
         margin: 5px auto;
         padding: 10px;
+        color: #1e293b;
         > label {
           display: inline-block;
           min-width: 150px;
@@ -230,6 +232,26 @@ onBeforeUnmount(() => {
       border: solid 1px #d9d9d9;
       background-color: #f9f9f9;
     }
+  }
+  #display h1 {
+    color: #1e293b;
+  }
+}
+
+html.dark #guitar-tuner {
+  #config .audio-note {
+    border-color: #475569;
+    > h3, .item {
+      color: #e2e8f0;
+    }
+  }
+  #notes .note {
+    border-color: #475569;
+    background-color: #1e293b;
+    color: #e2e8f0;
+  }
+  #display h1 {
+    color: #e2e8f0;
   }
 }
 </style>

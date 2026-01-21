@@ -1,6 +1,6 @@
 <template>
   <div id="wavesurfer">
-    <h1 class="text-3xl font-bold text-center my-8"> Wavesurfer.js </h1>
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white"> Wavesurfer.js </h1>
     <div class="content">
       <button class="btn" @click="clickHandler" :disabled="!isReady">{{getBtnStr}}</button>
     </div>
@@ -50,6 +50,12 @@ onMounted(async () => {
     img {
       width: 100%;
     }
+  }
+}
+
+html.dark #wavesurfer {
+  .content > div {
+    color: #e2e8f0;
   }
 }
 </style>
