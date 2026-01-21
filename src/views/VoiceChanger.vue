@@ -7,11 +7,11 @@
     <div id="config">
       <div class="audio-note">
         <div class="item">
-          <label for="pitchRatio">頻率倍率 : <span>{{pitchRatio}}</span> </label>
+          <label for="pitchRatio">頻率倍率 : <span>{{pitchRatio}}</span></label>
           <input type="range" min="0.5" max="2" step="0.01" id="pitchRatio" v-model="pitchRatio" class="accent-primary">
         </div>
         <div class="item">
-          <label for="overlapRatio">重疊率 : <span>{{overlapRatio}}</span> </label>
+          <label for="overlapRatio">重疊率 : <span>{{overlapRatio}}</span></label>
           <input type="range" min="0.1" max="1" step="0.01" id="overlapRatio" v-model="overlapRatio" class="accent-primary">
         </div>
         <div class="result">
