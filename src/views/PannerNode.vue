@@ -199,26 +199,32 @@ onMounted(() => {
     overflow: hidden;
   }
   #listener {
-    line-height: 50px;
-    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     user-select: none;
     position: absolute;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background-color: #3692be;
     color: white;
+    font-size: 16px;
+    font-weight: 500;
   }
   #source {
-    line-height: 50px;
-    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     user-select: none;
     position: absolute;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background-color: #bf8f36;
     color: white;
+    font-size: 16px;
+    font-weight: 500;
   }
 }
 
