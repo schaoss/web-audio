@@ -1,6 +1,6 @@
-<template>
+  <template>
   <div id="panner-node">
-    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">Panner Node</h1>
+    <h1 class="text-3xl font-bold text-center my-8 dark:text-white">2D Panner Node</h1>
     <div class="text-center my-4">
       <button class="btn" @click="clickHandler"> Play / Pause </button>
       <button class="btn" @click="reset"> Reset </button>
@@ -130,9 +130,12 @@ onMounted(() => {
   oscillator.start()
 })
 
-onBeforeUnmount(() => {
-  if (isPlaying.value) panner.disconnect(audioCtx.destination)
-})
+  onBeforeUnmount(() => {
+    if (isPlaying.value) {
+      panner.disconnect(audioCtx.destination)
+      isPlaying.value = false
+    }
+  })
 </script>
 <style lang="scss" scoped>
 #panner-node {
