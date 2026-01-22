@@ -1,0 +1,27 @@
+name: CI - Bun Migration
+on:
+  pull_request:
+    branches:
+      - 'upgrade/bun-migration'
+
+jobs:
+  bun-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash || true
+          export BUN_INSTALL="$HOME/.bun"
+          export PATH="$BUN_INSTALL/bin:$PATH"
+          bun --version
+      - name: Bun install
+        run: bun install
+      - name: Run tests via npx vitest
+        run: npx vitest run
+      - name: Build via npx vite
+        run: npx vite build
