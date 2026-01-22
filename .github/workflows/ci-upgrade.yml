@@ -1,0 +1,27 @@
+name: CI - Upgrade PRs
+on:
+  pull_request:
+    branches:
+      - 'upgrade/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [22]
+        package_manager: ["pnpm"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Setup pnpm
+        run: corepack enable && corepack prepare pnpm@latest --activate
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run tests
+        run: pnpm run test:run
+      - name: Build
+        run: pnpm run build
